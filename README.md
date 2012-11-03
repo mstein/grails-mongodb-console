@@ -26,18 +26,25 @@ It will uses some of the latest technologies in JS/HTML5 to provide a powerful a
 Please note that the project is at its early stage and is not yet actually usable, not all of the listed features are available yet,
 but feel free to evaluate the plugin and maybe write some feedback :)
 
-## Technologies
+## UI Technologies
 For the UI we're currently using :
 * Angular JS 1.1.0
 * ACE web text editor
 * Twitter Bootstrap-based templates
 
+## Supported Browser
+The current dev is test on the latest Chrome & Firefox stable releases.
+A few glitch are known to happen on IE9, but we will fix them in time.
+
+Compatibility with older browsers are not the current priority.
+
 ## Installation
-The plugin isn't yet available on the official Grails plugin repository so you can't pull the dependencies directly, we will add a first version of the plugin when
+The plugin isn't available yet on the official Grails plugin repository so you can't pull the dependencies directly, we will add a first version of the plugin when
 the basic features are covered.
 
 The plugin does not require the official mongodb-gorm plugin in order to work, but it will use the configured mongo bean if the plugin is installed in your project.
-In any case, it pulls the mongodb and GMongo dependencies to work with mongodb. If you already have these but with different versions, you can exclude them from your BuildConfig.groovy.
+In any case, it pulls the mongodb and GMongo dependencies to work with mongodb. If you already have these but with different versions, you can exclude them from your ``BuildConfig.groovy``
+when you pull the plugin dependency.
 Please do note that the aggregrate framework manipulation is not available in GMongo in versions anterior to the 1.0.
 
 For now, you can clone the git repository, then run ``grails run-app`` and navigate to ``<root-project-name>/mviewer``.
