@@ -34,10 +34,14 @@ For the UI we're currently using :
 
 ## Installation
 The plugin isn't yet available on the official Grails plugin repository so you can't pull the dependencies directly, we will add a first version of the plugin when
- the basic features are covered.
+the basic features are covered.
 
-The plugin does not require the official mongodb-gorm plugin to work, but it will use the configured mongo bean if the plugin is installed in your project.
-In any case, it pull the mongodb and GMongo dependencies to
+The plugin does not require the official mongodb-gorm plugin in order to work, but it will use the configured mongo bean if the plugin is installed in your project.
+In any case, it pulls the mongodb and GMongo dependencies to work with mongodb. If you already have these but with different versions, you can exclude them from your BuildConfig.groovy.
+Please do note that the aggregrate framework manipulation is not available in GMongo in version anterior to the 1.0.
+
+For now, you can clone the git repository, then run ``grails run-app`` and navigate to ``<root-project-name>/mviewer``.
+A running MongoDB instance is required (connect on localhost:27017 by default). Configurable host/port will come later.
 
 ## License
 
