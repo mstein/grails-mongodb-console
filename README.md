@@ -13,7 +13,7 @@
     | |___| (_) | | | \__ \ (_) | |  __/
      \_____\___/|_| |_|___/\___/|_|\___|
 
-h1. Grails MongoDB Console
+# Grails MongoDB Console
 This project intend to provide a grails plugin similar to the grails-dbconsole plugin but for MongoDB.
 It will uses some of the latest technologies in JS/HTML5 to provide a powerful and ergonomic Web GUI (well, that's the goal at least).
 
@@ -27,7 +27,7 @@ For the UI we're currently using :
 Please note that the project is at its early stage and is not yet actually usable,
 but you're welcome to evaluate the plugin and maybe make some feedback :)
 
-h2. License
+## License
 
     Copyright 2012 the original author or authors.
 
