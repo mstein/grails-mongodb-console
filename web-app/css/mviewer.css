@@ -1,0 +1,81 @@
+.document-entry {
+    background-color: #000;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px 4px 4px 4px;
+    margin: 15px 0;
+    padding: 39px 19px 14px;
+    position: relative;
+    color: #FFF;
+}
+
+.document-entry .identifier {
+    background-color: #F5F5F5;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px 0 4px 0;
+    color: #3C5054;
+    content: "";
+    font-size: 12px;
+    font-weight: bold;
+    left: -1px;
+    padding: 3px 7px;
+    position: absolute;
+    top: -1px;
+}
+
+.document-entry .identifier label {
+    margin-bottom: 0;
+}
+
+.document-entry .actions {
+    background-color: #F5F5F5;
+    border: 1px solid #DDDDDD;
+    border-radius: 0 4px 0 4px;
+    color: #3C5054;
+    content: "";
+    font-size: 12px;
+    font-weight: bold;
+    right: -1px;
+    padding: 3px 7px;
+    position: absolute;
+    top: -1px;
+}
+
+li.navbar-form.input-append a.btn {
+    margin-top: 5px;
+    padding-bottom: 7px;
+    padding-top: 6px;
+    padding-left: 7px;
+    padding-right: 8px;
+}
+
+pre.json {
+    background-color: black;
+    color: #FFF;
+}
+
+.mongo-binary {
+    color:#fff2b3;
+}
+.mongo-object-id {
+    color:#ffe340;
+}
+
+.json-link, .json-link:hover {
+    text-decoration: none;
+}
+div.document-entry {
+    padding-right: 12px;
+}
+
+.document-entry .limited {
+    max-height:300px;
+    overflow: auto;
+}
+.document-entry pre {
+    width:100%;
+    padding-left:0;
+    border:none;
+}
+div.editable-true, div.editable-true pre {
+    background-color: #232323;
+}
