@@ -33,8 +33,8 @@ For the UI we're currently using :
 * Twitter Bootstrap-based templates
 
 ## Supported Browser
-The current dev is test on the latest Chrome & Firefox stable releases.
-A few glitch are known to happen on IE9, but we will fix them in time.
+The current dev is tested on the latest Chrome & Firefox stable releases.
+A few glitches are known to happen on IE9, but we will fix them eventually.
 
 Compatibility with older browsers are not the current priority.
 
