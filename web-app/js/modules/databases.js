@@ -72,16 +72,13 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.cancel();
         $scope.currentCollection = colname;
         $scope.renColName = colname;
-        var args = {dbname:$scope.currentDB, colname: $scope.currentCollection};
-        if(params != null) {
-            $.extend(args, params);
-        }
-        mongodb[colname].find().skip(0).limit(30).exec(function(data) {
+        var args = {};
+        var offset = params != undefined ?params.offset : null;
+        var max = params != undefined ? params.max : null;
+
+        mongodb[colname].find().skip(offset).limit(max).exec(function(data) {
             $scope.populateDocuments(data);
-        });
-        /*$http.get('mviewer/listDocuments?'+$.param(args), {transformResponse:parseMongoJson}).success(function(data) {
-            $scope.populateDocuments(data);
-        });*/
+        }, function(data){alert(data);});
     };
 
     $scope.createDB = function() {
