@@ -14,18 +14,30 @@
      \_____\___/|_| |_|___/\___/|_|\___|
 
 # Grails MongoDB Console
-This project intend to provide a grails plugin similar to the grails-dbconsole plugin but for MongoDB.
-It will uses some of the latest technologies in JS/HTML5 to provide a powerful and ergonomic Web GUI (well, that's the goal at least).
+This project intend to provide a grails plugin similar to the grails-dbconsole plugin but for MongoDB, built on the Groovy mongodb driver.
+It will uses some of the latest technologies in JS/HTML5 to provide a powerful and ergonomic Web GUI (well, that's the goal at least) that will allow you to :
+* Browse through the documents of any collection
+* Create, remove or update any document
+* Browse through any GridFS buckets with a dedicated UI, allowing upload, download and deletion of files
+* Querying the DB using the JSON / TenGen syntax, or using a simplified Lucene-query-like string for simple queries
+* View all the administrative stuffs, isMaster, serverStatus, replicasets, ...
+* _[this list will expand with time, I guess]_
 
-The plugin does not require the official mongodb-gorm plugin to work, but it will use the configured mongo bean if the plugin is installed in your project.
+Please note that the project is at its early stage and is not yet actually usable, not all of the listed features are available yet,
+but feel free to evaluate the plugin and maybe write some feedback :)
 
+## Technologies
 For the UI we're currently using :
 * Angular JS 1.1.0
 * ACE web text editor
 * Twitter Bootstrap-based templates
 
-Please note that the project is at its early stage and is not yet actually usable,
-but you're welcome to evaluate the plugin and maybe make some feedback :)
+## Installation
+The plugin isn't yet available on the official Grails plugin repository so you can't pull the dependencies directly, we will add a first version of the plugin when
+ the basic features are covered.
+
+The plugin does not require the official mongodb-gorm plugin to work, but it will use the configured mongo bean if the plugin is installed in your project.
+In any case, it pull the mongodb and GMongo dependencies to
 
 ## License
 
