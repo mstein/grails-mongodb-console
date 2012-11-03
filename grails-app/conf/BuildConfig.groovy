@@ -26,7 +26,7 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.18'
 
         // Mongo DB Groovy driver
-        compile group: 'com.gmongo', name: 'gmongo', version: "0.9.5"
+        compile group: 'com.gmongo', name: 'gmongo', version: "1.0"
         compile group: 'org.mongodb', name: 'mongo-java-driver', version: "2.7.3"
     }
 
