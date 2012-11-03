@@ -50,11 +50,6 @@ Please do note that the aggregrate framework manipulation is not available in GM
 For now, you can clone the git repository, then run ``grails run-app`` and navigate to ``<root-project-name>/mviewer``.
 A running MongoDB instance is required (the plugin connects on localhost:27017 by default). Configurable host/port will come later.
 
-## Preview / Design draft
-![screen01](https://raw.github.com/mstein/grails-mongdb-console/master/web-app/images/gh/mongoviewer_scr01.JPG)
-![screen02](https://raw.github.com/mstein/grails-mongdb-console/master/web-app/images/gh/mongoviewer_scr02.JPG)
-![screen03](https://raw.github.com/mstein/grails-mongdb-console/master/web-app/images/gh/mongoviewer_scr03.JPG)
-
 ## License
 
     Copyright 2012 the original author or authors.
