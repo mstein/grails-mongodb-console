@@ -70,3 +70,8 @@ A running MongoDB instance is required (the plugin connects on localhost:27017 b
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+## Preview / Design draft
+![screen01](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr01.JPG)
+![screen02](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr02.JPG)
+![screen03](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr03.JPG)
