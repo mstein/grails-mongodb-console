@@ -278,7 +278,7 @@ function MongoJSON() {}
             }
 
 // TenGen conversion phase
-// Parsing any mongodb 10Gen JSON types and converts them into strict JSON format :
+// Parsing any mongodb 10Gen JSON types and converts them into their strict JSON equivalent :
 //  ObjectId becomes $oid
 //  DBRef becomes $ref, $id
 //  Date & ISODate become $date
@@ -288,6 +288,7 @@ function MongoJSON() {}
 //  Regexp becomes $regex & $options
 // TODO
 //  BinData
+//  Support DBRef with the third parameter (the dbname)
 
 
             // ObjectId
@@ -300,7 +301,7 @@ function MongoJSON() {}
             }
             // Date & ISODate
             if(/(ISO)?Date\(.+\)/.test(text)) {
-                text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:]+)"\)/g, '{"$date":"$2"}');
+                text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:']+)"\)/g, '{"$date":"$2"}');
             }
             // Timestamp
             if(/Timestamp\(.+\)/.test(text)) {
@@ -312,15 +313,13 @@ function MongoJSON() {}
             }
             // NumberLong
             if(/NumberLong\(.+\)/.test(text)) {
-                text = text.replace(/NumberLong\("([0-9]+)"\)/g, '$1');
+                text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '$1');
             }
             // Regexp
             if(/\.*?\/[a-zA-Z]+/.test(text)) {
-                alert(text);
                 text = text.replace(/\/(.*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
                     return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
                 });
-                alert(text);
             }
 
 
