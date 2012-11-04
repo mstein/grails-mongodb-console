@@ -1,0 +1,57 @@
+@blueColor: #2cadff;
+
+.document-entry {
+    border-bottom: 1px solid #c6c6c6;
+
+    div.head {
+        position: relative;
+
+        #gradient > .vertical(#f4f4f4, #dedede);
+        .box-shadow(inset 0 1px 0 #FFF);
+        border-bottom: 1px solid #c6c6c6;
+        label {
+            margin: 0;
+            padding: 5px;
+            padding-left: 30px;
+            span.mongo-object-id {
+                font-weight: bold;
+            }
+        }
+        .actions {
+            position: absolute;
+            right: 0;
+            top: 6px;
+            width: 200px;
+            padding-right: 10px;
+            text-align: right;
+        }
+        input {
+            position: absolute;
+            top: 6px;
+            left: 10px;
+        }
+    }
+    &.doc-0 div.head {
+        .border-radius(6px 6px 0 0);
+    }
+    pre {
+        background: white none;
+        border: 0 none;
+        font-size: 11px;
+        line-height: 16px;
+        margin: 0;
+        .border-radius(0);
+        padding: 10px 20px;
+
+        .mongo-binary {
+            color: @blueColor;
+        }
+        .mongo-object-id {
+            color: @blueColor;
+        }
+
+        .json-link, .json-link:hover {
+            text-decoration: none;
+        }
+    }
+}

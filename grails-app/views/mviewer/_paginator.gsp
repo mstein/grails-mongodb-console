@@ -1,4 +1,4 @@
-<div class="pagination pagination-centered" ng-controller="PaginatorCtrl" ng-init="init(${varTotal})">
+<div class="pagination" ng-controller="PaginatorCtrl" ng-init="init(${varTotal})">
   {{totalEntries = ${varTotal}; ''}}
   <ul>
     <li ng-class="{disabled: currentPage == 1}"><a ng-click="previous()"> « </a></li>

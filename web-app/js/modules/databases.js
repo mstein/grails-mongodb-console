@@ -185,8 +185,24 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.newDbname = null;
     };
 
+    $scope.activeDB = function(db) {
+        if(db.name == $scope.currentDB) {
+            return 'active';
+        } else {
+            return '';
+        }
+    };
+
     $scope.activeCollection = function(collection) {
         if(collection == $scope.currentCollection) {
+            return 'active';
+        } else {
+            return '';
+        }
+    };
+
+    $scope.isDbSelected = function() {
+        if($scope.currentDB && !$scope.currentCollection) {
             return 'active';
         } else {
             return '';

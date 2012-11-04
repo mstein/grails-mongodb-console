@@ -1,56 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html ng-app="MongoDBViewerModule">
+<html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-  <title>MongoDB Viewer Plugin</title>
-
-  <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file:"bootstrap.min.css")}" />
-  <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file:"bootstrap-responsive.min.css")}" />
-  <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file:"mviewer.css")}" />
-  <style type="text/css">
-  body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-  }
-
-  .sidebar-nav {
-    padding: 9px 0;
-  }
-  </style>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"jquery-1.7.2.min.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/ace", file:"ace.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"angular.min.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"bootstrap.min.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoLib.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoJson.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file:"databases.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/filters", file:"commonFilters.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file:"mongodbService.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file:"paginator.js")}"></script>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta content="main" name="layout"/>
 </head>
-<body ng-controller="DBListCtrl" ng-init="init(${
-  session.mviewer?.with {
-    (currentDB ? '\'' + currentDB + '\'' : '') + (currentCol ? ',\'' + currentCol + '\'' : '')
-  }
-})">
-
-<g:render template="navigation" />
-
-<div class="container-fluid">
-
-  <div class="row-fluid">
+<body>
     <g:render template="collections"/>
 
-    <div class="span10">
+    <div class="col2">
 
-      <g:render template="breadcrumb"/>
+        <g:render template="head"/>
 
-      <g:render template="document"/>
+        <div class="main">
+            <g:render template="content"/>
+        </div>
     </div>
-  </div>
-</div>
 
 </body>
 </html>
