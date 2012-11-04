@@ -59,3 +59,41 @@ function MongoReference(colRef, idRef) {
         return '<a href="#ref" data-ref="'+this.$ref+'" data-id="'+this.$id+'" class="json-link">' + value + '</a>';
     };
 }
+
+
+/**
+ * Extension to the JSON parser to allow mongo-formatted JSON,
+ * which may be traditional strict JSON or mongo extended JSON ($oid, $ref, $id, ...).
+ * TODO : support the TenGen format (ObjectId(), DBRef(), ...)
+ *
+ * @param key
+ * @param value
+ * @return
+ */
+function mongoJsonReviver(key, value){
+    var val = value;
+    if(value != null && typeof value === 'object') {
+        if(value['$oid'] != null) {
+            val = new MongoObjectId(value['$oid']);
+        }
+        if(value['$data'] != null) {
+            val = new MongoBinaryData(value['$data'].size);
+        }
+        if(value['$ref'] != null) {
+            val = new MongoReference(value['$ref'], value['$id']);
+        }
+    }
+    if(val == null) {
+        val = undefined;
+    }
+    return val;
+}
+
+// only the double $$ keys are removed
+function commonJsonReplacer(key, value) {
+    var val = value;
+    if (/^\$\$+/.test(key)) {
+        val = undefined;
+    }
+    return val;
+}

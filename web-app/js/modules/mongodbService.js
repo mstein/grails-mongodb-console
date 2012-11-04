@@ -53,7 +53,7 @@ MongoDBService.fn = MongoDBService.prototype = {
         }
     },
 
-    cloneDatabase:function (newName) {
+    copyDatabase:function (newName) {
 
     },
     serverStatus:function() {

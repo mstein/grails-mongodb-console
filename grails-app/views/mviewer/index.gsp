@@ -24,7 +24,7 @@
   <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"angular.min.js")}"></script>
   <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"bootstrap.min.js")}"></script>
   <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoLib.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js", file:"mongoJson.js")}"></script>
+  <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoJson.js")}"></script>
   <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file:"databases.js")}"></script>
   <script src="${resource(plugin: 'mongo-viewer', dir: "js/filters", file:"commonFilters.js")}"></script>
   <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file:"mongodbService.js")}"></script>

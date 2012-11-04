@@ -277,6 +277,53 @@ function MongoJSON() {}
                 });
             }
 
+// TenGen conversion phase
+// Parsing any mongodb 10Gen JSON types and converts them into strict JSON format :
+//  ObjectId becomes $oid
+//  DBRef becomes $ref, $id
+//  Date & ISODate become $date
+//  Timestamp becomes $timestamp
+//  undefined becomes $undefined
+//  NumberLong becomes javascript Number
+//  Regexp becomes $regex & $options
+// TODO
+//  BinData
+
+
+            // ObjectId
+            if(/ObjectId\(.+\)/.test(text)) {
+                text = text.replace(/ObjectId\("([a-zA-Z0-9\-]+)"\)/g, '{"$oid":"$1"}');
+            }
+            // DBRef
+            if(/DBRef\(.+\)/.test(text)) {
+                text = text.replace(/DBRef\("([a-zA-Z0-9\-]+)", ([^\n\r]*?)\)/gm, '{"$ref":"$1", "$id":$2}');
+            }
+            // Date & ISODate
+            if(/(ISO)?Date\(.+\)/.test(text)) {
+                text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:]+)"\)/g, '{"$date":"$2"}');
+            }
+            // Timestamp
+            if(/Timestamp\(.+\)/.test(text)) {
+                text = text.replace(/Timestamp\(([0-9]+), ([0-9]+)\)/g, '{"$timestamp":{"t": $1, "i": $2}}');
+            }
+            // undefined
+            if(/[^\r\n{}\[\]]: *undefined/i.test(text)) {
+                text = text.replace(/([^\r\n{}\[\]]: *)(undefined)/gi, '$1{"$undefined": true}');
+            }
+            // NumberLong
+            if(/NumberLong\(.+\)/.test(text)) {
+                text = text.replace(/NumberLong\("([0-9]+)"\)/g, '$1');
+            }
+            // Regexp
+            if(/\.*?\/[a-zA-Z]+/.test(text)) {
+                alert(text);
+                text = text.replace(/\/(.*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
+                    return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
+                });
+                alert(text);
+            }
+
+
 // In the second stage, we run the text against regular expressions that look
 // for non-JSON patterns. We are especially concerned with '()' and 'new'
 // because they can cause invocation, and '=' because it can cause mutation.
@@ -294,6 +341,7 @@ function MongoJSON() {}
                 .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
                 .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
                 .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
 
 // In the third stage we use the eval function to compile the text into a
 // JavaScript structure. The '{' operator is subject to a syntactic ambiguity

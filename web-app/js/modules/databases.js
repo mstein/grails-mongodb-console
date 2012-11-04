@@ -201,31 +201,3 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 function parseMongoJson(data, headerGetter) {
     return MongoJSON.parse(data, mongoJsonReviver);
 }
-
-function mongoJsonReviver(key, value){
-    var val = value;
-    if(value != null && typeof value === 'object') {
-        if(value['$oid'] != null) {
-            val = new MongoObjectId(value['$oid']);
-        }
-        if(value['$data'] != null) {
-            val = new MongoBinaryData(value['$data'].size);
-        }
-        if(value['$ref'] != null) {
-            val = new MongoReference(value['$ref'], value['$id']);
-        }
-    }
-    if(val == null) {
-        val = undefined;
-    }
-    return val;
-}
-
-// only the double $$ keys are removed
-function commonJsonReplacer(key, value) {
-    var val = value;
-    if (/^\$\$+/.test(key)) {
-        val = undefined;
-    }
-    return val;
-}

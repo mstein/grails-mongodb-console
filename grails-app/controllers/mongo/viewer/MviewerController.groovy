@@ -26,9 +26,6 @@ class MviewerController {
     }
 
     def listDb() {
-        println "List databases"
-        println mongo.getDB("admin").command("listDatabases")
-        //render mongo.getDatabaseNames() as JSON
         def resp = mongo.getDB("admin").command("listDatabases")
         render ([totalSize: resp.totalSize,
                 databases: resp?.databases?.inject([:]) { map, entry ->
@@ -123,6 +120,17 @@ class MviewerController {
 
         def res = [results:results, totalCount:cursor.count()]
         render res as JSON
+    }
+
+    def runCommand() {
+        def command = request.JSON.command
+
+        if (command instanceof Map) {
+            render mongo.getDB("admin").command(new BasicDBObject(command)) as JSON
+        } else {
+            render mongo.getDB("admin").command(command) as JSON
+        }
+
     }
 
     private marshallDocument(element){
