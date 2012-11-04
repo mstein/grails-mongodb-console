@@ -84,16 +84,21 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.createDB = function() {
         $scope.cancel();
         $scope.creatingDB = true;
+        $("#createDB").modal({show: true});
+        $scope.focus("inputName");
     };
 
     $scope.copyDB = function() {
         $scope.cancel();
+        $("#copyDB").modal({show: true});
         $scope.copyingDB = true;
+        $scope.focus("inputCopy");
     };
 
     $scope.renameCol = function(inputId) {
         $scope.cancel();
         $scope.renamingCol = true;
+        $("#renameCol").modal({show: true});
         $scope.focus(inputId);
     };
 
@@ -101,6 +106,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.cancel();
         $scope.documents = [];
         $scope.creatingCol = true;
+        $("#createCol").modal({show: true});
         $scope.focus(inputId);
 
     };
@@ -183,6 +189,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.renColName = $scope.currentCollection;
         $scope.newColname = null;
         $scope.newDbname = null;
+        $('.modal').modal('hide');
     };
 
     $scope.activeDB = function(db) {

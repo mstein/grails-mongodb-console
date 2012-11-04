@@ -1,7 +1,7 @@
-<div class="modal" ng-show="renamingCol && !creatingCol">
+<div class="modal hide" id="renameCol">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()">&times;</button>
-        <h3>Rename a collection</h3>
+        <h4>Rename a collection</h4>
     </div>
     <div class="modal-content">
         <form class="form-horizontal">
