@@ -32,7 +32,7 @@ For the UI we're currently using :
 * ACE web text editor
 * Twitter Bootstrap-based templates
 
-## Supported Browser
+## Supported Browsers
 The current dev is tested on the latest Chrome & Firefox stable releases.
 A few glitches are known to happen on IE9, but we will fix them eventually.
 
@@ -66,7 +66,7 @@ A running MongoDB instance is required (the plugin connects on localhost:27017 b
     See the License for the specific language governing permissions and
     limitations under the License.
 
-## Preview / Design draft
+## Preview / Design draft / Proposal
 ![screen01](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr01.JPG)
 ![screen02](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr02.JPG)
 ![screen03](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr03.JPG)
