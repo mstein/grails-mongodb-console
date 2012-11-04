@@ -108,14 +108,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.validateDBCreation = function() {
         var newDbname = $scope.newDbname;
 
-        $http.post('mviewer/createDb', {dbname:newDbname})
+        mongodb.createDatabase(newDbname)
             .success(function(data) {
                 $scope.currentDB = newDbname;
                 $scope.currentCollection = null;
                 $scope.cancel();
-                $scope.databases = data;
+                $scope.databases = data.databases;
                 $scope.populateDocuments([]);
-                $http.get('mviewer/listCollections?dbname='+$scope.currentDB).success(function(data) {
+                mongodb($scope.currentDB).success(function(data) {
                     $scope.collections = data;
                 });
             });
@@ -123,11 +123,11 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.validateColnameChange = function() {
         var newColname = $scope.renColName;
-        $http.post('mviewer/renameCollection', {dbname:$scope.currentDB, colname:$scope.currentCollection, newColname:newColname})
+        mongodb[$scope.currentCollection].renameCollection(newColname)
             .success(function(data) {
                 $scope.currentCollection = newColname;
                 $scope.cancel();
-                $http.get('mviewer/listCollections?dbname='+$scope.currentDB).success(function(data) {
+                mongodb($scope.currentDB).success(function(data) {
                     $scope.collections = data;
                 });
             });
@@ -135,11 +135,11 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.validateCreateCollection = function() {
         var newColname = $scope.newColname;
-        $http.post('mviewer/createCollection', {dbname:$scope.currentDB, newColname:newColname})
+        mongodb.createCollection(newColname)
             .success(function(data) {
                 $scope.currentCollection = newColname;
                 $scope.cancel();
-                $http.get('mviewer/listCollections?dbname='+$scope.currentDB).success(function(data) {
+                mongodb($scope.currentDB).success(function(data) {
                     $scope.collections = data;
                 });
             }).error(function(data){
@@ -149,11 +149,11 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.dropCol = function() {
         if(confirm("This action cannot be undone. Drop the collection '" + $scope.currentCollection + "' from the db '"+$scope.currentDB + "'?")) {
-            $http.post('mviewer/dropCollection', {dbname:$scope.currentDB, colname:$scope.currentCollection})
+            mongodb[$scope.currentCollection].dropCollection()
                 .success(function(data) {
                     $scope.currentCollection = null;
                     $scope.cancel();
-                    $http.get('mviewer/listCollections?dbname='+$scope.currentDB).success(function(data) {
+                    mongodb($scope.currentDB).success(function(data) {
                         $scope.collections = data;
                     });
                 });
@@ -162,12 +162,13 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.dropDB = function() {
         if(confirm("This action cannot be undone. Drop the database '"+$scope.currentDB + "'?")) {
-            $http.post('mviewer/dropDb', {dbname:$scope.currentDB})
+            mongodb.dropDatabase()
                 .success(function(data) {
                     $scope.currentDB = null;
                     $scope.currentCollection = null;
+                    $scope.currentDBSize = 0;
                     $scope.cancel();
-                    $scope.databases = data;
+                    $scope.databases = data.databases;
                     $scope.collections = [];
                     $scope.populateDocuments([]);
                 });

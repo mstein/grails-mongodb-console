@@ -13,13 +13,13 @@ function MongoDBService(dbname) {
 MongoDBService.fn = MongoDBService.prototype = {
     constructor:MongoDBService,
     use:function(dbname) {
-        this.db = dbname;
+        MongoDBService.$db = dbname;
         var promise = this.$http.get('mviewer/listCollections?dbname='+dbname);
         var $self = this;
         var db = dbname;
         promise.success(function(data) {
             $.each(data, function(index, value) {
-                $self[value] = new MongoCollection(db, value);
+                $self[value] = new MongoCollection($self, db, value);
             });
         });
 
@@ -28,10 +28,32 @@ MongoDBService.fn = MongoDBService.prototype = {
     listDatabases:function() {
         return this.$http.get('mviewer/listDb');
     },
-    cloneDatabase:function (newName) {
-
-    },
     dropDatabase:function() {
+        if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
+            return this.$http.post('mviewer/dropDb', {dbname:MongoDBService.$db}).success(function(data) {
+                MongoDBService.$db = null;
+            })
+        } else {
+            alert('No database selected');
+        }
+    },
+    createDatabase:function(dbname) {
+        return this.$http.post('mviewer/createDb', {dbname:dbname}).success(function() {
+            MongoDBService.$db = dbname;
+        });
+    },
+    createCollection:function(colname) {
+        if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
+            var $self=this;
+            return this.$http.post('mviewer/createCollection', {dbname:MongoDBService.$db, newColname:colname}).success(function(data) {
+                $self[colname] = new MongoCollection($self, MongoDBService.$db, colname);
+            });
+        } else {
+            alert('No database selected');
+        }
+    },
+
+    cloneDatabase:function (newName) {
 
     },
     serverStatus:function() {
@@ -45,7 +67,8 @@ MongoDBService.fn.use.prototype = MongoDBService.fn;
 
 $.extend (MongoDBService, MongoDBService.fn);
 
-function MongoCollection(db, name, sizeOnDisk) {
+function MongoCollection(mongodbService, db, name, sizeOnDisk) {
+    this._mongodbService = mongodbService;
     this._size = sizeOnDisk;
     this._name = name;
     this._db = db;
@@ -62,8 +85,20 @@ function MongoCollection(db, name, sizeOnDisk) {
     MongoCollection.prototype.update = function(criteria, query, upsert, multi) {
 
     };
+    MongoCollection.prototype.renameCollection=function(newColname) {
+        var $self = this;
+        return this.$http.post('mviewer/renameCollection', {dbname:this._db, colname:this._name, newColname:newColname}).success(function(){
+            $self._mongodbService[$self._name] = undefined;
+            $self._name = newColname;
+            $self._mongodbService[newColname] = $self;
+        });
+    };
     MongoCollection.prototype.dropCollection = function() {
-
+        var $self = this;
+        return this.$http.post('mviewer/dropCollection', {dbname:this._db, colname:this._name}).success(function(){
+            $self._mongodbService[$self._name] = undefined;
+            delete this;
+        });
     };
 }
 
@@ -72,7 +107,7 @@ function MongoDBQuery(db, collection, query, fields) {
     this._collection = collection;
     this._query = query;
     this._fields = fields;
-    this._sort = {};
+    this._sort = null;
     this._skip = 0;
     this._limit = 0; // 0 = no limit
 
@@ -105,6 +140,9 @@ function MongoDBQuery(db, collection, query, fields) {
         }
         if(this._limit > 0) {
             args['max'] = this._limit;
+        }
+        if(this._sort != null) {
+            args['sort'] = this._sort;
         }
         this.$http.get('mviewer/listDocuments?'+$.param(args), {transformResponse:parseMongoJson}).success(function(data) {
             successCallback(data);
