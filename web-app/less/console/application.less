@@ -29,21 +29,35 @@
     }
     color: #82898f;
     .nav {
-        li {
-            a {
+        >li {
+            >a {
                 color: #82898f;
+                float: left;
                 &:hover {
                     #gradient > .vertical(#404b54, #3a444d);
                     text-decoration: none;
                     color: white;
+                    .icon-white {
+                        .opacity(100);
+                    }
+                }
+                .icon-white {
+                    .opacity(40);
                 }
             }
         }
         li.active {
-            a {
+            >a {
                 #gradient > .vertical(#28b022, #1d8a36);
                 .box-shadow(inset 0 0 0 #41dd0b);
                 color: #FFF;
+            }
+        }
+        li.open {
+            >a, >a:hover {
+                .icon-white {
+                    .opacity(100);
+                }
             }
         }
     }

@@ -52,7 +52,7 @@
     }
 })">
 
-<g:render template="navigation"/>
+<g:render template="/mviewer/navigation"/>
 
 <div class="container-application">
 

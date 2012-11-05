@@ -8,11 +8,18 @@
 
     <div class="col2">
 
-        <g:render template="head"/>
-
-        <div class="main">
-            <g:render template="content"/>
+        <div ng-show="documents">
+            <g:render template="/document/list" />
         </div>
+
+        <div ng-show="!currentDB && !currentCollection">
+            <g:render template="/database/table" />
+        </div>
+
+        <div ng-show="currentDB && !currentCollection">
+            <g:render template="/collection/table" />
+        </div>
+
     </div>
 
 </body>
