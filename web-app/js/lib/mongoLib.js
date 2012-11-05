@@ -37,7 +37,7 @@ function MongoBinaryData(size) {
     this.size = size;
 
     MongoBinaryData.prototype.encloseJSON = function(value) {
-        return "<span class=\"mongo-binary\">[BINARY DATA] (" + this.size + " Bytes)</span>";
+        return "<span class=\"mongo-binary\">BinData(" + this.size + " Bytes)</span>";
     };
 
     MongoBinaryData.prototype.toJSON = function() {

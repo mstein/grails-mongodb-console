@@ -7,6 +7,7 @@ import com.mongodb.MongoException
 import com.mongodb.DBObject
 import org.bson.types.ObjectId
 import com.mongodb.DBRef
+import org.bson.types.Binary
 
 class MviewerController {
 
@@ -150,29 +151,6 @@ class MviewerController {
         }
 
     }
-
-    /*private unmarshalDocument(dbname, element){
-        def res
-        switch(element) {
-            case Map:
-                if(element.'$oid') {
-                    res = new ObjectId(element.'$oid'.toString())
-                } else if(element.'$ref') {
-                    if(element.'$db') {
-                        res = new DBRef(element.'$db', element.'$ref', unmarshalDocument(element.'$id'))
-                    } else {
-                        res = new DBRef(dbname, element.'$ref', unmarshalDocument(element.'$id'))
-                    }
-                } else {
-
-                }
-                break
-            default:
-                res = element
-                break
-        }
-        return res
-    }*/
 
     private marshallDocument(element){
         def res

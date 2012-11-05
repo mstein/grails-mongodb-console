@@ -1,6 +1,6 @@
 import com.gmongo.GMongo
 
-class MongoViewerGrailsPlugin {
+class MongodbConsoleGrailsPlugin {
     // the plugin version
     def version = "0.1"
     // the version or versions of Grails the plugin is designed for
@@ -16,7 +16,7 @@ class MongoViewerGrailsPlugin {
     def loadAfter = ['mongodb']
 
     // TODO Fill in these fields
-    def title = "Grails MongoDB Console" // Headline display name of the plugin
+    def title = "MongoDB Console Grails Plugin" // Headline display name of the plugin
     def author = "Manuarii Stein"
     def authorEmail = "mstein@doc4web.com"
     def description = '''\
@@ -24,7 +24,7 @@ A web GUI for mongodb as a grails plugin.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/mongo-viewer"
+    def documentation = "http://grails.org/plugin/mongodb-console"
 
     // Extra (optional) plugin metadata
 
