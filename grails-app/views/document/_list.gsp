@@ -5,7 +5,11 @@
     <span>{{currentCollection}}</span>
 </div>
 
-<g:render template="/collection/actions" />
+<div ng-show="currentCollection" class="page-actions">
+    <a class="btn" href="#" ng-click="renameCol('rename-new-col')"><i class="icon-edit"></i> Rename Collection</a>
+    <a class="btn" href="#" ng-click="dropCol()"><i class="icon-trash"></i> Drop Collection</a>
+    <a class="btn" href="#"><i class="icon-plus"></i> New document</a>
+</div>
 
 <div class="main">
     <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in documents">
