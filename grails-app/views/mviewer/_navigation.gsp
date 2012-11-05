@@ -12,9 +12,6 @@
       </div>
 
       <div class="nav-collapse collapse">
-        %{--<p class="navbar-text pull-right">
-          Current database <a href="#" class="navbar-link">{{currentDB}}</a>
-        </p>--}%
         <ul class="nav pull-right">
           <li class="dropdown">
             <a href="#db" class="dropdown-toggle" data-toggle="dropdown">Mongo Instance Status <b class="caret"></b>
@@ -31,7 +28,7 @@
         </ul>
 
         <ul class="nav">
-          <li class="{{isHome()}}"><a ng-click="homepage()">Home</a></li>
+          <li ng-class="{active: !currentDB && !currentCollection && collections.length == 0}"><a ng-click="homepage()">Home</a></li>
           <li><a href="#gridfs">GridFS</a></li>
           <li><a href="#administrative">Administrative data</a></li>
         </ul>

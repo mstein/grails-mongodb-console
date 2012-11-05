@@ -201,38 +201,6 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $('.modal').modal('hide');
     };
 
-    $scope.activeDB = function(db) {
-        if(db.name == $scope.currentDB) {
-            return 'active';
-        } else {
-            return '';
-        }
-    };
-
-    $scope.activeCollection = function(collection) {
-        if(collection == $scope.currentCollection) {
-            return 'active';
-        } else {
-            return '';
-        }
-    };
-
-    $scope.isDbSelected = function() {
-        if($scope.currentDB && !$scope.currentCollection) {
-            return 'active';
-        } else {
-            return '';
-        }
-    };
-
-    $scope.isHome = function() {
-        if(!$scope.currentDB && !$scope.currentCollection && $scope.collections.length == 0) {
-            return 'active';
-        } else {
-            return '';
-        }
-    };
-
     $scope.$on('PaginationChangeEvent', function(event, params){
         $scope.selectCollection($scope.currentCollection, params);
     });
