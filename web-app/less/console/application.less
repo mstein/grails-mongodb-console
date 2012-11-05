@@ -114,7 +114,7 @@
                     color: white;
                 }
             }
-            &.well-header, &.well-mongo {
+            &.well-db, &.well-mongo {
                 color: white;
                 >a {
                     position: relative;
@@ -128,49 +128,6 @@
                         position: absolute;
                         right: 5px;
                         top: 7px;
-                    }
-                }
-                ul.dropdown-menu {
-                    background: white none;
-                    text-shadow: 0 1px 0 rgba(255,255,255,.4);
-                    .border-radius(0);
-                    .box-shadow(0 0 0 black);
-                    padding: 0;
-                    margin: 0;
-                    width: 200px;
-                    left: @w - 25;
-                    .box-shadow(0 1px 3px rgba(0,0,0,.4));
-                    top: 8px;
-                    z-index: 1000;
-                    border: 0 none;
-                    li {
-                        .box-shadow(0 0 0 black);
-                        border: 0 none;
-                        a {
-                            background: white;
-                            color: #000;
-                            border: 0 none;
-                            &:hover {
-                                #gradient > .vertical(#404b54, #3a444d);
-                                color: #FFF;
-                                text-shadow: 0 1px 0 rgba(0,0,0,.4);
-                            }
-                            i {
-                                margin-top: 0;
-                            }
-                        }
-                        &.active {
-                            a, a:hover {
-                                #gradient > .vertical(#28b022, #1d8a36);
-                                .box-shadow(inset 0 0 0 #FFF);
-                                text-shadow: 0 1px 0 rgba(0,0,0,.4);
-                                color: #FFF;
-                            }
-                        }
-                        &.divider {
-                            margin: 2px 0;
-                            #gradient > .vertical(#CCC, #CCC);
-                        }
                     }
                 }
             }
