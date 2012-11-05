@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table table-clickable">
     <thead>
     <tr>
         <th>Name</th>
@@ -9,9 +9,9 @@
     </thead>
     <tbody>
     <tr ng-repeat="db in databases" class="item {{activeDB(db)}}">
-        <td>{{db.name}}</td>
-        <td>{{fileSize}}</td>
-        <td>{{fileSize}}</td>
+        <td ng-click="selectdb(db.name)"><a ng-click="selectdb(db.name)">{{db.name}}</a></td>
+        <td ng-click="selectdb(db.name)">{{fileSize}}</td>
+        <td ng-click="selectdb(db.name)">{{fileSize}}</td>
         <td>{{fileSize}}</td>
     </tr>
     </tbody>

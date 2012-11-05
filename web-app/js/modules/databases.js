@@ -31,6 +31,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         });
     };
 
+    $scope.homepage = function() {
+        $scope.cancel();
+        $scope.currentDB = null;
+        $scope.currentCollection = null;
+        $scope.collections = [];
+        $scope.documents = [];
+    };
+
     $scope.focus = function(inputId) {
         $timeout(function() {
             $('input#'+inputId).attr('tabindex', -1).focus();
@@ -211,6 +219,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.isDbSelected = function() {
         if($scope.currentDB && !$scope.currentCollection) {
+            return 'active';
+        } else {
+            return '';
+        }
+    };
+
+    $scope.isHome = function() {
+        if(!$scope.currentDB && !$scope.currentCollection && $scope.collections.length == 0) {
             return 'active';
         } else {
             return '';

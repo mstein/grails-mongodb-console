@@ -15,7 +15,7 @@
                     Current database <a href="#" class="navbar-link">{{currentDB}}</a>
                 </p>
                 <ul class="nav">
-                    <li class="active"><g:link controller="mviewer">Home</g:link></li>
+                    <li class="{{isHome()}}"><a ng-click="homepage()">Home</a></li>
                     %{--
                     <li class="dropdown">
                         <a href="#db" class="dropdown-toggle" data-toggle="dropdown">A random menu <b class="caret"></b>

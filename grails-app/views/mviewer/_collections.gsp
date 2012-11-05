@@ -14,18 +14,14 @@
               </li>
           </ul>
       </li>
-      <li class="well-header {{isDbSelected()}}">
-          <a ng-click="selectdb(currentDB)" ng-show="currentDB">
+      <li class="well-header {{isDbSelected()}}" ng-show="currentDB">
+          <a ng-click="selectdb(currentDB)">
               {{currentDB}} ({{ currentDBSize | fileSize }})<br/>
               <span>Collections ({{collections.length}})</span>
           </a>
-          <a href="#" ng-show="!currentDB">
-            Selected a database<br />
-            <span>Count : {{databases.length}}</span>
-        </a>
-    </li>
-    <li ng-repeat="collection in collections" class="item-collection {{activeCollection(collection)}}">
-      <a ng-click="selectCollection(collection)">{{collection}}</a>
+      </li>
+      <li ng-repeat="collection in collections" class="item-collection {{activeCollection(collection)}}">
+          <a ng-click="selectCollection(collection)">{{collection}}</a>
     </li>
   </ul>
 </div>
