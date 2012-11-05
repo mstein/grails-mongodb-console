@@ -1,7 +1,7 @@
-<div class="modal" ng-show="copyingDB && !creatingDB">
+<div class="modal hide" id="copyDB">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()">&times;</button>
-        <h3>Copy a database</h3>
+        <h4>Copy a database</h3>
     </div>
     <div class="modal-content">
         <form class="form-horizontal">
