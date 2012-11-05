@@ -33,19 +33,6 @@
                 </ul>
                 <ul class="nav">
                     <li ng-class="{active: !currentDB && !currentCollection && collections.length == 0}"><a ng-click="homepage()">MongoDB home</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown">Databases <b class="caret"></b></a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a href="#" ng-click="createDB()"><i class="icon-plus"></i> Create DB</a></li>
-                            <li><a href="#" ng-click="createDB()"><i class="icon-download-alt"></i> Import DB</a></li>
-                            <li class="divider"></li>
-                            <li ng-repeat="db in databases" class="item" ng-class="{active: db.name == currentDB}">
-                                <a href="#" ng-click="selectdb(db.name)">
-                                    <strong>{{db.name}}</strong> <em>({{db.sizeOnDisk | fileSize}})</em>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
                     <li><a href="#gridfs">GridFS</a></li>
                     <li><a href="#administrative">Administrative data</a></li>
                 </ul>
