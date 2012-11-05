@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Collection</th>
+        <th>Collections</th>
         <th>Size</th>
         <th>Actions</th>
     </tr>
@@ -11,7 +11,7 @@
     <tr ng-repeat="db in databases" class="item {{activeDB(db)}}">
         <td>{{db.name}}</td>
         <td>{{fileSize}}</td>
-        <td>{{fileSize}}</td>
+        <td>{{db.sizeOnDisk | fileSize}}</td>
         <td>{{fileSize}}</td>
     </tr>
     </tbody>

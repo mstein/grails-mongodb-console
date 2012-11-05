@@ -19,7 +19,7 @@
         padding: 9px 0;
     }
     </style>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "jquery-1.7.2.min.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "jquery-1.8.2.min.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/ace", file: "ace.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "angular.min.js")}"></script>
 
