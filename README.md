@@ -73,6 +73,8 @@ Below a preview of the current and anterior designs. Note that they are still in
 ![screen01](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr01.JPG)
 ![screen02](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr02.JPG)
 ![screen03](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr03.JPG)
+![screen04](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr04.JPG)
+![screen05](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr05.JPG)
 
 *Previous (Bootstrap classic)*
 ![old_screen01](https://github.com/mstein/grails-mongodb-console/raw/64472efca19290dffcf746ef59b2b087c1c9be70/web-app/images/gh/mongoviewer_scr01.JPG)
