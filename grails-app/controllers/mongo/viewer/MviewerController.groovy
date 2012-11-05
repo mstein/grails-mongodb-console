@@ -5,6 +5,8 @@ import com.gmongo.GMongo
 import com.mongodb.BasicDBObject
 import com.mongodb.MongoException
 import com.mongodb.DBObject
+import org.bson.types.ObjectId
+import com.mongodb.DBRef
 
 class MviewerController {
 
@@ -122,6 +124,22 @@ class MviewerController {
         render res as JSON
     }
 
+    def updateDocument() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        if(!mongoJson.document) {
+            render status:404, text:[message:'Missing document'] as JSON
+            return
+        }
+
+        col.update(mongoJson.criteria ?: new BasicDBObject(), mongoJson.document, mongoJson.upsert ?: true, mongoJson.multi ?: false)
+        render status:200, text:[message:'Document updated'] as JSON
+    }
+
     def runCommand() {
         def command = request.JSON.command
 
@@ -132,6 +150,29 @@ class MviewerController {
         }
 
     }
+
+    /*private unmarshalDocument(dbname, element){
+        def res
+        switch(element) {
+            case Map:
+                if(element.'$oid') {
+                    res = new ObjectId(element.'$oid'.toString())
+                } else if(element.'$ref') {
+                    if(element.'$db') {
+                        res = new DBRef(element.'$db', element.'$ref', unmarshalDocument(element.'$id'))
+                    } else {
+                        res = new DBRef(dbname, element.'$ref', unmarshalDocument(element.'$id'))
+                    }
+                } else {
+
+                }
+                break
+            default:
+                res = element
+                break
+        }
+        return res
+    }*/
 
     private marshallDocument(element){
         def res

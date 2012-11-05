@@ -8,6 +8,7 @@ class UrlMappings {
 		}
 
 		"/$action?/$id?"(controller: "mviewer")
+
 		"500"(view:'/error')
 	}
 }

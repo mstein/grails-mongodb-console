@@ -15,6 +15,10 @@ function MongoObjectId(val) {
         return "<span class=\"mongo-object-id\">ObjectId(" + value + ')</span>';
     };
 
+    MongoObjectId.prototype.toStrictJSON = function() {
+        return {"$oid":this.value};
+    };
+
     MongoObjectId.prototype.toJSON = function() {
         return this.value;
     };
@@ -64,7 +68,6 @@ function MongoReference(colRef, idRef) {
 /**
  * Extension to the JSON parser to allow mongo-formatted JSON,
  * which may be traditional strict JSON or mongo extended JSON ($oid, $ref, $id, ...).
- * TODO : support the TenGen format (ObjectId(), DBRef(), ...)
  *
  * @param key
  * @param value

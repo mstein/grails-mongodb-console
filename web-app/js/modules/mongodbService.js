@@ -82,8 +82,28 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
     MongoCollection.prototype.remove = function(query) {
 
     };
-    MongoCollection.prototype.update = function(criteria, query, upsert, multi) {
-
+    MongoCollection.prototype.update = function(criteria, document, upsert, multi) {
+        var data = {dbname:this._db, colname:this._name};
+        if(document != undefined && document != null) {
+            data.document = document;
+        } else {
+            // No document ? return null
+            return null;
+        }
+        if(criteria != undefined && criteria != null) {
+            data.criteria = criteria;
+        }
+        if(upsert != undefined && upsert != null) {
+            data.upsert = upsert;
+        }
+        if(multi != undefined && multi != null) {
+            data.multi = multi;
+        }
+        // cannot edit a id field
+        if(document._id != null && document != undefined) {
+            delete document._id;
+        }
+        return this.$http.post('mviewer/updateDocument', MongoJSON.stringify(data));
     };
     MongoCollection.prototype.renameCollection=function(newColname) {
         var $self = this;

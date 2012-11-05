@@ -48,16 +48,16 @@ function MongoJSON() {}
         }) + '"' : '"' + string + '"';
     }
 
-    function enclose (value, original) {
+    function enclose (value, original, useTengen) {
         // If the value has a encloseJSON method, call it to obtain a replacement value.
-        if (original && typeof original === 'object' &&
+        if (useTengen && original && typeof original === 'object' &&
             typeof original.encloseJSON === 'function') {
             value = original.encloseJSON(value);
         }
         return value;
     }
 
-    function str(key, holder) {
+    function str(key, holder, tengen) {
 
 // Produce a string from holder[key].
 
@@ -69,7 +69,7 @@ function MongoJSON() {}
             partial,
             value = holder[key];
 
-
+        var useTengen = tengen != null && tengen != undefined && tengen;
 // If the value has a toJSON method, call it to obtain a replacement value.
         if (value && typeof value === 'object' &&
             typeof value.toJSON === 'function') {
@@ -87,13 +87,13 @@ function MongoJSON() {}
 
         switch (typeof value) {
             case 'string':
-                return enclose(quote(value), holder[key]);
+                return enclose(quote(value), holder[key], useTengen);
 
             case 'number':
 
 // JSON numbers must be finite. Encode non-finite numbers as null.
 
-                return isFinite(value) ? enclose(String(value), holder[key]) : 'null';
+                return isFinite(value) ? enclose(String(value), holder[key], useTengen) : 'null';
 
             case 'boolean':
             case 'null':
@@ -102,7 +102,7 @@ function MongoJSON() {}
 // typeof null does not produce 'null'. The case is included here in
 // the remote chance that this gets fixed someday.
 
-                return enclose(String(value), holder[key]);
+                return enclose(String(value), holder[key], useTengen);
 
 // If the type is 'object', we might be dealing with an object or an array or
 // null.
@@ -130,7 +130,7 @@ function MongoJSON() {}
 
                     length = value.length;
                     for (i = 0; i < length; i += 1) {
-                        partial[i] = str(i, value) || 'null';
+                        partial[i] = str(i, value, useTengen) || 'null';
                     }
 
 // Join all of the elements together, separated with commas, and wrap them in
@@ -142,7 +142,7 @@ function MongoJSON() {}
                         ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
                         : '[' + partial.join(',') + ']';
                     gap = mind;
-                    return enclose(v, holder[key]);
+                    return enclose(v, holder[key], useTengen);
                 }
 
 // If the replacer is an array, use it to select the members to be stringified.
@@ -152,7 +152,7 @@ function MongoJSON() {}
                     for (i = 0; i < length; i += 1) {
                         if (typeof rep[i] === 'string') {
                             k = rep[i];
-                            v = str(k, value);
+                            v = str(k, value, useTengen);
                             if (v) {
                                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
                             }
@@ -164,7 +164,7 @@ function MongoJSON() {}
 
                     for (k in value) {
                         if (Object.prototype.hasOwnProperty.call(value, k)) {
-                            v = str(k, value);
+                            v = str(k, value, useTengen);
                             if (v) {
                                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
                             }
@@ -181,14 +181,15 @@ function MongoJSON() {}
                     ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}'
                     : '{' + partial.join(',') + '}';
                 gap = mind;
-                return enclose(v, holder[key]);
+
+                return enclose(v, holder[key], useTengen);
         }
     }
 
 // If the MongoJSON object does not yet have a stringify method, give it one.
 
     if (typeof MongoJSON.stringify !== 'function') {
-        MongoJSON.stringify = function (value, replacer, space) {
+        MongoJSON.stringify = function (value, replacer, space, tengen) {
 
 // The stringify method takes a value and an optional replacer, and an optional
 // space parameter, and returns a JSON text. The replacer can be a function
@@ -227,7 +228,7 @@ function MongoJSON() {}
 // Make a fake root object containing our value under the key of ''.
 // Return the result of stringifying the value.
 
-            return str('', {'': value});
+            return str('', {'': value}, tengen);
         };
     }
 
@@ -316,12 +317,19 @@ function MongoJSON() {}
                 text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '$1');
             }
             // Regexp
-            if(/\.*?\/[a-zA-Z]+/.test(text)) {
-                text = text.replace(/\/(.*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
+            if(/\[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
+                text = text.replace(/\/([^\r\n]*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
                     return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
                 });
             }
-
+            /*// unescaped doublequote inside double quote are escaped
+            if(/"(.*?)"(.*?)"/gi.test(text)){
+                text = text.replace(/"(.*?)"(.*?)"/gi, '"$1\\"$2"');
+            }
+            // Prevent JS script from executing :
+            if(/<script>.*?<\/script>/gi.test(text)) {
+                text = text.replace(/<script>(.*?)<\/script>/gi, '&lt;script&gt;$1&lt;/script&gt;');
+            }*/
 
 // In the second stage, we run the text against regular expressions that look
 // for non-JSON patterns. We are especially concerned with '()' and 'new'

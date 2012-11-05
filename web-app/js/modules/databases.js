@@ -16,6 +16,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.collections = [];
     $scope.documents = [];
     $scope.totalCount = 0;
+    $scope.editors = {};
 
     $scope.init = function(selectedDB, selectedCol) {
         mongodb.listDatabases().success(function(data) {
@@ -212,6 +213,35 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.$on('PaginationChangeEvent', function(event, params){
         $scope.selectCollection($scope.currentCollection, params);
     });
+
+    $scope.submitChange = function(editorId, documentId, originalDocument) {
+        var editor = $scope.editors[editorId];
+        var newDocument = MongoJSON.parse(editor.getValue());
+        var docId;
+        if(typeof originalDocument._id === 'object' && typeof originalDocument._id.toStrictJSON === 'function') {
+            docId = originalDocument._id.toStrictJSON();
+        } else {
+            docId = originalDocument._id;
+        }
+        mongodb[$scope.currentCollection].update({_id:docId}, newDocument).success(function(data) {
+            $scope.selectCollection($scope.currentCollection);
+        });
+    };
+
+    // TODO : this should be done elsewhere
+    $scope.setEditable = function(id, enable) {
+        if(enable) {
+            var editor = ace.edit(id);
+            editor.setTheme("ace/theme/merbivore_soft");
+            editor.setShowInvisibles(false);
+            editor.setShowPrintMargin(false);
+            editor.getSession().setMode("ace/mode/json");
+            $scope.editors[id] = editor;
+        } else {
+            $scope.editors[id].destroy();
+        }
+
+    };
 }
 
 function parseMongoJson(data, headerGetter) {

@@ -3,7 +3,7 @@ var MongoDBViewerModule = angular.module('MongoDBViewerModule', []);
 
     MongoDBViewerModule.filter('commonJson', function () {
         return function (input) {
-            return MongoJSON.stringify(input, commonJsonReplacer,'  ');
+            return MongoJSON.stringify(input, commonJsonReplacer,'  ', true);
         }
     }).
     filter('fileSize', function ($filter) {
