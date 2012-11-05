@@ -9,17 +9,18 @@ class MongoViewerGrailsPlugin {
     def dependsOn = [:]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-            "grails-app/views/error.gsp"
+            "grails-app/views/error.gsp",
+            "web-app/images/gh/*"
     ]
 
     def loadAfter = ['mongodb']
 
     // TODO Fill in these fields
-    def title = "Mongo Viewer Plugin" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
+    def title = "Grails MongoDB Console" // Headline display name of the plugin
+    def author = "Manuarii Stein"
+    def authorEmail = "mstein@doc4web.com"
     def description = '''\
-Brief summary/description of the plugin.
+A web GUI for mongodb as a grails plugin.
 '''
 
     // URL to the plugin's documentation
@@ -34,20 +35,21 @@ Brief summary/description of the plugin.
 //    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
 
     // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
+    def developers = [ [ name: "Damien Vitrac", email: "dvitrac@doc4web.com" ]]
 
     // Location of the plugin's issue tracker.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+    def scm = [ url: "https://github.com/mstein/grails-mongodb-console" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
-        // If the official mongodb plugin is installed, retrieve the GMongo bean created
+        // If the official mongodb plugin is installed, it uses the configured GMongo bean, otherwise, create
+        // a new one
         if(!manager.hasGrailsPlugin('mongodb')) {
             mongo(GMongo, 'localhost', 27017){
 
