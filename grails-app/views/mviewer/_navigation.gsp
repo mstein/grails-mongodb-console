@@ -14,15 +14,20 @@
       <div class="nav-collapse collapse">
         <ul class="nav pull-right">
           <li class="dropdown">
-            <a href="#db" class="dropdown-toggle" data-toggle="dropdown">Mongo Instance Status <b class="caret"></b>
+            <a href="#db" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-leaf"></i> Mongo Instance Info <b class="caret"></b>
             </a>
 
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-              <li><a href="#"><i class="icon-list"></i> Change server</a></li>
-              <li><a href="#"><i class="icon-plus"></i> List replicas</a></li>
+              <li class="nav-header">
+                Mongo v2.2.0<br>
+                Master shard<br>
+                Uptime : 120 days<br>
+                192.168.34.1:27017<br>
+              </li>
+              <li><a href="#"><i class="icon-arrow-left"></i> More infos</a></li>
               <li class="divider"></li>
-              <li class="nav-header">Connected on </li>
-              <li class="foot"><a>sdd</a><a>zz</a></li>
+              <li><a href="#"><i class="icon-retweet"></i> Change server</a></li>
+              <li><a href="#"><i class="icon-list"></i> List replicas</a></li>
             </ul>
           </li>
         </ul>
