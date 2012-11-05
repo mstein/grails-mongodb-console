@@ -1,4 +1,11 @@
-<g:render template="head"/>
+
+<div class="title">
+    <a ng-click="selectdb(currentDB)">{{currentDB}}</a>
+    <span class="divider"></span>
+    <span>{{currentCollection}}</span>
+</div>
+
+<g:render template="/collection/actions" />
 
 <div class="main">
     <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in documents">

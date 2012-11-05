@@ -1,4 +1,8 @@
-<g:render template="/mviewer/head"/>
+<div class="title">
+    <span>{{currentDB}}</span>
+</div>
+
+<g:render template="/database/actions" />
 
 <div class="main">
     <table class="table table-striped table-clickable">

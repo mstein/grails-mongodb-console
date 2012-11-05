@@ -223,46 +223,41 @@
     .title {
         position: relative;
         margin: 10px 0;
-        ul.labels{
-            color: #000;
-            margin: 0;
-            padding: 10px 0;
-            list-style: 0 none;
-            list-style-type: none;
+        margin-top: 15px;
+        .clearfix();
+
+        a, span {
+            line-height: 20px;
+            color: #222;
             font-size: 20px;
-            .clearfix();
-            font-weight: bold;
-            li {
-                float: left;
-                marign: 0;
-                padding: 0;
-                a, span {
-                    line-height: 20px;
-                    color: #222;
-                }
-            }
-            li.separator {
-                border-right: 1px solid #AAA;
-                .box-shadow(1px 0 0 rgba(255,255,255,0.6));
-                width: 15px;
-                height: 20px;
-                margin-right: 15px;
-            }
+            display: block;
+            float: left;
         }
-        .pagination {
-            position: absolute;
-            right: 5px;
-            bottom: 10px;
-            margin: 0;
-            padding: 0;
+        span.divider {
+            border-right: 1px solid #AAA;
+            .box-shadow(1px 0 0 rgba(255,255,255,0.6));
+            width: 15px;
+            height: 20px;
+            margin-right: 15px;
         }
-        .head-actions {
-            border-top: 1px solid #CCC;
-            border-bottom: 1px solid #CCC;
-            .box-shadow(~"0 1px 0 rgba(255,255,255,0.6), inset 0 1px 0 rgba(255,255,255,0.6)");
-            margin-top: 5px;
-            padding: 4px 0 10px 0;
-        }
+
+    }
+
+    .pagination {
+        position: absolute;
+        right: 5px;
+        bottom: 10px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .page-actions {
+        border-top: 1px solid #CCC;
+        border-bottom: 1px solid #CCC;
+        .box-shadow(~"0 1px 0 rgba(255,255,255,0.6), inset 0 1px 0 rgba(255,255,255,0.6)");
+        margin-top: 15px;
+        margin-bottom: 15px;
+        padding: 10px 0;
     }
     .modal{
         @wd: 400px;

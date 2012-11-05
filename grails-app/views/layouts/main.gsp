@@ -52,14 +52,22 @@
     }
 })">
 
-<g:render template="/mviewer/navigation"/>
+<g:render template="/layouts/navigation"/>
 
 <div class="container-application">
 
     <div class="row-application">
-        <g:layoutBody/>
+        <div class="col1">
+            <g:render template="/layouts/well"/>
+        </div>
+        <div class="col2">
+            <g:layoutBody/>
+        </div>
+
     </div>
 </div>
+
+%{-- Modals --}%
 <g:render template="/database/create"/>
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>

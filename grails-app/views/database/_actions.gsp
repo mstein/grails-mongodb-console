@@ -1,4 +1,4 @@
-<div ng-show="currentDB && !currentCollection" class="head-actions">
+<div ng-show="currentDB && !currentCollection" class="page-actions">
     <a class="btn" href="#" ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a>
     <a class="btn" href="#" ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a>
     <a class="btn" href="#" ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a>

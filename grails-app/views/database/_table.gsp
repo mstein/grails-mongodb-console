@@ -1,4 +1,8 @@
-<g:render template="/mviewer/head"/>
+<div class="title">
+    <span>Databases</span>
+</div>
+
+<g:render template="/database/actionsGlobal" />
 
 <div class="main">
     <table class="table table-clickable">
