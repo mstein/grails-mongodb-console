@@ -6,6 +6,9 @@
 
     <title>MongoDB Viewer Plugin</title>
 
+    <link rel="apple-touch-icon" href="${resource(dir: 'img', file: 'apple-touch-icon.png')}">
+    <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'img', file: 'apple-touch-icon-retina.png')}">
+
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap.css")}"/>
 
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap-responsive.min.css")}"/>
