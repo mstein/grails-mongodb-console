@@ -107,11 +107,23 @@ class MviewerController {
     }
 
     def listDocuments() {
-        def db = mongo.getDB(params.dbname)
-        def col = db.getCollection(params.colname)
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
 
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
         mviewerSession(db, col)
-        def cursor = col.find().limit(params.int('max') ?: 30).skip(params.int('offset') ?: 0);
+
+        // For some reason, the sort() method cannot use a BasicDBObject, cannot discern it from a Map...
+        def sortFields
+        if(mongoJson.sort) {
+            sortFields = mongoJson.sort.inject([:]) { map, entry->
+                map[entry.key] = entry.value
+                map
+            }
+        }
+
+        def cursor = col.find(mongoJson.query ?: null).limit(mongoJson?.max?.toInteger() ?: 30).skip(mongoJson?.offset?.toInteger() ?: 0).sort(sortFields);
         def results = cursor.inject([]) { coll, BasicDBObject entry ->
             def args = [:]
             for(key in entry.keySet()) {

@@ -155,6 +155,9 @@ function MongoDBQuery(db, collection, query, fields) {
             dbname:this._db,
             colname:this._collection
         };
+        if(this._query != null) {
+            args['query'] = this._query;
+        }
         if(this._skip > 0) {
             args['offset'] = this._skip;
         }
@@ -164,7 +167,7 @@ function MongoDBQuery(db, collection, query, fields) {
         if(this._sort != null) {
             args['sort'] = this._sort;
         }
-        this.$http.get('mviewer/listDocuments?'+$.param(args), {transformResponse:parseMongoJson}).success(function(data) {
+        this.$http.post('mviewer/listDocuments', MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
             successCallback(data);
         }).error(function(data){ errorCallback(data); });
     };

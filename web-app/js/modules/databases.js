@@ -205,6 +205,28 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.selectCollection($scope.currentCollection, params);
     });
 
+    $scope.submitFindQuery = function() {
+        var query = $scope.findQuery;
+        var cur;
+        if($scope.queryAction == 'find') {
+            cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+query+'}'));
+            if($scope.hasSort) {
+                cur.sort(MongoJSON.parse('{'+$scope.sort+'}'));
+            }
+            if($scope.hasLimit) {
+                cur.limit($scope.limit)
+            }
+            if($scope.hasSkip) {
+                cur.skip($scope.skip)
+            }
+        } else if($scope.queryAction == 'findOne') {
+            cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+query+'}'));
+        }
+        cur.exec(function(data){
+            $scope.populateDocuments(data);
+        });
+    };
+
     $scope.submitChange = function(editorId, documentId, originalDocument) {
         var editor = $scope.editors[editorId];
         var newDocument = MongoJSON.parse(editor.getValue());
