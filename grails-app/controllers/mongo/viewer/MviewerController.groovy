@@ -153,6 +153,22 @@ class MviewerController {
         render status:200, text:[message:'Document updated'] as JSON
     }
 
+    def insertDocument() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        if(!mongoJson.document) {
+            render status:404, text:[message:'Missing document'] as JSON
+            return
+        }
+
+        col.insert(mongoJson.document)
+        render status:200, text:[message:'Document inserted'] as JSON
+    }
+
     def runCommand() {
         def command = request.JSON.command
 

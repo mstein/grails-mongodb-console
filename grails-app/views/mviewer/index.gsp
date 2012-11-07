@@ -16,7 +16,7 @@
 </div>
 
 %{-- Documents of a collection --}%
-<div id="page-document" ng-show="documents">
+<div id="page-document" ng-show="currentDB && currentCollection">
     <g:render template="/document/list" />
 </div>
 

@@ -117,7 +117,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.creatingCol = true;
         $("#createCol").modal({show: true});
         $scope.focus(inputId);
+    };
 
+    $scope.createDoc = function() {
+        $scope.cancel();
+        $scope.creatingDoc = true;
+        $("#createDoc").modal({show: true});
+        $scope.setEditable("new-doc", true);
+        $scope.focus("#new-doc");
     };
 
     $scope.validateDBCreation = function() {
@@ -160,6 +167,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
             }).error(function(data){
                 alert(data);
             });
+    };
+
+    $scope.validateCreateDocument = function() {
+        var editor = $scope.editors["new-doc"];
+        var newDocument = MongoJSON.parse(editor.getValue());
+        mongodb[$scope.currentCollection].insert(newDocument).success(function() {
+            $scope.selectCollection($scope.currentCollection);
+        });
     };
 
     $scope.dropCol = function() {

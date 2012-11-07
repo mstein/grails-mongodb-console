@@ -82,6 +82,11 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
     MongoCollection.prototype.remove = function(query) {
 
     };
+    MongoCollection.prototype.insert = function(document) {
+        var data = {dbname:this._db, colname:this._name, document:document};
+        return this.$http.post('mviewer/insertDocument', MongoJSON.stringify(data));
+    };
+
     MongoCollection.prototype.update = function(criteria, document, upsert, multi) {
         var data = {dbname:this._db, colname:this._name};
         if(document != undefined && document != null) {
