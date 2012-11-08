@@ -5,9 +5,7 @@ import com.gmongo.GMongo
 import com.mongodb.BasicDBObject
 import com.mongodb.MongoException
 import com.mongodb.DBObject
-import org.bson.types.ObjectId
-import com.mongodb.DBRef
-import org.bson.types.Binary
+import com.mongodb.DBCursor
 
 class MviewerController {
 
@@ -19,9 +17,6 @@ class MviewerController {
         }
         session.mviewer.currentDB = dbname
         session.mviewer.currentCol = colname
-    }
-
-    def test() {
     }
 
     def index() {
@@ -52,7 +47,7 @@ class MviewerController {
         def db = mongo.getDB(params.dbname)
 
         try {
-            // todo
+            //db.command("copyDb")
         }catch(e) {
             e.printStackTrace()
         }
@@ -106,7 +101,26 @@ class MviewerController {
         }
     }
 
-    def listDocuments() {
+    /**
+     * Query the database for a set of documents that may be sorted and paginated.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.find(<query>, <fields>).sort(<fields>).limit(<max>).skip(<offset>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     *
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param query (Optional) A JSON portion representing the criterias of the query, if none is provided, just return everything (up to the limit)
+     * @param fields (Optional) A JSON portion determining the field(s) to return in the results. If none provided, will return the complete document.
+     * Note that the _id field is always return unless explicitly excluded.
+     * @param sort (Optional) A JSON portion representing the field on which the results should be sorted and the order direction
+     * @param max (Optional) The maximum number of results to return, default is 30
+     * @param offset (Optional) The number of results to skip, default is 0
+     *
+     * @return
+     */
+    def find() {
         def rawJSON = request.reader.text
         def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
 
@@ -123,7 +137,10 @@ class MviewerController {
             }
         }
 
-        def cursor = col.find(mongoJson.query ?: null).limit(mongoJson?.max?.toInteger() ?: 30).skip(mongoJson?.offset?.toInteger() ?: 0).sort(sortFields);
+        DBCursor cursor = col.find(mongoJson.query ?: new BasicDBObject(), mongoJson.fields ?: new BasicDBObject()).
+                limit(mongoJson?.max?.toInteger() ?: 30).
+                skip(mongoJson?.offset?.toInteger() ?: 0).
+                sort(sortFields) as DBCursor
         def results = cursor.inject([]) { coll, BasicDBObject entry ->
             def args = [:]
             for(key in entry.keySet()) {
@@ -137,7 +154,56 @@ class MviewerController {
         render res as JSON
     }
 
-    def updateDocument() {
+    /**
+     * Count the number of documents matching the query specified.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.count(<query>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     *
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param query (Optional) A JSON portion representing the criterias of the query, if none is provided, return the total number of documents in the collection.
+     *
+     * @return
+     */
+    def count() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        def res = [count:col.count(mongoJson.query ?: new BasicDBObject())]
+        render res as JSON
+    }
+
+    // TODO
+    def findAndModifiy() {
+
+    }
+
+    /**
+     * Updates one or multiple existing document(s) matching specified criterias.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.update(<criteria>, <document>, <upsert>, <multi>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     *
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param document (Required) A document that will replace / update the original(s) or queries for partial updates ("$set", "$addToSet", ...)
+     * @param criteria (Optional) A JSON portion representing the criterias of the query which will determine the document to update.
+     * If nothing is specified, will update ALL documents of the collection
+     * @param upsert (Optional) If TRUE, the document will be created if it does not exist. Default to TRUE.
+     * @param multi (Optional) If FALSE, the update query will only modify the first match of the query, even if there were multiple results.
+     * Default to FALSE.
+     *
+     * @return
+     */
+    def update() {
         def rawJSON = request.reader.text
         def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
 
@@ -153,7 +219,21 @@ class MviewerController {
         render status:200, text:[message:'Document updated'] as JSON
     }
 
-    def insertDocument() {
+    /**
+     * Inserts a new document in the specified collection.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.insert(<document>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     *
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param document (Required) The JSON document to insert
+     *
+     * @return
+     */
+    def insert() {
         def rawJSON = request.reader.text
         def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
 
@@ -165,21 +245,84 @@ class MviewerController {
             return
         }
 
-        col.insert(mongoJson.document)
+        col.insert(mongoJson.document as BasicDBObject)
         render status:200, text:[message:'Document inserted'] as JSON
     }
 
+    /**
+     * Removes one or multiple document(s) matching a specified criteria.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.remove(<criteria>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param criteria (Optional) A criteria (as a JSON document) detemining which document(s) are to be removed. If none provided, will delete everything.
+     *
+     * TODO : add a watchdog : ask for an explicit confirmation if no criteria was provided
+     *
+     * @return
+     */
+    def remove() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        col.remove(mongoJson.criteria ?: new BasicDBObject())
+        render status:200, text:[message:'Document inserted'] as JSON
+    }
+
+    /**
+     * Run a command on the mongo instance.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.runCommand(<command>)
+     *
+     * @param command (Required) The command to run. May be a JSON document or a String
+     *
+     * @return The result of the command
+     */
     def runCommand() {
         def command = request.JSON.command
 
         if (command instanceof Map) {
             render mongo.getDB("admin").command(new BasicDBObject(command)) as JSON
         } else {
-            render mongo.getDB("admin").command(command) as JSON
+            render mongo.getDB("admin").command(command?.toString()) as JSON
         }
+    }
+
+    // TODO
+    def ensureIndex() {
 
     }
 
+    def reIndex() {
+
+    }
+
+    def dropIndex() {
+
+    }
+
+    def dropIndexes() {
+
+    }
+
+    def getIndexes() {
+
+    }
+
+
+    /**
+     * Marshall the document received from the Mongo driver into the JSON (almost)strict format.
+     * Binary data are excluded from the result to prevent memory overload, only their filesize are returned
+     * @param element
+     * @return
+     */
     private marshallDocument(element){
         def res
         switch(element) {

@@ -79,12 +79,13 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
     MongoCollection.prototype.findOne = function(query, fields) {
         return this.find(query, fields).limit(1);
     };
-    MongoCollection.prototype.remove = function(query) {
-
+    MongoCollection.prototype.remove = function(criteria) {
+        var data = {dbname:this._db, colname:this._name, criteria:criteria};
+        return this.$http.post('mviewer/remove', MongoJSON.stringify(data));
     };
     MongoCollection.prototype.insert = function(document) {
         var data = {dbname:this._db, colname:this._name, document:document};
-        return this.$http.post('mviewer/insertDocument', MongoJSON.stringify(data));
+        return this.$http.post('mviewer/insert', MongoJSON.stringify(data));
     };
 
     MongoCollection.prototype.update = function(criteria, document, upsert, multi) {
@@ -108,7 +109,7 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
         if(document._id != null && document != undefined) {
             delete document._id;
         }
-        return this.$http.post('mviewer/updateDocument', MongoJSON.stringify(data));
+        return this.$http.post('mviewer/update', MongoJSON.stringify(data));
     };
     MongoCollection.prototype.renameCollection=function(newColname) {
         var $self = this;
@@ -172,7 +173,23 @@ function MongoDBQuery(db, collection, query, fields) {
         if(this._sort != null) {
             args['sort'] = this._sort;
         }
-        this.$http.post('mviewer/listDocuments', MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
+        if(this._sort != null) {
+            args['sort'] = this._fields;
+        }
+        this.$http.post('mviewer/find', MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
+            successCallback(data);
+        }).error(function(data){ errorCallback(data); });
+    };
+
+    MongoDBQuery.prototype.count = function(successCallback, errorCallback) {
+        var args = {
+            dbname:this._db,
+            colname:this._collection
+        };
+        if(this._query != null) {
+            args['query'] = this._query;
+        }
+        this.$http.post('mviewer/count', MongoJSON.stringify(args)).success(function(data) {
             successCallback(data);
         }).error(function(data){ errorCallback(data); });
     };
