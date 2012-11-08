@@ -9,6 +9,9 @@
     <a class="btn" href="#" ng-click="renameCol('rename-new-col')"><i class="icon-edit"></i> Rename Collection</a>
     <a class="btn" href="#" ng-click="dropCol()"><i class="icon-trash"></i> Drop Collection</a>
     <a class="btn" href="#" ng-click="createDoc()"><i class="icon-plus"></i> New document</a>
+    <a class="btn" href="#" ng-click=""><i class="icon-share"></i> Export results</a>
+    <a class="btn" href="#" ng-click=""><i class="icon-th-list"></i> Ensure Index</a>
+    <a class="btn" href="#" ng-click=""><i class="icon-refresh"></i> Re-index</a>
 </div>
 
 <g:render template="/document/find" />

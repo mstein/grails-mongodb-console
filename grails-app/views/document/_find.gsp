@@ -15,7 +15,7 @@
     <input class="span3" type="search" ng-model="findQuery" placeholder="example : 'field':'value', '$gt':{'age' : 18}"/>
 
     <button class="btn btn-inverse" ng-click="hasFields = !hasFields" ng-show="currentAction == 'find'">fields</button>
-    <input class="span1" type="search" ng-model="fields" ng-show="hasFields && currentAction == 'find'" placeholder="'name':1, '_id':0"/>
+    <input class="span2" type="search" ng-model="fields" ng-show="hasFields && currentAction == 'find'" placeholder="'name':1, '_id':0"/>
 
     <button class="btn btn-inverse" ng-click="hasSort = !hasSort" ng-show="currentAction == 'find'">sort</button>
     <input class="span2" type="search" ng-model="sort" ng-show="hasSort && currentAction == 'find'" placeholder="n:1, a:-1"/>
