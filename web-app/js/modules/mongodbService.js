@@ -173,8 +173,8 @@ function MongoDBQuery(db, collection, query, fields) {
         if(this._sort != null) {
             args['sort'] = this._sort;
         }
-        if(this._sort != null) {
-            args['sort'] = this._fields;
+        if(this._fields != null) {
+            args['fields'] = this._fields;
         }
         this.$http.post('mviewer/find', MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
             successCallback(data);

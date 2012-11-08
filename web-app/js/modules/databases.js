@@ -18,6 +18,9 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.totalCount = 0;
     $scope.editors = {};
 
+    $scope.currentAction= "find";
+    $scope.queriesActions = ["find", "findOne", "update", "insert", "remove"];
+
     $scope.init = function(selectedDB, selectedCol) {
         mongodb.listDatabases().success(function(data) {
             $scope.databases = data.databases;
@@ -222,9 +225,10 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
 
     $scope.submitFindQuery = function() {
         var query = $scope.findQuery;
+        var fields = $scope.fields != undefined ? $scope.fields : "";
         var cur;
-        if($scope.queryAction == 'find') {
-            cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+query+'}'));
+        if($scope.currentAction == 'find') {
+            cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+query+'}'), JSON.parse('{' + fields + '}'));
             if($scope.hasSort) {
                 cur.sort(MongoJSON.parse('{'+$scope.sort+'}'));
             }
@@ -234,7 +238,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
             if($scope.hasSkip) {
                 cur.skip($scope.skip)
             }
-        } else if($scope.queryAction == 'findOne') {
+        } else if($scope.currentAction == 'findOne') {
             cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+query+'}'));
         }
         cur.exec(function(data){
