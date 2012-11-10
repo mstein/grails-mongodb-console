@@ -38,6 +38,8 @@
         background: white none;
         border: 0 none;
         font-size: 11px;
+        padding: 10px;
+        position: relative;
         line-height: 16px;
         margin: 0;
         .border-radius(0);
@@ -52,6 +54,25 @@
 
         .json-link, .json-link:hover {
             text-decoration: none;
+        }
+
+        &.active {
+            padding: 0;
+        }
+    }
+    .foot {
+        height: 30px;
+        padding: 10px 0;
+        background: #2c343c;
+        position: relative;
+        padding-left: 50px;
+        .extra {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #242b32;
+            width: 40px;
+            height: 50px;
         }
     }
 }

@@ -216,6 +216,14 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         });
     };
 
+    $scope.deleteDocument = function(id) {
+        bootbox.confirm("This action cannot be undone. Delete this document ?", function(confirm){
+            if (confirm) {
+                // Drop database
+            }
+        });
+    }
+
     $scope.cancel = function() {
         $scope.creatingDB = false;
         $scope.copyingDB = false;
@@ -271,6 +279,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     // TODO : this should be done elsewhere
     $scope.setEditable = function(id, enable) {
         if(enable) {
+            $("#" + id).css("height", $("#" + id).height());
             var editor = ace.edit(id);
             editor.setTheme("ace/theme/merbivore_soft");
             editor.setShowInvisibles(false);
