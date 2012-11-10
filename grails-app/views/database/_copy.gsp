@@ -1,7 +1,7 @@
-<div class="modal hide" id="copyDB">
+<div class="modal hide fade" id="copyDB">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()">&times;</button>
-        <h4>Copy a database</h3>
+        <h4>Copy a database</h4>
     </div>
     <div class="modal-content">
         <form class="form-horizontal">

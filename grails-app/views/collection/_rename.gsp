@@ -1,4 +1,4 @@
-<div class="modal hide" id="renameCol">
+<div class="modal hide fade" id="renameCol">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()">&times;</button>
         <h4>Rename a collection</h4>

@@ -1,4 +1,4 @@
-<div class="modal hide" id="createDB">
+<div class="modal hide fade" id="createDB">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()">&times;</button>
         <h4>Create a database</h4>
@@ -14,7 +14,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <a class="btn btn-primary" href="#" ng-click="validateDBCreation()"><i class="icon-ok icon-white"></i> Create</a>
-        <a class="btn" href="#" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
+        <a class="btn btn-primary" ng-click="validateDBCreation()"><i class="icon-ok icon-white"></i> Create</a>
+        <a class="btn" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
     </div>
 </div>

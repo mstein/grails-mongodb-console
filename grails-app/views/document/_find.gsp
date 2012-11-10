@@ -7,7 +7,7 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
         <li ng-class="{active:currentAction == action}" ng-repeat="action in queriesActions">
-          <a href="#" ng-click="$parent.currentAction = action">{{action}}</a>
+          <a ng-click="$parent.currentAction = action">{{action}}</a>
         </li>
       </ul>
     </div>

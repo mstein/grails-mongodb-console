@@ -8,7 +8,7 @@
             </a>
 
             <div id="logo">
-                <a class="brand" href="#">Mongo Viewer Plugin</a>
+                <a class="brand">Mongo Viewer Plugin</a>
             </div>
 
             <div class="nav-collapse collapse">
@@ -24,10 +24,10 @@
                                 Uptime : 120 days<br>
                                 192.168.34.1:27017<br>
                             </li>
-                            <li><a href="#"><i class="icon-arrow-left"></i> More infos</a></li>
+                            <li><a><i class="icon-arrow-left"></i> More infos</a></li>
                             <li class="divider"></li>
-                            <li><a href="#"><i class="icon-retweet"></i> Change server</a></li>
-                            <li><a href="#"><i class="icon-list"></i> List replicas</a></li>
+                            <li><a><i class="icon-retweet"></i> Change server</a></li>
+                            <li><a><i class="icon-list"></i> List replicas</a></li>
                         </ul>
                     </li>
                 </ul>

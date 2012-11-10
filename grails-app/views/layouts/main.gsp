@@ -10,16 +10,12 @@
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'img', file: 'apple-touch-icon-retina.png')}">
 
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap.css")}"/>
-
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap-responsive.min.css")}"/>
+
     <style type="text/css">
     body {
         padding-top: 40px;
         padding-bottom: 40px;
-    }
-
-    .sidebar-nav {
-        padding: 9px 0;
     }
     </style>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "jquery-1.8.2.min.js")}"></script>
@@ -39,6 +35,8 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-carousel.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-typeahead.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-affix.js")}"></script>
+
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "bootbox.js")}"></script>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "mongoLib.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoJson.js")}"></script>

@@ -181,31 +181,39 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     };
 
     $scope.dropCol = function() {
-        if(confirm("This action cannot be undone. Drop the collection '" + $scope.currentCollection + "' from the db '"+$scope.currentDB + "'?")) {
-            mongodb[$scope.currentCollection].dropCollection()
-                .success(function(data) {
-                    $scope.currentCollection = null;
-                    $scope.cancel();
-                    mongodb($scope.currentDB).success(function(data) {
-                        $scope.collections = data;
+        bootbox.confirm("This action cannot be undone. Drop the collection '" + $scope.currentCollection + "' from the db '"+$scope.currentDB + "'?", function(confirm){
+        //if(confirm("This action cannot be undone. Drop the collection '" + $scope.currentCollection + "' from the db '"+$scope.currentDB + "'?")) {
+            if (confirm) {
+                mongodb[$scope.currentCollection].dropCollection()
+                    .success(function(data) {
+                        $scope.currentCollection = null;
+                        $scope.cancel();
+                        mongodb($scope.currentDB).success(function(data) {
+                            $scope.collections = data;
                     });
                 });
-        }
+            }
+
+        });
     };
 
     $scope.dropDB = function() {
-        if(confirm("This action cannot be undone. Drop the database '"+$scope.currentDB + "'?")) {
-            mongodb.dropDatabase()
-                .success(function(data) {
-                    $scope.currentDB = null;
-                    $scope.currentCollection = null;
-                    $scope.currentDBSize = 0;
-                    $scope.cancel();
-                    $scope.databases = data.databases;
-                    $scope.collections = [];
-                    $scope.populateDocuments([]);
-                });
-        }
+        bootbox.confirm("This action cannot be undone. Drop the database '"+$scope.currentDB + "'?", function(confirm){
+            //if(confirm("This action cannot be undone. Drop the database '"+$scope.currentDB + "'?")) {
+            if (confirm) {
+                mongodb.dropDatabase()
+                    .success(function(data) {
+                        $scope.currentDB = null;
+                        $scope.currentCollection = null;
+                        $scope.currentDBSize = 0;
+                        $scope.cancel();
+                        $scope.databases = data.databases;
+                        $scope.collections = [];
+                        $scope.populateDocuments([]);
+                    });
+            }
+
+        });
     };
 
     $scope.cancel = function() {
