@@ -55,24 +55,45 @@
         .json-link, .json-link:hover {
             text-decoration: none;
         }
-
-        &.active {
-            padding: 0;
-        }
     }
     .foot {
-        height: 30px;
-        padding: 10px 0;
-        background: #2c343c;
-        position: relative;
-        padding-left: 50px;
-        .extra {
-            position: absolute;
-            left: 0;
-            top: 0;
-            background: #242b32;
-            width: 40px;
-            height: 50px;
+        display: none;
+    }
+    &.active {
+        border-bottom: 1px solid #1d8a36;
+        div.head {
+            .box-shadow(inset 0 1px 0 #41dd0b);
+            @btnPrimaryBackground: #28b022;
+            @btnPrimaryBackgroundHighlight: #1d8a36;
+            #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+            color: white;
+            text-shadow: 0 1px 0 rgba(0,0,0,.4);
+            border-bottom: 1px solid #176a21;
+            a {
+                i {
+                    .icon-white();
+                }
+            }
+        }
+        pre {
+            padding: 0;
+        }
+        .foot {
+            display: block;
+            height: 30px;
+            padding: 10px 0;
+            background: #2c343c;
+            position: relative;
+            padding-left: 50px;
+            .extra {
+                position: absolute;
+                left: 0;
+                top: 0;
+                background: #242b32;
+                width: 40px;
+                height: 50px;
+            }
         }
     }
+
 }

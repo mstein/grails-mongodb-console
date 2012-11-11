@@ -18,7 +18,7 @@
 <g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />
 
 <div class="main">
-    <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in documents">
+    <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in documents" ng-class="{active: editMode}">
         <div class="head" ng-init="editMode = false">
             <label>
                 <input type="checkbox" value="{{document._id.toString()}}"/>
