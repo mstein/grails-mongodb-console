@@ -72,7 +72,6 @@
 <g:render template="/database/create"/>
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>
-<g:render template="/collection/rename"/>
 <g:render template="/document/create"/>
 </body>
 </html>

@@ -179,25 +179,44 @@
     }
     .title {
         position: relative;
-        margin: 10px 0;
+        margin: 0;
         margin-top: 15px;
+        height: 30px;
         .clearfix();
 
-        a, span {
-            line-height: 20px;
+        .dropdown .caret {
+            margin-top: 12px;
+        }
+
+        >a, >span, >div >a {
+            line-height: 28px;
             color: #222;
             font-size: 20px;
             display: block;
             float: left;
         }
-        span.divider {
+        >div.open >a {
+            text-decoration: underline;
+        }
+        >span.divider {
             border-right: 1px solid #AAA;
             .box-shadow(1px 0 0 rgba(255,255,255,0.6));
             width: 15px;
             height: 20px;
+            margin: 5px 0;
             margin-right: 15px;
         }
-
+        ul.dropdown-menu {
+            top: 26px;
+        }
+        .rename {
+            height: 25px;
+            padding-top: 2px;
+            input {
+                height: 25px;
+                line-height: 25px;
+            }
+        }
     }
 
     .pagination {
@@ -302,6 +321,11 @@
         .box-shadow(~"0 1px 0 rgba(255,255,255,0.6)");
         margin-bottom: 15px;
     }
+    .dropdown-menu li > a:hover, .dropdown-menu li.active > a {
+        @btnPrimaryBackground: #28b022;
+        @btnPrimaryBackgroundHighlight: #1d8a36;
+        .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+    }
 }
 
 
@@ -316,4 +340,9 @@
     .btn-primary.dropdown-toggle {
         background-color: @btnPrimaryBackgroundHighlight;
     }
+}
+
+// Inverse appears as dark gray
+.btn-inverse {
+  .buttonBackground(#313e4a, #111518);
 }

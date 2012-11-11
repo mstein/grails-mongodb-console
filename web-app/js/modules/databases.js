@@ -110,13 +110,13 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.renameCol = function(inputId) {
         $scope.cancel();
         $scope.renamingCol = true;
-        $("#renameCol").modal({show: true});
+        //$("#renameCol").modal({show: true});
         $scope.focus(inputId);
     };
 
     $scope.createCol = function(inputId) {
         $scope.cancel();
-        $scope.documents = [];
+        //$scope.documents = [];
         $scope.creatingCol = true;
         $("#createCol").modal({show: true});
         $scope.focus(inputId);

@@ -1,17 +1,46 @@
 
 <div class="title">
-    <a ng-click="selectdb(currentDB)">{{currentDB}}</a>
+    <div class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            {{currentDB}}
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a ng-click="selectdb(currentDB)"> Collection</a></li>
+            <li class="divider"></li>
+            <li><a ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a></li>
+            <li><a ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a></li>
+            <li class="divider"></li>
+            <li><a ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a></li>
+            <li class="divider"></li>
+            <li><a ng-click=""><i class="icon-download-alt"></i> Import</a></li>
+            <li><a ng-click=""><i class="icon-share"></i> Export</a></li>
+        </ul>
+    </div>
     <span class="divider"></span>
-    <span>{{currentCollection}}</span>
+    <span ng-show="!renamingCol">{{currentCollection}}</span>
+
+    <div class="rename input-append" ng-show="renamingCol">
+        <div class="btn-group">
+            <input type="text" class="span4" id="rename-new-col" ng-model="renColName" value="{{renColName}}" />
+            <button class="btn btn-primary" ng-click="validateColnameChange()">
+                <i class="icon-white icon-ok"></i>
+            </button>
+            <button class="btn" ng-click="cancel()">
+                <i class="icon-remove"></i>
+            </button>
+        </div>
+    </div>
+
 </div>
 
 <div ng-show="currentCollection" class="page-actions" style="margin-bottom:10px">
-    <a class="btn" href="#" ng-click="renameCol('rename-new-col')"><i class="icon-edit"></i> Rename Collection</a>
-    <a class="btn" href="#" ng-click="dropCol()"><i class="icon-trash"></i> Drop Collection</a>
-    <a class="btn" href="#" ng-click="createDoc()"><i class="icon-plus"></i> New document</a>
-    <a class="btn" href="#" ng-click=""><i class="icon-share"></i> Export results</a>
-    <a class="btn" href="#" ng-click=""><i class="icon-th-list"></i> Ensure Index</a>
-    <a class="btn" href="#" ng-click=""><i class="icon-refresh"></i> Re-index</a>
+    <a class="btn" ng-click="renameCol('rename-new-col')"><i class="icon-edit"></i> Rename Collection</a>
+    <a class="btn" ng-click="dropCol()"><i class="icon-trash"></i> Drop Collection</a>
+    <a class="btn" ng-click="createDoc()"><i class="icon-plus"></i> New document</a>
+    <a class="btn" ng-click=""><i class="icon-share"></i> Export results</a>
+    <a class="btn" ng-click=""><i class="icon-th-list"></i> Ensure Index</a>
+    <a class="btn" ng-click=""><i class="icon-refresh"></i> Re-index</a>
 </div>
 
 <g:render template="/document/find" />
