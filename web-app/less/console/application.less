@@ -61,6 +61,11 @@
             }
         }
     }
+    li.mongo-instance {
+        .dropdown-menu {
+            width: 250px;
+        }
+    }
 }
 
 .body-application {
@@ -100,19 +105,19 @@
             margin: 0;
             border-top: 1px solid #1e2327;
             #gradient > .vertical(#313a42, #2e363d);
-            a {
+            >a, >span {
                 display: block;
                 color: #82898f;
                 padding: 5px 10px;
                 font-size: @fontSizeSmall;
                 margin: 0;
                 .box-shadow(inset 0 1px 0 rgba(255,255,255,0.1));
-                &:hover {
-                    //background: #3a444d;
-                    #gradient > .vertical(#404b54, #3a444d);
-                    text-decoration: none;
-                    color: white;
-                }
+            }
+            >a:hover {
+                //background: #3a444d;
+                #gradient > .vertical(#404b54, #3a444d);
+                text-decoration: none;
+                color: white;
             }
             &.well-db, &.well-mongo {
                 color: white;
@@ -346,7 +351,7 @@
         }
     }
 
-    .dropdown-menu li.active > a {
+    .dropdown-menu li.active > a, .dropdown-menu li.active > a:hover {
         @btnPrimaryBackground: #28b022;
         @btnPrimaryBackgroundHighlight: #1d8a36;
         .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);

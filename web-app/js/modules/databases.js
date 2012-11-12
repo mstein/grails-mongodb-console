@@ -119,7 +119,10 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         //$scope.documents = [];
         $scope.creatingCol = true;
         $("#createCol").modal({show: true});
-        $scope.focus(inputId);
+
+        $timeout(function() {
+            $scope.focus(inputId);
+        }, 500);
     };
 
     $scope.createDoc = function() {

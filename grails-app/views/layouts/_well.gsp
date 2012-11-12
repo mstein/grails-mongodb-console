@@ -27,12 +27,12 @@
     </li>
 </ul>
 <ul class="well" ng-show="!currentDB">
-    <li><a ng-click="createDB()"><i class="icon-plus icon-white"></i> Create DB</a></li>
-    <li><a ng-click="createDB()"><i class="icon-download-alt icon-white"></i> Import DB</a></li>
-    <li class="well-db" ng-repeat="db in databases" class="item" ng-class="{active: db.name == currentDB}">
-        <a ng-click="selectdb(db.name)">
-            <strong>{{db.name}}</strong> <em>({{db.sizeOnDisk | fileSize}})</em><br/>
-            <span>Collections ({{collections.length}})</span>
-        </a>
+    <li>
+        <span>
+            Mongo v2.2.0<br>
+            Master shard<br>
+            Uptime : 120 days<br>
+            192.168.34.1:27017<br>
+        </span>
     </li>
 </ul>

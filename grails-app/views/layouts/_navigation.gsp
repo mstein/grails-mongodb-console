@@ -13,10 +13,9 @@
 
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
-                    <li class="dropdown">
+                    <li class="mongo-instance dropdown">
                         <a href="#db" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-leaf icon-white"></i> Mongo Instance Info <b class="caret"></b>
                         </a>
-
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                             <li class="nav-header">
                                 Mongo v2.2.0<br>
