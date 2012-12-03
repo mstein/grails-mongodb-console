@@ -1,0 +1,20 @@
+<div style="display: inline-block; vertical-align: top;">
+    <div class="pipeline" ng-repeat="(key, entry) in pipeline">
+        <div class="btn-group">
+            <button style="width:76px;" class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {{entry.selected}}
+                <b class="caret"></b>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                <li ng-class="{active:entry.selected == action}" ng-repeat="(action, input) in selectOptions">
+                    <a ng-click="$parent.selectedOption = action; entry.selected = action;">{{action}}</a>
+                </li>
+            </ul>
+        </div>
+
+        <input class="span5" type="search" placeholder="{{selectOptions[entry.selected].placeholder}}" ng-model="entry.value"/>
+
+        <button class="btn btn-inverse" ng-click="pipeline.splice(key+1, 0, {selected:' $group', value:''})">+</button>
+        <button class="btn btn-danger" style="position:absolute;" ng-click="delete(pipeline, key)" ng-show="key > 0">-</button>
+    </div>
+</div>

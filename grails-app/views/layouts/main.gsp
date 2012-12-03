@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html ng-app="MongoDBViewerModule">
+<html ng-app="MongoDBConsoleModule">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -19,10 +19,12 @@
         padding-bottom: 40px;
     }
     </style>
+
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "jquery-1.8.2.min.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/ace", file: "ace.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "angular.min.js")}"></script>
 
+    <g:render template="/template/grailsService"/>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-transition.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-alert.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-modal.js")}"></script>
@@ -39,10 +41,13 @@
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "bootbox.js")}"></script>
 
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "MongoDBConsoleModule.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "mongoLib.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoJson.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "databases.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/filters", file: "commonFilters.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongoQueries.js")}"></script>
+
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongodbService.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "paginator.js")}"></script>
     <g:layoutHead/>

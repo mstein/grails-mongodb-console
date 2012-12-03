@@ -1,4 +1,4 @@
-function DBListCtrl($scope, $http, $timeout, mongodb) {
+function DBListCtrl($scope, $timeout, mongodb) {
     $scope.creatingDB = false;
     $scope.copyingDB = false;
     $scope.renamingCol = false;
@@ -19,7 +19,57 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.editors = {};
 
     $scope.currentAction= "find";
-    $scope.queriesActions = ["find", "findOne", "update", "insert", "remove"];
+    $scope.queriesActions = ["find", "findOne", "aggregate", "mapReduce", "update", "insert", "remove"];
+
+    $scope.queriesInputs = {
+        query:      {type:"text", size:"large", placeholder:"example : 'field':'value', '$gt':{'age' : 18}", label:false, show:true},
+        fields:     {type:"text", size:"medium", placeholder:"'name':1, '_id':0"},
+        sort:       {type:"text", size:"medium", placeholder:"n:1, a:-1"},
+        skip:       {type:"text", size:"small", placeholder:"offset"},
+        limit:      {type:"text", size:"small", placeholder:"max"},
+        document:   {type:"text", size:"large", placeholder:"'name':'bob', 'age':24"},
+        upsert:     {type:"boolean"},
+        multi:      {type:"boolean"},
+        map:        {type:"editor", language:'javascript'},
+        reduce:     {type:"editor", language:'javascript'},
+        finalize:   {type:"editor", language:'javascript'},
+        options:    {type:"text", size:"medium"},
+        aggregation:{type:"select", duplication:true, options:{
+            " $group":   {type:"text", size:"large", placeholder:"'_id':'$name', 'nb_tweets':{'$sum':1}"},
+            " $limit":   {type:"text", size:"small", placeholder:"max"},
+            " $match":   {type:"text", size:"large", placeholder:"'database':/^mongo/"},
+            " $project": {type:"text", size:"large", placeholder:"'city':'$_id'"},
+            " $sort":    {type:"text", size:"medium", placeholder:"'name':1, 'age':-1"},
+            " $unwind":  {type:"text", size:"medium", placeholder:"'tags'"}
+        }}
+    };
+
+    $scope.queriesActionsFilters = {
+        "find": {
+            inputs: ["query", "fields", "sort", "skip", "limit"]
+        },
+        "findOne": {
+            inputs: ["query"]
+        },
+        "aggregate" : {
+            inputs: ["aggregation"]
+        },
+        "mapReduce": {
+            inputs: ["map", "reduce", "finalize", "options"]
+        },
+        "update": {
+            inputs: ["query", "document", "upsert", "multi"]
+        },
+        "insert": {
+            inputs: ["document"]
+        },
+        "remove": {
+            inputs: ["query"]
+        },
+        "ensureIndex": {
+            inputs: ["query", "options"]
+        }
+    };
 
     $scope.init = function(selectedDB, selectedCol) {
         mongodb.listDatabases().success(function(data) {
@@ -222,10 +272,11 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
     $scope.deleteDocument = function(id) {
         bootbox.confirm("This action cannot be undone. Delete this document ?", function(confirm){
             if (confirm) {
-                // Drop database
+                // Delete document
+                mongodb[$scope.currentCollection].remove({"_id":id});
             }
         });
-    }
+    };
 
     $scope.cancel = function() {
         $scope.creatingDB = false;
@@ -242,28 +293,51 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         $scope.selectCollection($scope.currentCollection, params);
     });
 
-    $scope.submitFindQuery = function() {
-        var query = $scope.findQuery;
-        var fields = $scope.fields != undefined ? $scope.fields : "";
+    $scope.$on('MongoDBQuerySubmitEvent', function(event, params){
+        //alert("Submitted query : " + angular.toJson(params));
+        var fields = "";// = params.fields != undefined ? params.fields : "";
         var cur;
-        if($scope.currentAction == 'find') {
-            cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+query+'}'), JSON.parse('{' + fields + '}'));
-            if($scope.hasSort) {
-                cur.sort(MongoJSON.parse('{'+$scope.sort+'}'));
-            }
-            if($scope.hasLimit) {
-                cur.limit($scope.limit)
-            }
-            if($scope.hasSkip) {
-                cur.skip($scope.skip)
-            }
-        } else if($scope.currentAction == 'findOne') {
-            cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+query+'}'));
+
+        switch($scope.currentAction) {
+            case 'find':
+                if(params.hasFields) {
+                    fields = params.fields != undefined ? params.fields : "";
+                } else {
+                    fields = "";
+                }
+
+                cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+params.query+'}'), JSON.parse('{' + fields + '}'));
+
+                if(params.hasSort) {
+                    cur.sort(MongoJSON.parse('{'+params.sort+'}'));
+                }
+                if(params.hasLimit) {
+                    cur.limit(params.limit)
+                }
+                if(params.hasSkip) {
+                    cur.skip(params.skip)
+                }
+                break;
+            case 'findOne':
+                cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+params.query+'}'));
+                break;
+            case 'update':
+                break;
+            case "aggregate":
+                break;
+            case "remove":
+                break;
+            case "insert":
+                break;
+            case "mapReduce":
+                break;
+            case "ensureIndex":
+                break;
         }
         cur.exec(function(data){
             $scope.populateDocuments(data);
         });
-    };
+    });
 
     $scope.submitChange = function(editorId, documentId, originalDocument) {
         var editor = $scope.editors[editorId];
@@ -274,7 +348,7 @@ function DBListCtrl($scope, $http, $timeout, mongodb) {
         } else {
             docId = originalDocument._id;
         }
-        mongodb[$scope.currentCollection].update({_id:docId}, newDocument).success(function(data) {
+        mongodb[$scope.currentCollection].update({_id:docId}, {"$set":newDocument}).success(function(data) {
             $scope.selectCollection($scope.currentCollection);
         });
     };

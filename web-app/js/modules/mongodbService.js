@@ -1,4 +1,4 @@
-MongoDBViewerModule.factory('mongodb', ['$http', function($http) {
+MongoDBConsoleModule.factory('mongodb', ['$http', function($http) {
     MongoDBService.$http = $http;
     MongoDBService.fn.$http = $http;
     MongoCollection.prototype.$http = $http;
@@ -43,6 +43,7 @@ MongoDBService.fn = MongoDBService.prototype = {
         });
     },
     createCollection:function(colname) {
+        // TODO Capped collection == support config
         if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
             var $self=this;
             return this.$http.post('mviewer/createCollection', {dbname:MongoDBService.$db, newColname:colname}).success(function(data) {

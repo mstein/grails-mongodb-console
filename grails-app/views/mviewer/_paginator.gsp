@@ -8,4 +8,3 @@
     <li ng-class="{disabled: currentPage == totalPage()}"><a ng-click="next()"> » </a></li>
   </ul>
 </div>
-<g:paginate total=""/>

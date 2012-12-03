@@ -77,14 +77,6 @@ function PaginatorCtrl($scope) {
                     $.merge(pagesInterval, $scope.range($scope.totalPage() - 4, $scope.totalPage()+1));
                 }
             }
-
-            /*// first 5
-            pagesInterval.push(1, 2, 3, 4, 5, '...');
-            // middle 5
-            var mid = Math.ceil($scope.totalPage() / 2);
-            pagesInterval.push(mid-2, mid-1, mid, mid+1, mid+2);
-            // last
-            pagesInterval.push('...', $scope.totalPage());*/
         } else {
             pagesInterval = $scope.range(1, $scope.totalPage());
         }

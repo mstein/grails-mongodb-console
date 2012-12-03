@@ -1,7 +1,5 @@
 // This json filter will not remove the $ref, $id, etc. keys from the server response
-var MongoDBViewerModule = angular.module('MongoDBViewerModule', []);
-
-    MongoDBViewerModule.filter('commonJson', function () {
+    MongoDBConsoleModule.filter('commonJson', function () {
         return function (input) {
             return MongoJSON.stringify(input, commonJsonReplacer,'  ', true);
         }
