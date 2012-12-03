@@ -348,6 +348,9 @@ function DBListCtrl($scope, $timeout, mongodb) {
         } else {
             docId = originalDocument._id;
         }
+        if(newDocument._id != undefined) {
+            delete newDocument._id;
+        }
         mongodb[$scope.currentCollection].update({_id:docId}, {"$set":newDocument}).success(function(data) {
             $scope.selectCollection($scope.currentCollection);
         });
