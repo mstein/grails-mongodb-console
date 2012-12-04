@@ -294,10 +294,20 @@ class MviewerController {
 
         def db = mongo.getDB(mongoJson.dbname)
         def col = db.getCollection(mongoJson.colname)
+        def first = mongoJson.pipeline[0]
+        def additionals = mongoJson.pipeline.size() > 1 ? mongoJson.pipeline[1..mongoJson.pipeline.size()-1] as BasicDBObject[] : [] as BasicDBObject[]
+        def output = col.aggregate(first, additionals)
 
-        def output = col.aggregate(mongoJson.pipeline)
+        def results = output.commandResult?.result?.inject([]) { coll, BasicDBObject entry ->
+            def args = [:]
+            for(key in entry.keySet()) {
+                args[key] = marshallDocument(entry[key])
+            }
+            coll << args
+            coll
+        }
 
-        render status:200, text:[results:output.commandResult] as JSON
+        render status:200, text:results as JSON
     }
 
     /**

@@ -15,8 +15,13 @@ function DBListCtrl($scope, $timeout, mongodb) {
     $scope.databases = {};
     $scope.collections = [];
     $scope.documents = [];
+    $scope.resultSet = {type:'document', elements:[]};
     $scope.totalCount = 0;
     $scope.editors = {};
+    $scope.resultTypes = {
+        json:{editable:false, removable:false},
+        document:{editable:true, removable:true}
+    };
 
     $scope.currentAction= "find";
     $scope.queriesActions = ["find", "findOne", "aggregate", "mapReduce", "update", "insert", "remove"];
@@ -35,12 +40,13 @@ function DBListCtrl($scope, $timeout, mongodb) {
         finalize:   {type:"editor", language:'javascript'},
         options:    {type:"text", size:"medium"},
         aggregation:{type:"select", duplication:true, options:{
-            " $group":   {type:"text", size:"large", placeholder:"'_id':'$name', 'nb_tweets':{'$sum':1}"},
-            " $limit":   {type:"text", size:"small", placeholder:"max"},
-            " $match":   {type:"text", size:"large", placeholder:"'database':/^mongo/"},
-            " $project": {type:"text", size:"large", placeholder:"'city':'$_id'"},
-            " $sort":    {type:"text", size:"medium", placeholder:"'name':1, 'age':-1"},
-            " $unwind":  {type:"text", size:"medium", placeholder:"'tags'"}
+            " $group":   {type:"text", size:"large", placeholder:"'_id':'$name', 'nb_tweets':{'$sum':1}", isObject:true},
+            " $limit":   {type:"text", size:"small", placeholder:"max", isObject:false},
+            " $match":   {type:"text", size:"large", placeholder:"'database':/^mongo/", isObject:true},
+            " $project": {type:"text", size:"large", placeholder:"'city':'$_id'", isObject:true},
+            " $sort":    {type:"text", size:"medium", placeholder:"'name':1, 'age':-1", isObject:true},
+            " $unwind":  {type:"text", size:"medium", placeholder:"'tags'", isObject:false},
+            " $skip":    {type:"text", size:"small", placeholder:"offset", isObject:false}
         }}
     };
 
@@ -89,7 +95,8 @@ function DBListCtrl($scope, $timeout, mongodb) {
         $scope.currentDB = null;
         $scope.currentCollection = null;
         $scope.collections = [];
-        $scope.documents = [];
+        //$scope.documents = [];
+        $scope.resultSet.elements = [];
     };
 
     $scope.focus = function(inputId) {
@@ -99,20 +106,21 @@ function DBListCtrl($scope, $timeout, mongodb) {
     };
 
     $scope.populateDocuments = function(data) {
+        $scope.resultSet.type="document";
         if(data.results != null) {
-            $scope.documents = data.results;
+            $scope.resultSet.elements = data.results;
         } else {
             if(data != null) {
-                $scope.documents = data;
+                $scope.resultSet.elements = data;
             } else {
-                $scope.documents = [];
+                $scope.resultSet.elements = [];
             }
         }
 
         if(data.totalCount != null) {
             $scope.totalCount = data.totalCount;
         } else {
-            $scope.totalCount = $scope.documents.length;
+            $scope.totalCount = $scope.resultSet.elements.length;
         }
     };
 
@@ -121,7 +129,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
         $scope.currentDB = dbname;
         $scope.currentDBSize = $scope.databases[dbname].sizeOnDisk;
         $scope.currentCollection = null;
-        $scope.documents = [];
+        $scope.resultSet.elements = [];
         $scope.populateDocuments([]);
 
         mongodb.use(dbname).success(function(data) {
@@ -160,7 +168,6 @@ function DBListCtrl($scope, $timeout, mongodb) {
     $scope.renameCol = function(inputId) {
         $scope.cancel();
         $scope.renamingCol = true;
-        //$("#renameCol").modal({show: true});
         $scope.focus(inputId);
     };
 
@@ -295,7 +302,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
 
     $scope.$on('MongoDBQuerySubmitEvent', function(event, params){
         //alert("Submitted query : " + angular.toJson(params));
-        var fields = "";// = params.fields != undefined ? params.fields : "";
+        var fields = "";
         var cur;
 
         switch($scope.currentAction) {
@@ -317,13 +324,38 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 if(params.hasSkip) {
                     cur.skip(params.skip)
                 }
+                cur.exec(function(data){
+                    $scope.populateDocuments(data);
+                });
                 break;
             case 'findOne':
                 cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+params.query+'}'));
+                cur.exec(function(data){
+                    $scope.populateDocuments(data);
+                });
                 break;
             case 'update':
                 break;
             case "aggregate":
+                if(params.aggregation != undefined) {
+                    var pipeline = [];
+                    angular.forEach(params.aggregation, function(entry){
+                        var elem = {};
+                        if($scope.queriesInputs.aggregation.options[entry.selected].isObject) {
+                            elem[entry.selected.trim()] = MongoJSON.parse('{'+entry.value+'}');
+                        } else {
+                            elem[entry.selected.trim()] = entry.value;
+                        }
+
+                        pipeline.push(elem);
+                    });
+
+                    cur = mongodb[$scope.currentCollection].aggregate(pipeline);
+                    cur.success(function(data){
+                        $scope.resultSet.elements = data;
+                        $scope.resultSet.type = 'json';
+                    });
+                }
                 break;
             case "remove":
                 break;
@@ -334,9 +366,6 @@ function DBListCtrl($scope, $timeout, mongodb) {
             case "ensureIndex":
                 break;
         }
-        cur.exec(function(data){
-            $scope.populateDocuments(data);
-        });
     });
 
     $scope.submitChange = function(editorId, documentId, originalDocument) {

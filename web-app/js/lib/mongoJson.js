@@ -367,7 +367,7 @@ function MongoJSON() {}
 
 // If the text is not JSON parseable, then a SyntaxError is thrown.
 
-            throw new SyntaxError('MongoJSON.parse');
+            throw new SyntaxError('MongoJSON.parse on :'+text);
         };
     }
 }());

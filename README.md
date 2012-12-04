@@ -70,6 +70,7 @@ A running MongoDB instance is required (the plugin connects on localhost:27017 b
 Below a preview of the current and anterior designs. Note that they are still in progress.
 
 *Current*
+![screen05](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr05.JPG)
 ![screen01](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr01.JPG)
 ![screen02](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr02.JPG)
 ![screen03](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr03.JPG)

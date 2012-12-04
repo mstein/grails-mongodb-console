@@ -127,6 +127,10 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
             delete this;
         });
     };
+
+    MongoCollection.prototype.aggregate = function(pipeline) {
+        return this.$http.post('mviewer/aggregate', MongoJSON.stringify({dbname:this._db, colname:this._name, pipeline:pipeline}), {transformResponse:parseMongoJson});
+    };
 }
 
 function MongoDBQuery(db, collection, query, fields) {

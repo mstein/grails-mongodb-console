@@ -47,15 +47,17 @@
 <g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />
 
 <div class="main">
-    <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in documents" ng-class="{active: editMode}">
+    <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in resultSet.elements" ng-class="{active: editMode}">
         <div class="head" ng-init="editMode = false">
             <label>
                 <input type="checkbox" value="{{document._id.toString()}}"/>
-                Object ID : <span class="mongo-object-id">{{document._id.toString()}}</span>
+                Object ID : <span class="mongo-object-id">{{document._id.toString() || 'null'}}</span>
             </label>
             <div class="actions">
-                <a ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode" ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
-                <a ng-click="deleteDocument(document._id.toString())"><i class="icon-trash"></i></a>
+                <a ng-show="resultTypes[resultSet.type].editable"
+                   ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode"
+                   ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
+                <a ng-show="resultTypes[resultSet.type].removable" ng-click="deleteDocument(document._id.toString())"><i class="icon-trash"></i></a>
             </div>
         </div>
 
