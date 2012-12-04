@@ -162,8 +162,8 @@ class MviewerController {
      *
      * Consumes a JSON document containing the keys listed for this action.
      *
-     * @param dbname (Required) The name of the database on which this find query should be ran
-     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
      * @param query (Optional) A JSON portion representing the criterias of the query, if none is provided, return the total number of documents in the collection.
      *
      * @return
@@ -192,8 +192,8 @@ class MviewerController {
      *
      * Consumes a JSON document containing the keys listed for this action.
      *
-     * @param dbname (Required) The name of the database on which this find query should be ran
-     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
      * @param document (Required) A document that will replace / update the original(s) or queries for partial updates ("$set", "$addToSet", ...)
      * @param criteria (Optional) A JSON portion representing the criterias of the query which will determine the document to update.
      * If nothing is specified, will update ALL documents of the collection
@@ -227,8 +227,8 @@ class MviewerController {
      *
      * Consumes a JSON document containing the keys listed for this action.
      *
-     * @param dbname (Required) The name of the database on which this find query should be ran
-     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
      * @param document (Required) The JSON document to insert
      *
      * @return
@@ -256,8 +256,8 @@ class MviewerController {
      *      db.collection.remove(<criteria>)
      *
      * Consumes a JSON document containing the keys listed for this action.
-     * @param dbname (Required) The name of the database on which this find query should be ran
-     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
      * @param criteria (Optional) A criteria (as a JSON document) detemining which document(s) are to be removed. If none provided, will delete everything.
      *
      * TODO : add a watchdog : ask for an explicit confirmation if no criteria was provided
@@ -273,6 +273,31 @@ class MviewerController {
 
         col.remove(mongoJson.criteria ?: new BasicDBObject())
         render status:200, text:[message:'Document inserted'] as JSON
+    }
+
+    /**
+     * Performs an aggregation operation.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.aggregate(<operations>*)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
+     * @param pipeline (Required) An array of aggregate operations
+     *
+     * @return The command results
+     */
+    def aggregate() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        def output = col.aggregate(mongoJson.pipeline)
+
+        render status:200, text:[results:output.commandResult] as JSON
     }
 
     /**
