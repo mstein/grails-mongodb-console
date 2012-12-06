@@ -1,4 +1,4 @@
-<div class="find" ng-show="currentCollection">
+<div class="quickQuery" ng-show="currentCollection">
   <div class="input-prepend input-append" style="padding:0;">
     <div class="btn-group">
       <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" ng-init="currentAction = 'find'; findQuery = ''">

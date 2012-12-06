@@ -1,0 +1,267 @@
+
+// Primary button
+.btn-primary {
+    .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+}
+
+.btn-group.open {
+    @btnPrimaryBackgroundHighlight: #1d8a36;
+    .btn-primary.dropdown-toggle {
+        background-color: @btnPrimaryBackgroundHighlight;
+    }
+}
+
+// Inverse appears as dark gray
+.btn-inverse {
+  .buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
+}
+
+// Navigation
+.navbar-inverse .navbar-inner {
+    .box-shadow(0 0 0 black);
+    padding-left: 10px;
+    background: @navPrimaryBackground;
+    border: 0 none;
+    a {
+        color: @linkNavigation;
+    }
+    color: @linkNavigation;
+    .nav {
+        >li {
+            >a {
+                color: #82898f;
+                float: left;
+                &:hover {
+                    #gradient > .vertical(@navPrimaryBackgroundHover, @navPrimaryBackgroundHoverHighlight);
+                    text-decoration: none;
+                    color: white;
+                    .icon-white {
+                        .opacity(100);
+                    }
+                }
+                .icon-white {
+                    .opacity(40);
+                }
+            }
+        }
+        li.active {
+            >a {
+                #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+                .box-shadow(inset 0 0 0 @btnPrimaryShadow);
+                color: @white;
+            }
+        }
+        li.open {
+            >a, >a:hover {
+                .icon-white {
+                    .opacity(100);
+                }
+            }
+        }
+    }
+}
+
+.modal{
+    .box-shadow(0 0 0 8px rgba(0,0,0,.3));
+    #modalSize(400px);
+    .form-horizontal {
+        padding-top: 15px;
+        .control-label {
+            width: 100px;
+
+        }
+        .controls {
+            margin-left: 110px;
+            input {
+                line-height: 20px;
+                height: 28px;
+            }
+        }
+    }
+    .modal-header {
+        #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+        .box-shadow(inset 0 0 0 @btnPrimaryShadow);
+        #textshadow>.black(0.4);
+        .border-radius(4px 4px 0 0);
+        #noMarginAndPadding();
+        color: @white;
+        border: 0 none;
+        border-bottom: 0 none;
+        h4 {
+            margin: 0;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .close {
+            #textshadow>.black(.4);
+            .opacity(80);
+            margin-right: 10px;
+            color: white;
+            &:hover {
+                .opacity(100);
+            }
+        }
+    }
+    .modal-footer {
+        padding: 8px 15px 9px;
+    }
+    .modal-content {
+        padding: 10px 0 6px;
+    }
+}
+
+.modal-large {
+    #modalSize(700px);
+}
+
+.modal-backdrop {
+    background-color: @backgroundModal;
+}
+
+// Dropmenu
+.body-application ul.dropdown-menu > li > a:hover {
+    #gradient > .vertical(@navSecondaryBackgroundHover, @navSecondaryBackgroundHoverHighlight);
+    #textshadow>.white(.7);
+    color: @grayDark;
+    i {
+        background-image: url("@{iconSpritePath}");
+    }
+}
+
+.body-application .dropdown-menu li.active > a, .body-application .dropdown-menu li.active > a:hover {
+    .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+}
+
+// Table
+table.table {
+    #noMarginAndPadding();
+    thead {
+        tr {
+            th {
+                #gradient > .vertical(@navSecondaryBackgroundHover, @navSecondaryBackgroundHoverHighlight);
+                border-bottom: 1px solid @navSecondaryBorder;
+            }
+            th:first-child, th:last-child {
+                .border-radius(0);
+            }
+        }
+    }
+    tr {
+        td {
+            font-size: 13px;
+        }
+        th {
+            font-size: 14px;
+        }
+        td, th {
+            padding: 7px 8px;
+        }
+    }
+}
+
+// Tabs
+.nav-tabs {
+    border-bottom: 1px solid #858b90;
+    .box-shadow(0 1px 0 @white);
+    margin: 15px 0;
+    > li > a {
+        color: @tabsColor;
+        padding: 5px 15px;
+        background: @tabsBackground;
+        border: 1px solid @tabsBorder;
+        border-bottom: 0 none;
+        margin-bottom: 1px;
+        font-size: 13px;
+        &:hover {
+            border: 1px solid @tabsBorder;
+            border-bottom: 0 none;
+            background: @white;
+        }
+        i {
+            display: none;
+        }
+    }
+    > li.active > a, > li.active > a:hover {
+        #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+        #textshadow>.black(.4);
+        color: white;
+        border: 1px solid @btnPrimaryBackground;
+        border-bottom: 0 none;
+    }
+}
+
+// Btn
+.btn {
+    .buttonBackground(@navSecondaryBackgroundHover, @navSecondaryBackgroundHoverHighlight, @grayDark, 0 1px 1px rgba(255,255,255,.75));
+    .border-radius(0px);
+    font-size: 13px;
+    line-height: 20px;
+    padding: 3px 5px 2px;
+    i {
+    }
+}
+
+.btn-primary {
+  .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+}
+// Warning appears are orange
+.btn-warning {
+  .buttonBackground(@btnWarningBackground, @btnWarningBackgroundHighlight);
+}
+// Danger and error appear as red
+.btn-danger {
+  .buttonBackground(@btnDangerBackground, @btnDangerBackgroundHighlight);
+}
+// Success appears as green
+.btn-success {
+  .buttonBackground(@btnSuccessBackground, @btnSuccessBackgroundHighlight);
+}
+// Info appears as a neutral blue
+.btn-info {
+  .buttonBackground(@btnInfoBackground, @btnInfoBackgroundHighlight);
+}
+// Inverse appears as dark gray
+.btn-inverse {
+  .buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
+}
+
+.btn-icon {
+    position: relative;
+    padding-left: 21px;
+    i {
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        display: block;
+    }
+}
+
+/* common settings checkbox and radiobutton */
+input[type="checkbox"], input[type="radio"] {
+    -khtml-appearance: none;
+    background: url(../img/radio-checkbox.png) no-repeat;
+    width: 20px;
+    height: 20px;
+    -webkit-appearance: caret;
+    vertical-align: middle;
+}
+input[type="checkbox"] {
+    background-position-x: left;
+    margin-top:0;
+}
+input[type="radio"] {
+    background-position-x: right;
+}
+input[type="checkbox"]:hover, input[type="radio"]:hover {
+    background-position-y: -40px;
+}
+input[type="checkbox"]:checked, input[type="radio"]:checked {
+    background-position-y: -20px;
+}
+input[type="checkbox"]:checked:hover, input[type="radio"]:checked:hover {
+    background-position-y: -60px;
+}
+/* disabled settings for checkbox and radiobutton */
+input[type="radio"]:disabled, input[type="checkbox"]:disabled {
+    opacity: .3;
+}

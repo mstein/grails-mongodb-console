@@ -6,8 +6,8 @@
     div.head {
         position: relative;
 
-        #gradient > .vertical(#f4f4f4, #dedede);
-        .box-shadow(inset 0 1px 0 #FFF);
+        #gradient > .vertical(@navSecondaryBackgroundHover, @navSecondaryBackgroundHoverHighlight);
+        .box-shadow(inset 0 0 0 @white);
         border-bottom: 1px solid #c6c6c6;
         label {
             margin: 0;
@@ -27,12 +27,11 @@
         }
         input {
             position: absolute;
-            top: 6px;
-            left: 10px;
+            top: 5px;
+            left: 5px;
         }
     }
     &.doc-0 div.head {
-        .border-radius(6px 6px 0 0);
     }
     pre {
         background: white none;
@@ -62,10 +61,8 @@
     &.active {
         border-bottom: 1px solid #1d8a36;
         div.head {
-            .box-shadow(inset 0 1px 0 #41dd0b);
-            @btnPrimaryBackground: #28b022;
-            @btnPrimaryBackgroundHighlight: #1d8a36;
             #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+            .box-shadow(inset 0 1px 0 @btnPrimaryShadow);
             color: white;
             text-shadow: 0 1px 0 rgba(0,0,0,.4);
             border-bottom: 1px solid #176a21;
@@ -96,4 +93,32 @@
         }
     }
 
+}
+
+.quickQuery {
+    border-bottom: 1px solid #CCC;
+    margin-bottom:12px;
+    padding-bottom: 6px;
+    .btn {
+        .box-shadow(0 0 0 white);
+        padding: 4px 10px;
+        .border-radius(0);
+        &.active {
+            .buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
+            color: white;
+        }
+    }
+    .input-prepend.input-append .add-on:first-child, .input-prepend.input-append .btn:first-child,
+        .input-prepend.input-append .add-on:last-child, .input-prepend.input-append .btn:last-child {
+        .border-radius(0);
+    }
+    .small {
+        width: 35px;
+    }
+    .medium {
+        width: 10%;
+    }
+    .large {
+        width: 20%;
+    }
 }

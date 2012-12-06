@@ -38,9 +38,9 @@ MongoDBConsoleModule.directive('mongoQueries', function factory($compile) {
                     var size = '';
                     var isEditor = false;
                     switch(curInput.size) {
-                        case 'small': size = 'span1'; break;
-                        case 'medium': size = 'span2'; break;
-                        case 'large': size = 'span3'; break;
+                        case 'small': size = 'small'; break;
+                        case 'medium': size = 'medium'; break;
+                        case 'large': size = 'large'; break;
                     }
 
                     switch(curInput.type){

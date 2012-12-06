@@ -1,0 +1,18 @@
+#noMarginAndPadding() {
+    padding: 0;
+    margin: 0;
+}
+
+#textshadow {
+	.white(@alpha:0.6) {
+		text-shadow: 0 1px 0 rgba(255,255,255,@alpha);
+	}
+	.black(@alpha:0.6) {
+		text-shadow: 0 1px 0 rgba(0,0,0,@alpha);
+	}
+}
+
+#modalSize(@width: 400px) {
+    width: @width;
+    margin-left: -(@width/2);
+}

@@ -11,7 +11,6 @@
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'img', file: 'apple-touch-icon-retina.png')}">
 
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap.css")}"/>
-    <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap-responsive.min.css")}"/>
 
     <style type="text/css">
     body {
@@ -68,6 +67,7 @@
             <g:render template="/layouts/well"/>
         </div>
         <div class="col2">
+            <span class="extra-radius"></span>
             <g:layoutBody/>
         </div>
 
@@ -79,5 +79,12 @@
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>
 <g:render template="/document/create"/>
+<g:javascript>
+    $(function(){
+        $(".modal").on("hidden", function(){
+            $(this).find(".close").click();
+        });
+    });
+</g:javascript>
 </body>
 </html>

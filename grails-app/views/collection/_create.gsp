@@ -15,6 +15,6 @@
     </div>
     <div class="modal-footer">
         <a class="btn btn-primary" ng-click="validateCreateCollection()"><i class="icon-ok icon-white"></i> Create</a>
-        <a class="btn" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
+        <a class="btn cancel" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
     </div>
 </div>

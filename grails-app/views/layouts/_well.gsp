@@ -11,19 +11,24 @@
             <li ng-repeat="db in databases" ng-class="{active: db.name == currentDB}">
                 <a ng-click="selectdb(db.name)">
                     <strong>{{db.name}}</strong> <em>({{db.sizeOnDisk | fileSize}})</em><br/>
+                    <span class="extra"></span>
                 </a>
             </li>
-
         </ul>
     </li>
     <li class="well-db" ng-class="{active:currentDB && !currentCollection}">
         <a ng-click="selectdb(currentDB)">
             {{currentDB}} ({{ currentDBSize | fileSize }})<br/>
-            <span>Collections ({{collections.length}})</span>
+            <span ng-show="collections.length>0">Collections ({{collections.length}})</span>
+            <span ng-show="collections.length==0">Empty</span>
+            <span class="extra"></span>
         </a>
     </li>
     <li ng-repeat="collection in collections" class="item-collection" ng-class="{active:collection == currentCollection}">
-        <a ng-click="selectCollection(collection)">{{collection}}</a>
+        <a ng-click="selectCollection(collection)">
+            {{collection}}
+            <span class="extra"></span>
+        </a>
     </li>
 </ul>
 <ul class="well" ng-show="!currentDB">

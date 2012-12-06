@@ -1,20 +1,15 @@
-<div class="modal hide fade" id="createDoc" style="width:700px; ">
+<div class="modal modal-large hide fade" id="createDoc">
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4>Create a document</h4>
   </div>
-  <div class="modal-content">
-    <form class="form-horizontal">
-      <div class="control-group">
-        <label class="control-label" for="new-doc">New document</label>
+  <div>
           <div id="new-doc" style="width:700px; height:300px; position:relative;">{
   "field":"value"
 }</div>
-      </div>
-    </form>
   </div>
   <div class="modal-footer">
     <a class="btn btn-primary" ng-click="validateCreateDocument()"><i class="icon-ok icon-white"></i> Create</a>
-    <a class="btn" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
+    <a class="btn cancel" ng-click="cancel()"><i class="icon-remove"></i> Cancel</a>
   </div>
 </div>

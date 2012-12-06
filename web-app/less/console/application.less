@@ -5,76 +5,132 @@
     float: left;
     width: 210px;
     height: 40px;
-    margin: 0 10px;
-    margin-left: 0;
+    margin: 0 10px 0 0;
     a {
+        #noMarginAndPadding();
         display: block;
         position: absolute;
-        top: 4px;
+        top: 10px;
         left: -10px;
         width: 196px;
         height: 32px;
         background: url(../img/logo.png) no-repeat 0 0;
-        padding: 0;
-        margin: 0;
         text-indent: -6000em;
     }
 }
-.navbar-inverse .navbar-inner {
-    background: #2d353b;
+
+ul.well {
+    #noMarginAndPadding();
     .box-shadow(0 0 0 rgba(0,0,0,0));
+    #textshadow>.black(0.4);
+    background: 0 none;
     border: 0 none;
-    a {
-        color: #82898f;
-    }
-    color: #82898f;
-    .nav {
-        >li {
+    border-bottom: 1px solid #1e2327;
+    >li {
+        #noMarginAndPadding();
+        #gradient > .vertical(#313a42, #2e363d);
+        border-top: 1px solid #1e2327;
+        >a, >span {
+            .box-shadow(inset 0 1px 0 rgba(255,255,255,0.1));
+            display: block;
+            color: #82898f;
+            margin: 0;
+            padding: 5px 10px;
+            font-size: @fontSizeSmall;
+            position: relative;
+        }
+        >a:hover {
+            //background: #3a444d;
+            #gradient > .vertical(#404b54, #3a444d);
+            text-decoration: none;
+            color: @white;
+        }
+        &.well-db, &.well-mongo {
+            color: @white;
             >a {
-                color: #82898f;
-                float: left;
-                &:hover {
-                    #gradient > .vertical(#404b54, #3a444d);
-                    text-decoration: none;
-                    color: white;
-                    .icon-white {
-                        .opacity(100);
+                position: relative;
+                font-size: 13px;
+                color: @white;
+                span {
+                    color: @blue;
+                    font-size: 12px;
+                }
+            }
+            .dropdown-menu {
+                left: @widthLeft - 25px;
+                top: 2px;
+                li {
+                    border: 0 none;
+                    a {
+                        #textshadow>.white(0.7);
+                        &:hover {
+                            #textshadow>.white(0.7);
+                            i {
+                                background-image: url("@{iconSpritePath}");
+                            }
+                        }
+                    }
+                    &.active {
+                        a, a:hover {
+                            #textshadow>.black(0.4);
+                            #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+                        }
                     }
                 }
-                .icon-white {
-                    .opacity(40);
-                }
             }
         }
-        li.active {
+        &.well-mongo {
             >a {
-                #gradient > .vertical(#28b022, #1d8a36);
-                .box-shadow(inset 0 0 0 #41dd0b);
-                color: #FFF;
-            }
-        }
-        li.open {
-            >a, >a:hover {
-                .icon-white {
-                    .opacity(100);
+                padding-top: 10px;
+                padding-bottom: 10px;
+                i {
+                    position: absolute;
+                    right: 5px;
+                    top: 12px;
                 }
             }
         }
-    }
-    li.mongo-instance {
-        .dropdown-menu {
-            width: 250px;
+        &.open {
+            >a, >a:hover {
+                #gradient > .vertical(#404b54, #3a444d);
+                text-decoration: none;
+                color: white;
+            }
+        }
+        &.active {
+            >a, >a:hover {
+                #gradient > .vertical(#404b54, #3a444d);
+                color: @white;
+                span.extra {
+                    display: block;
+                }
+            }
+        }
+        span.extra {
+            display: none;
+            position: absolute;
+            width: 12px;
+            height: 28px;
+            right: 0;
+            top: 50%;
+            margin-top: -14px;
+            background: url(../img/active.png) no-repeat 0 0;
         }
     }
 }
 
-.body-application {
-    @w: 260px;
-    background: #ededed url(../img/col1.png) repeat-y -(300-@w) 0;
 
-    .modal-backdrop {
-        background-color: #191e22;
+.body-application {
+    background: #ededed url(../img/col1.png) repeat-y -(300-@widthLeft) 0;
+
+    .navbar-inverse .navbar-inner {
+        li.mongo-instance {
+            .dropdown-menu {
+                width: 250px;
+            }
+        }
     }
+
     .container-application {
         padding: 0;
         .row-application {
@@ -82,127 +138,55 @@
             .col1 {
                 position: fixed;
                 left: 0;
-                top: 40px;
-                width: @w - 20px;
+                top: 50px;
+                width: @widthLeft - 20px;
                 z-index: 1000;
             }
             .col2 {
-                padding-left: @w;
-                padding-right: 20px;
-            }
-        }
-    }
-    ul.well {
-        background: 0 none;
-        .box-shadow(0 0 0 rgba(0,0,0,0));
-        padding: 0;
-        margin: 0;
-        border: 0 none;
-        text-shadow: 0 1px 0 rgba(0,0,0,.4);
-        border-bottom: 1px solid #1e2327;
-        li {
-            padding: 0;
-            margin: 0;
-            border-top: 1px solid #1e2327;
-            #gradient > .vertical(#313a42, #2e363d);
-            >a, >span {
-                display: block;
-                color: #82898f;
-                padding: 5px 10px;
-                font-size: @fontSizeSmall;
-                margin: 0;
-                .box-shadow(inset 0 1px 0 rgba(255,255,255,0.1));
-            }
-            >a:hover {
-                //background: #3a444d;
-                #gradient > .vertical(#404b54, #3a444d);
-                text-decoration: none;
-                color: white;
-            }
-            &.well-db, &.well-mongo {
-                color: white;
-                >a {
-                    position: relative;
-                    font-size: 13px;
-                    color: white;
-                    span {
-                        color: @blue;
-                        font-size: 12px;
-                    }
-                }
-                .dropdown-menu {
-                    left: @w - 25px;
-                    top: 2px;
-                    li {
-                        border: 0 none;
-                        a {
-                            .box-shadow(inset 0 0 0 white);
-                            background: white;
-                            color: #444;
-                            text-shadow: 0 0 0 white;
-                            &:hover {
-                                #gradient > .vertical(#f1f1f1, #e2e2e2);
-                                text-shadow: 0 1px 0 rgba(255,255, 255,.7);
-                                color: #222;
-                            }
-                        }
-                        &.active {
-                            a, a:hover {
-                                #gradient > .vertical(#28b022, #1d8a36);
-                                text-shadow: 0 1px 0 rgba(0, 0, 0,.5);
-                                color: #FFF;
-                                span {
-                                    color: #FFF;
-                                }
-                            }
-                        }
-                        &.divider {
-                            margin: 4px 0;
-                        }
-                    }
-                }
-            }
-            &.well-mongo {
-                >a {
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                    i {
-                        position: absolute;
-                        right: 5px;
-                        top: 12px;
-                    }
-                }
-            }
-            &.open {
-                >a, >a:hover {
-                    #gradient > .vertical(#404b54, #3a444d);
-                    text-decoration: none;
-                    color: white;
-                }
-            }
-            &.active {
-                a, a:hover {
-                    #gradient > .vertical(#28b022, #1d8a36);
-                    .box-shadow(inset 0 1px 0 #41dd0b);
-                    color: #FFF;
-                    span {
-                        color: #FFF;
-                    }
+                background: url(../img/main.png) fixed repeat-x 0 0;
+                margin-left: @widthLeft - 20px;
+                padding: 0 25px;
+                position: relative;
+                .extra-radius {
+                    background: url(../img/radius.png) no-repeat 0 0;
+                    position: fixed;
+                    left: @widthLeft - 20px;
+                    top: 40px;
+                    width: 6px;
+                    height: 5px;
                 }
             }
         }
     }
+
     .main {
         padding: 0;
-        background: #FFF;
-        .border-radius(6px 6px 0 0);
-        .box-shadow(0 0 5px rgba(0,0,0,.3));
+        background: @white;
+        //.box-shadow(0 0 5px rgba(0,0,0,.3));
+        border: 1px solid #CCC;
     }
+
+    .title-buttons {
+        .clearfix();
+        position: relative;
+        border-bottom: 1px solid #CCC;
+        margin-bottom:10px;
+        padding-bottom: 4px;
+        //.box-shadow(~"0 1px 0 rgba(255,255,255,0.6)");
+
+        .nav-buttons {
+            position: absolute;
+            right: 0;
+            top: 22px;
+        }
+    }
+
     .title {
         position: relative;
         margin: 0;
-        margin-top: 15px;
-        height: 30px;
+        height: 35px;
+        line-height: 35px;
+        padding-top: 20px;
         .clearfix();
 
         .dropdown .caret {
@@ -220,8 +204,8 @@
             text-decoration: underline;
         }
         >span.divider {
-            border-right: 1px solid #AAA;
             .box-shadow(1px 0 0 rgba(255,255,255,0.6));
+            border-right: 1px solid @navSecondaryBorder;
             width: 15px;
             height: 20px;
             margin: 5px 0;
@@ -237,96 +221,55 @@
                 height: 25px;
                 line-height: 25px;
             }
+            .btn-group > .btn {
+                padding: 4px 8px 4px;
+            }
         }
     }
 
     .pagination {
-        position: absolute;
-        right: 5px;
-        bottom: 10px;
-        margin: 0;
-        padding: 0;
+        margin: 10px 0;
+        .clearfix();
+        div.left {
+            float: left;
+            width: 40%;
+            padding-top: 10px;
+        }
+        ul.right {
+            .box-shadow(0 0 0 white);
+            float: right;
+            width: 60%;
+            text-align: right;
+            li {
+                display: inline;
+                a {
+                    display: inline;
+                    float: none;
+                    .btn();
+                    padding: 3px 9px 2px;
+                }
+                &.disabled {
+                    a, a:hover, a:active {
+                        color: #888;
+                        .box-shadow(0 0 0 white);
+                        #gradient > .vertical(#e3e3e3, #e3e3e3);
+                        .opacity(80);
+                    }
+                }
+                &.active {
+                    a, a:hover, a:active {
+                        .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+    .pagination-bottom div.left {
+        padding-top: 0;
     }
 
-    .page-actions {
-        border-top: 1px solid #CCC;
-        border-bottom: 1px solid #CCC;
-        .box-shadow(~"0 1px 0 rgba(255,255,255,0.6), inset 0 1px 0 rgba(255,255,255,0.6)");
-        margin-top: 15px;
-        margin-bottom: 15px;
-        padding: 10px 0;
-    }
-    .modal{
-        @wd: 400px;
-        width: @wd;
-        margin-left: -(@wd/2);
-        .box-shadow(0 0 0 8px rgba(0,0,0,.3));
-        .form-horizontal {
-            padding-top: 15px;
-            .control-label {
-                width: 100px;
 
-            }
-            .controls {
-                margin-left: 110px;
-                input {
-                    line-height: 20px;
-                    height: 28px;
-                }
-            }
-        }
-        .modal-header {
-            padding: 0;
-            margin: 0;
-            border: 0 none;
-            #gradient > .vertical(#28b022, #1d8a36);
-            .box-shadow(inset 0 0 0 #41dd0b);
-            color: white;
-            text-shadow: 0 1px 0 rgba(0,0,0,.4);
-            border-bottom: 1px solid #c6c6c6;
-            .border-radius(4px 4px 0 0);
-            h4 {
-                margin: 0;
-                padding: 5px 10px;
-                font-size: 14px;
-            }
-            .close {
-                margin-right: 10px;
-            }
-        }
-        .modal-footer {
-            padding: 8px 15px 9px;
-        }
-        .modal-content {
-            padding: 10px 0 6px;
-        }
-    }
-    table.table {
-        margin: 0;
-        thead {
-            tr {
-                th {
-                    #gradient > .vertical(#f4f4f4, #dedede);
-                    .box-shadow(inset 0 1px 0 #FFF);
-                    border-bottom: 1px solid #c6c6c6;
-                }
-                th:first-child {
-                    .border-radius(6px 0 0 0);
-                }
-                th:last-child {
-                    .border-radius(0 6px 0 0);
-                }
-            }
-        }
-        tr {
-            td {
-                font-size: 13px;
-            }
-            th {
-                font-size: 14px;
-            }
-        }
-    }
     .table-clickable {
         tr:hover {
             td {
@@ -335,44 +278,6 @@
             }
         }
     }
-    .find {
-        .clearfix();
-        padding-bottom: 3px;
-        border-bottom: 1px solid #CCC;
-        .box-shadow(~"0 1px 0 rgba(255,255,255,0.6)");
-        margin-bottom: 15px;
-    }
-    ul.dropdown-menu > li > a:hover {
-        #gradient > .vertical(#f1f1f1, #e2e2e2);
-        text-shadow: 0 1px 0 rgba(255,255, 255,.7);
-        color: #222;
-        i {
-            background-image: url("@{iconSpritePath}");
-        }
-    }
 
-    .dropdown-menu li.active > a, .dropdown-menu li.active > a:hover {
-        @btnPrimaryBackground: #28b022;
-        @btnPrimaryBackgroundHighlight: #1d8a36;
-        .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
-    }
 }
 
-
-.btn-primary {
-    @btnPrimaryBackground: #28b022;
-    @btnPrimaryBackgroundHighlight: #1d8a36;
-    .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
-}
-
-.btn-group.open {
-    @btnPrimaryBackgroundHighlight: #1d8a36;
-    .btn-primary.dropdown-toggle {
-        background-color: @btnPrimaryBackgroundHighlight;
-    }
-}
-
-// Inverse appears as dark gray
-.btn-inverse {
-  .buttonBackground(#3b464e, #2e363d);
-}

@@ -3,6 +3,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
     $scope.copyingDB = false;
     $scope.renamingCol = false;
     $scope.creatingCol = false;
+    $scope.creatingDoc = false;
     $scope.newDbname = null;
     $scope.newColname = null;
     $scope.renColName = null;
@@ -135,9 +136,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
         mongodb.use(dbname).success(function(data) {
             $scope.collections = data;
         });
-
     };
-
     $scope.selectCollection = function(colname, params) {
         $scope.cancel();
         $scope.currentCollection = colname;
@@ -175,8 +174,9 @@ function DBListCtrl($scope, $timeout, mongodb) {
         $scope.cancel();
         //$scope.documents = [];
         $scope.creatingCol = true;
-        $("#createCol").modal({show: true});
-
+        $("#createCol").modal({
+            show: true
+        });
         $timeout(function() {
             $scope.focus(inputId);
         }, 500);
@@ -288,6 +288,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
     $scope.cancel = function() {
         $scope.creatingDB = false;
         $scope.copyingDB = false;
+        $scope.creatingDoc = false;
         $scope.renamingCol = false;
         $scope.creatingCol = false;
         $scope.renColName = $scope.currentCollection;
