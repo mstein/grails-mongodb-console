@@ -387,6 +387,11 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 }
                 break;
             case "insert":
+                if(params.hasDocument && params.document != null) {
+                    mongodb[$scope.currentCollection].insert(MongoJSON.parse('{'+params.document+'}')).success(function() {
+                        $scope.selectCollection($scope.currentCollection);
+                    });
+                }
                 break;
             case "mapReduce":
                 break;
