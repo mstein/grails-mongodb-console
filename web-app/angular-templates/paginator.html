@@ -1,6 +1,5 @@
-<div class="pagination" ng-controller="PaginatorCtrl" ng-init="init(${varTotal})" ng-show="currentCollection && totalEntries>0">
-    {{totalEntries = ${varTotal}; ''}}
-    <div class="left">Page <strong>{{currentPage}}</strong> of <strong>{{totalPage()}}</strong> - <strong>{{totalEntries}}</strong> documents</div>
+<div class="pagination">
+    <div class="left">Page <strong>{{currentPage}}</strong> of <strong>{{totalPage()}}</strong> - <strong>{{total}}</strong> documents</div>
     <ul class="right" ng-show="pages().length>1">
         <li ng-class="{disabled: currentPage == 1}"><a ng-click="previous()">« Previous</a></li>
         <li ng-class="{active: currentPage == (n)}" ng-repeat="n in pages()">

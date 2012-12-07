@@ -44,8 +44,9 @@
 </div>
 
 <g:render template="/document/find" />
-<div class="pagination-top">
-    <g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />
+<div class="pagination-top" ng-show="currentCollection && totalCount > 0">
+    <paginator id="top-paginator" total="{{totalCount}}"/>
+    %{--<g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />--}%
 </div>
 
 <div class="main documents" ng-show="resultSet.elements.length>0">
@@ -77,6 +78,6 @@
 
 <p ng-show="resultSet.elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
 
-<div class="pagination-bottom">
-    <g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />
+<div class="pagination-bottom" ng-show="currentCollection && totalCount > 0">
+    <paginator synchronized-with="top-paginator"/>
 </div>
