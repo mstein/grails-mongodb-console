@@ -336,6 +336,20 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 });
                 break;
             case 'update':
+                if(params.query != null) {
+                    if(params.hasDocument && params.document) {
+                        var upsert = params.upsert;
+                        var multi = params.multi;
+                        mongodb[$scope.currentCollection].update(
+                            MongoJSON.parse('{'+params.query+'}'),
+                            MongoJSON.parse('{'+params.document+'}'),
+                            upsert,
+                            multi
+                        ).success(function(data) {
+                            $scope.selectCollection($scope.currentCollection);
+                        });
+                    }
+                }
                 break;
             case "aggregate":
                 if(params.aggregation != undefined) {

@@ -215,7 +215,7 @@ class MviewerController {
             return
         }
 
-        col.update(mongoJson.criteria ?: new BasicDBObject(), mongoJson.document, mongoJson.upsert ?: true, mongoJson.multi ?: false)
+        col.update(mongoJson.criteria ?: new BasicDBObject(), mongoJson.document, mongoJson.upsert ?: false, mongoJson.multi ?: false)
         render status:200, text:[message:'Document updated'] as JSON
     }
 
