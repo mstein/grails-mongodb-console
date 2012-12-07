@@ -373,6 +373,18 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 }
                 break;
             case "remove":
+                if(params.query != null) {
+                    bootbox.confirm("This action will remove all document matching the criteria, this cannot be undone. <br />Perform remove operation with the following query ? <br />" +
+                        "<pre>db."+$scope.currentDB+"."+$scope.currentCollection+".remove({"+params.query+"})</pre>",
+                        function(confirm){
+                            if(confirm) {
+                                mongodb[$scope.currentCollection].remove(MongoJSON.parse('{'+params.query+'}')).success(function(data){
+                                    $scope.selectCollection($scope.currentCollection);
+                                });
+                            }
+                        }
+                    );
+                }
                 break;
             case "insert":
                 break;
