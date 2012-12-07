@@ -70,12 +70,19 @@ A running MongoDB instance is required (the plugin connects on localhost:27017 b
 Below a preview of the current and anterior designs. Note that they are still in progress.
 
 *Current*
-![screen05](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr05.JPG)
 ![screen01](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr01.JPG)
 ![screen02](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr02.JPG)
 ![screen03](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr03.JPG)
 ![screen04](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr04.JPG)
-![screen04b](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr04b.JPG)
+![screen05](https://github.com/mstein/grails-mongodb-console/raw/master/web-app/images/gh/mongoviewer_scr05.JPG)
+
+*Previous*
+![screen05](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr05.JPG)
+![screen01](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr01.JPG)
+![screen02](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr02.JPG)
+![screen03](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr03.JPG)
+![screen04](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr04.JPG)
+![screen04b](https://github.com/mstein/grails-mongodb-console/raw/dfabe3741bd5c673f44142043307914b3526b382/web-app/images/gh/mongoviewer_scr04b.JPG)
 
 *Previous (Bootstrap classic)*
 ![old_screen01](https://github.com/mstein/grails-mongodb-console/raw/64472efca19290dffcf746ef59b2b087c1c9be70/web-app/images/gh/mongoviewer_scr01.JPG)
