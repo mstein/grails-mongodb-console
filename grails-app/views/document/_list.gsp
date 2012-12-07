@@ -48,27 +48,29 @@
     <g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />
 </div>
 
-<div class="main" ng-show="resultSet.elements.length>0">
-    <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-repeat="document in resultSet.elements" ng-class="{active: editMode}">
-        <div class="head" ng-init="editMode = false">
-            <label>
-                <input type="checkbox" value="{{document._id.toString()}}"/>
-                Object ID : <span class="mongo-object-id">{{document._id.toString() || 'null'}}</span>
-            </label>
-            <div class="actions">
-                <a ng-show="resultTypes[resultSet.type].editable"
-                   ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode"
-                   ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
-                <a ng-show="resultTypes[resultSet.type].removable" ng-click="deleteDocument(document._id.toString())"><i class="icon-trash"></i></a>
+<div class="main documents" ng-show="resultSet.elements.length>0">
+    <div class="item-entry" ng-repeat="document in resultSet.elements" ng-class="{active: editMode}">
+        <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-class="{active: editMode}">
+            <div class="head" ng-init="editMode = false">
+                <label>
+                    <input type="checkbox" value="{{document._id.toString()}}"/>
+                    Object ID : <span class="mongo-object-id">{{document._id.toString() || 'null'}}</span>
+                </label>
+                <div class="actions">
+                    <a ng-show="resultTypes[resultSet.type].editable"
+                       ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode"
+                       ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
+                    <a ng-show="resultTypes[resultSet.type].removable" ng-click="deleteDocument(document._id.toString())"><i class="icon-trash"></i></a>
+                </div>
             </div>
-        </div>
 
-        <pre id="json-document-{{document._id.toString()}}" ng-class="{active: editMode}" class="prettyprint json limited pre" ng-bind-html-unsafe="document | commonJson"></pre>
+            <pre id="json-document-{{document._id.toString()}}" ng-class="{active: editMode}" class="prettyprint json limited pre" ng-bind-html-unsafe="document | commonJson"></pre>
 
-        <div class="foot" ng-show="editMode">
-            <div class="extra"></div>
-            <a ng-click="submitChange('json-document-'+document._id.toString(), document._id.toString(), document)" class="btn btn-primary"><i class="icon-ok icon-white"></i> Save</a>
-            <a ng-click="cancel()" class="btn"><i class="icon-remove"></i> Cancel</a>
+            <div class="foot" ng-show="editMode">
+                <div class="extra"></div>
+                <a ng-click="submitChange('json-document-'+document._id.toString(), document._id.toString(), document)" class="btn btn-primary"><i class="icon-ok icon-white"></i> Save</a>
+                <a ng-click="cancel()" class="btn"><i class="icon-remove"></i> Cancel</a>
+            </div>
         </div>
     </div>
 </div>
