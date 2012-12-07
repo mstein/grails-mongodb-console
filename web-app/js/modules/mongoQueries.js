@@ -103,7 +103,6 @@ MongoDBConsoleModule.directive('mgQueryTextfield', function factory(grails) {
             sizeclass:'@'
         },
         transclude:true,
-        //replace:true,
         restrict:'E',
         templateUrl:grails.resource('angular-templates', 'textfield.html'),
         link:function(scope, element, attrs) {
@@ -115,10 +114,10 @@ MongoDBConsoleModule.directive('mgQueryTextfield', function factory(grails) {
             scope.name = attrs.name;
             scope.$watch('model', function(newVal) {
                 scope.$emit('MgQueryChangeEvent', {input:attrs.name, value:newVal, active:scope.hasModel});
-            })
+            });
             scope.$watch('hasModel', function(newVal) {
                 scope.$emit('MgQueryChangeEvent', {input:attrs.name, value:'', active:scope.hasModel});
-            })
+            });
         }
     };
     return directiveDefinitionObject;
@@ -130,7 +129,6 @@ MongoDBConsoleModule.directive('mgQueryBoolean', function factory(grails) {
             model:'@'
         },
         transclude:true,
-        //replace:true,
         restrict:'E',
         templateUrl:grails.resource('angular-templates', 'booleanfield.html'),
         link:function(scope, element, attrs) {
@@ -150,7 +148,6 @@ MongoDBConsoleModule.directive('mgQueryEditor', function factory(grails) {
             model:'@'
         },
         transclude:true,
-        //replace:true,
         restrict:'E',
         templateUrl:grails.resource('angular-templates', 'ace-editor.html'),
         link:function(scope, element, attrs) {
@@ -179,8 +176,8 @@ MongoDBConsoleModule.directive('mgQueryAggregate', function factory(grails) {
     var directiveDefinitionObject = {
         scope:false,
         transclude:true,
-        replace:false,
         restrict:'E',
+        replace:false,
         templateUrl:grails.resource('angular-templates', 'dropdown.html'),
         link:function(scope, element, attrs) {
             scope.$parent.$watch('in', function(value){

@@ -294,6 +294,17 @@ class MviewerController {
 
         def db = mongo.getDB(mongoJson.dbname)
         def col = db.getCollection(mongoJson.colname)
+
+        // $limit & $skip must be integer
+        for(instruction in mongoJson.pipeline) {
+            def key = instruction.keySet().asList().first()
+            if(key in ['$limit', '$skip']) {
+                if(instruction[key] instanceof String) {
+                    instruction[key] = instruction[key].toInteger()
+                }
+            }
+        }
+
         def first = mongoJson.pipeline[0]
         def additionals = mongoJson.pipeline.size() > 1 ? mongoJson.pipeline[1..mongoJson.pipeline.size()-1] as BasicDBObject[] : [] as BasicDBObject[]
         def output = col.aggregate(first, additionals)
