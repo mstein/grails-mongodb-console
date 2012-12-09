@@ -102,7 +102,7 @@ function MongoISODate(stringDate) {
     this.$date = stringDate;
 
     MongoISODate.prototype.toJSON = function() {
-        return '';
+        return {"$date":this.$date};
     };
 
     MongoISODate.prototype.tengenJSON = function(value) {

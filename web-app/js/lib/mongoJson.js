@@ -306,6 +306,11 @@ function MongoJSON() {}
             if(/DBRef\(.+\)/.test(text)) {
                 text = text.replace(/DBRef\("([a-zA-Z0-9\-]+)", ([^\n\r]*?)\)/gm, '{"$ref":"$1", "$id":$2}');
             }
+            // empty Date call are replaced by the current date
+            if(/(ISO)?Date\(\)/.test(text)) {
+                var date = new Date();
+                text = text.replace(/(ISO)?Date\(\)/g, '{"$date":"'+date.toJSON()+'"}');
+            }
             // Date & ISODate
             if(/(ISO)?Date\(.+\)/.test(text)) {
                 text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:']+)"\)/g, '{"$date":"$2"}');
