@@ -234,7 +234,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
 
     $scope.validateCreateDocument = function() {
         var editor = $scope.editors["new-doc"];
-        var newDocument = MongoJSON.parse(editor.getValue());
+        var newDocument = MongoJSON.parseTengen(editor.getValue());
         mongodb[$scope.currentCollection].insert(newDocument).success(function() {
             $scope.selectCollection($scope.currentCollection);
         });
@@ -314,7 +314,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
                     fields = "";
                 }
 
-                cur = mongodb[$scope.currentCollection].find(MongoJSON.parse('{'+params.query+'}'), JSON.parse('{' + fields + '}'));
+                cur = mongodb[$scope.currentCollection].find(MongoJSON.parseTengen('{'+params.query+'}'), JSON.parse('{' + fields + '}'));
 
                 if(params.hasSort) {
                     cur.sort(MongoJSON.parse('{'+params.sort+'}'));
@@ -330,9 +330,10 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 });
                 break;
             case 'findOne':
-                cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parse('{'+params.query+'}'));
+                cur = mongodb[$scope.currentCollection].findOne(MongoJSON.parseTengen('{'+params.query+'}'));
                 cur.exec(function(data){
                     $scope.populateDocuments(data);
+                    $scope.totalCount = 1;
                 });
                 break;
             case 'update':
@@ -341,8 +342,8 @@ function DBListCtrl($scope, $timeout, mongodb) {
                         var upsert = params.upsert;
                         var multi = params.multi;
                         mongodb[$scope.currentCollection].update(
-                            MongoJSON.parse('{'+params.query+'}'),
-                            MongoJSON.parse('{'+params.document+'}'),
+                            MongoJSON.parseTengen('{'+params.query+'}'),
+                            MongoJSON.parseTengen('{'+params.document+'}'),
                             upsert,
                             multi
                         ).success(function(data) {
@@ -378,7 +379,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
                         "<pre>db."+$scope.currentDB+"."+$scope.currentCollection+".remove({"+params.query+"})</pre>",
                         function(confirm){
                             if(confirm) {
-                                mongodb[$scope.currentCollection].remove(MongoJSON.parse('{'+params.query+'}')).success(function(data){
+                                mongodb[$scope.currentCollection].remove(MongoJSON.parseTengen('{'+params.query+'}')).success(function(data){
                                     $scope.selectCollection($scope.currentCollection);
                                 });
                             }
@@ -388,7 +389,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
                 break;
             case "insert":
                 if(params.hasDocument && params.document != null) {
-                    mongodb[$scope.currentCollection].insert(MongoJSON.parse('{'+params.document+'}')).success(function() {
+                    mongodb[$scope.currentCollection].insert(MongoJSON.parseTengen('{'+params.document+'}')).success(function() {
                         $scope.selectCollection($scope.currentCollection);
                     });
                 }
@@ -402,7 +403,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
 
     $scope.submitChange = function(editorId, documentId, originalDocument) {
         var editor = $scope.editors[editorId];
-        var newDocument = MongoJSON.parse(editor.getValue());
+        var newDocument = MongoJSON.parseTengen(editor.getValue());
         var docId;
         if(typeof originalDocument._id === 'object' && typeof originalDocument._id.toStrictJSON === 'function') {
             docId = originalDocument._id.toStrictJSON();
@@ -435,5 +436,5 @@ function DBListCtrl($scope, $timeout, mongodb) {
 }
 
 function parseMongoJson(data, headerGetter) {
-    return MongoJSON.parse(data, mongoJsonReviver);
+    return MongoJSON.parseTengen(data);
 }

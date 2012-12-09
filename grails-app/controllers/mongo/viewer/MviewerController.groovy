@@ -1,5 +1,6 @@
 package mongo.viewer
 
+import com.mongodb.BasicDBList
 import grails.converters.JSON
 import com.gmongo.GMongo
 import com.mongodb.BasicDBObject
@@ -99,6 +100,37 @@ class MviewerController {
             e.printStackTrace()
             render status: 500
         }
+    }
+
+    /**
+     * Query the database for one document matching the query.
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.findOne(<query>, <fields>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database on which this find query should be ran
+     * @param colname (Required) The name of the collection on which this find query should be ran
+     * @param query (Optional) A JSON portion representing the criterias of the query, if none is provided, just return everything (up to the limit)
+     * @param fields (Optional) A JSON portion determining the field(s) to return in the results. If none provided, will return the complete document.
+     * Note that the _id field is always return unless explicitly excluded.
+     *
+     */
+    def findOne() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+        mviewerSession(db, col)
+
+        def result = col.findOne(mongoJson.query ?: new BasicDBObject(), mongoJson.fields ?: new BasicDBObject())
+        def args = [:]
+        for(key in result.keySet()) {
+            args[key] = marshallDocument(result[key])
+        }
+        def res = [results:[args], totalCount:args ? 1 : 0]
+        render res as JSON
     }
 
     /**
@@ -209,7 +241,6 @@ class MviewerController {
 
         def db = mongo.getDB(mongoJson.dbname)
         def col = db.getCollection(mongoJson.colname)
-
         if(!mongoJson.document) {
             render status:404, text:[message:'Missing document'] as JSON
             return
@@ -245,6 +276,9 @@ class MviewerController {
             return
         }
 
+        // Convert $numberLong
+        mongoJson.document = convertTypeDocument(mongoJson.document)
+        println mongoJson.document
         col.insert(mongoJson.document as BasicDBObject)
         render status:200, text:[message:'Document inserted'] as JSON
     }
@@ -390,6 +424,15 @@ class MviewerController {
                 }
                 res = list
                 break
+            case Long:
+            case BigDecimal:
+                // Warning : this is not a mongo syntax, just a workaround for the JS MongoJSON parser
+                // which is not able to handle big number
+                res = [$numberLong:element.toString()]
+                break
+            case Date:
+                res = [$date:element.format("yyyy-MM-dd'T'HH:mm:ss'Z'")]
+                break
             // DBRef are not resolve, we just show the collection name and the id of the entry
             // The client may ask for the specified entry afterward
             case com.mongodb.DBRef:
@@ -407,6 +450,33 @@ class MviewerController {
             default:
                 res = element
                 break
+        }
+        res
+    }
+
+    /**
+     *
+     * @param document
+     */
+    private convertTypeDocument(DBObject document) {
+        def res = document
+        for (key in document.keySet()) {
+            switch (key) {
+                case '$numberLong':
+                    res = document[key].toLong()
+                    break
+            }
+            if (document[key] instanceof DBObject) {
+                document[key] = convertTypeDocument(document[key])
+                res = document
+            } else if(document[key] instanceof BasicDBList) {
+                def elems = []
+                for(doc in document[key]) {
+                    elems << convertTypeDocument(doc)
+                }
+                document[key] = elems
+                res = document
+            }
         }
         res
     }

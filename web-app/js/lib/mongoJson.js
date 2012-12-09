@@ -49,10 +49,10 @@ function MongoJSON() {}
     }
 
     function enclose (value, original, useTengen) {
-        // If the value has a encloseJSON method, call it to obtain a replacement value.
+        // If the value has a tengenJSON method, call it to obtain a replacement value.
         if (useTengen && original && typeof original === 'object' &&
-            typeof original.encloseJSON === 'function') {
-            value = original.encloseJSON(value);
+            typeof original.tengenJSON === 'function') {
+            value = original.tengenJSON(value);
         }
         return value;
     }
@@ -86,6 +86,12 @@ function MongoJSON() {}
 // What happens next depends on the value's type.
 
         switch (typeof value) {
+            case 'function':
+                if(useTengen) {
+                    return enclose(value.call(), holder[key], useTengen);
+                } else {
+                    return value.call();
+                }
             case 'string':
                 return enclose(quote(value), holder[key], useTengen);
 
@@ -314,7 +320,7 @@ function MongoJSON() {}
             }
             // NumberLong
             if(/NumberLong\(.+\)/.test(text)) {
-                text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '$1');
+                text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '{"$numberLong":"$1"}');
             }
             // Regexp
             if(/\[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
@@ -369,5 +375,63 @@ function MongoJSON() {}
 
             throw new SyntaxError('MongoJSON.parse on :'+text);
         };
+    }
+
+// A convenience method to use the parser with the tengen reviver automatically
+    if(typeof MongoJSON.parseTengen !== 'function') {
+        MongoJSON.parseTengen = function(value) {
+            return MongoJSON.parse(value, mongoJsonReviver);
+        }
+    }
+
+    /**
+     * Extension to the JSON parser to allow mongo-formatted JSON,
+     * which may be traditional strict JSON or mongo extended JSON ($oid, $ref, $id, ...).
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    function mongoJsonReviver(key, value){
+        var val = value;
+        if(value != null && typeof value === 'object') {
+            if(value['$oid'] != null) {
+                val = new MongoObjectId(value['$oid']);
+            }
+            if(value['$data'] != null) {
+                val = new MongoBinaryData(value['$data'].size);
+            }
+            if(value['$ref'] != null) {
+                val = new MongoReference(value['$ref'], value['$id']);
+            }
+            if(value['$numberLong'] != null) {
+                val = new MongoNumberLong(value['$numberLong']);
+            }
+            if(value['$date']) {
+                val = new MongoISODate(value["$date"]);
+            }
+        } else if (value != null && typeof value === 'string') {
+            val = escapeHtml(value);
+        }
+
+        if(val == null) {
+            val = undefined;
+        }
+        return val;
+    }
+
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s];
+        });
     }
 }());

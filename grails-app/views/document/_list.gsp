@@ -46,7 +46,6 @@
 <g:render template="/document/find" />
 <div class="pagination-top" ng-show="currentCollection && totalCount > 0">
     <paginator id="top-paginator" total="{{totalCount}}"/>
-    %{--<g:render template="/mviewer/paginator" model="[varTotal: 'totalCount']" />--}%
 </div>
 
 <div class="main documents" ng-show="resultSet.elements.length>0">
