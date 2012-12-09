@@ -1,5 +1,5 @@
 /**
- * Based on json2.js and customized to allow some illegal JSON representation so that the output is similar to the one
+ * Based on json2.js and customized to allow some illegal strict JSON representation so that the output is similar to the one
  * provided by the mongo shell.
  *
  * See http://www.JSON.org/js.html
@@ -31,6 +31,18 @@ function MongoJSON() {}
         },
         rep;
 
+// A function used by a Regex replacer to tolerate unquoted keys
+    var unquotedKeyPattern = /({|,)\s*([a-zA-Z0-9_$]+)\s*: *(.+?)(,|})/g;
+    function quoteKeys(match, startSymbol, key, value, endSymbol, options) {
+        var val = value;
+        if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+,|}/g.test(val)) {
+            // add the end symbol as it wouldn't match the pattern without it
+            val = (value+endSymbol).replace(unquotedKeyPattern, quoteKeys)
+        } else {
+            val += endSymbol
+        }
+        return startSymbol + '"'+ key +'":' + val
+    }
 
     function quote(string) {
 
@@ -291,11 +303,11 @@ function MongoJSON() {}
 //  Date & ISODate become $date
 //  Timestamp becomes $timestamp
 //  undefined becomes $undefined
-//  NumberLong becomes javascript Number
 //  Regexp becomes $regex & $options
+//  #Special case : NumberLong becomes $numberLong, which is NOT a mongo representation, but needed for our own scheme
 // TODO
 //  BinData
-//  Support DBRef with the third parameter (the dbname)
+//  Support DBRef with the third parameter (the dbname), and support parsing of the id parameter of the DBRef to allow any mongodb bson type
 
 
             // ObjectId
@@ -341,6 +353,12 @@ function MongoJSON() {}
             if(/<script>.*?<\/script>/gi.test(text)) {
                 text = text.replace(/<script>(.*?)<\/script>/gi, '&lt;script&gt;$1&lt;/script&gt;');
             }*/
+
+            // Allow keys to tolerate the lack of double quote in certain circumstances
+            if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+,|}/g.test(text)) {
+                text = text.replace(unquotedKeyPattern, quoteKeys);
+                console.log(text);
+            }
 
 // In the second stage, we run the text against regular expressions that look
 // for non-JSON patterns. We are especially concerned with '()' and 'new'
@@ -417,10 +435,6 @@ function MongoJSON() {}
             }
         } else if (value != null && typeof value === 'string') {
             val = escapeHtml(value);
-        }
-
-        if(val == null) {
-            val = undefined;
         }
         return val;
     }
