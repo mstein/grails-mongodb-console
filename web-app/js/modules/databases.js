@@ -265,7 +265,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
                     fields = "";
                 }
 
-                cur = mongodb[$scope.currentCollection].find(MongoJSON.parseTengen('{'+params.query+'}'), JSON.parse('{' + fields + '}'));
+                cur = mongodb[$scope.currentCollection].find(MongoJSON.parseTengen('{'+params.query+'}'), MongoJSON.parse('{' + fields + '}'));
 
                 if(params.hasSort) {
                     cur.sort(MongoJSON.parse('{'+params.sort+'}'));
