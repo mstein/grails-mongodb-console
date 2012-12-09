@@ -4,30 +4,16 @@ MongoDBConsoleModule.directive('mongoQueries', function factory($compile) {
         restrict:'E',
         replace:true,
         scope:false,
-        controller:function($scope){
-            $scope.watchedValues = {};
-            $scope.delete = function(array, key) {
-                array.splice(key, 1);
-            };
-            $scope.$on('MgQueryChangeEvent', function(event, params) {
-                $scope.watchedValues[params.input] = params.value;
-                if(params.active != undefined) {
-                    $scope.watchedValues["has"+params.input.charAt(0).toUpperCase() + params.input.slice(1)] = params.active;
-                }
-            });
-            $scope.submitQuery = function() {
-                $scope.$emit('MongoDBQuerySubmitEvent', $scope.watchedValues);
-            };
-        },
+        controller:MongoQueriesCtrl,
         template:"<span></span>",
         compile: function compile(tElement, tAttrs, linker) {
 
             return function(scope, iterStartElement, tAttrs) {
-                if(!scope[tAttrs.mgIn]) {
+                if(!scope[tAttrs.mgCurrent]) {
                     throw Error("Expecting inputs value in mg-in attribute, no valid inputs found in scope");
                 }
-                var inputs = scope[tAttrs.mgIn];
-                var filters = scope[tAttrs.mgFilters];
+                var inputs = scope.queriesInputs;
+                var filters = scope.queriesActionsFilters;
                 var current = scope[tAttrs.mgCurrent];
                 var input;
 
@@ -192,3 +178,70 @@ MongoDBConsoleModule.directive('mgQueryAggregate', function factory(grails) {
     };
     return directiveDefinitionObject;
 });
+
+function MongoQueriesCtrl($scope) {
+    $scope.queriesInputs = {
+        query:      {type:"text", size:"large", placeholder:"example : 'field':'value', '$gt':{'age' : 18}", label:false, show:true},
+        fields:     {type:"text", size:"medium", placeholder:"'name':1, '_id':0"},
+        sort:       {type:"text", size:"medium", placeholder:"n:1, a:-1"},
+        skip:       {type:"text", size:"small", placeholder:"offset"},
+        limit:      {type:"text", size:"small", placeholder:"max"},
+        document:   {type:"text", size:"large", placeholder:"'name':'bob', 'age':24"},
+        upsert:     {type:"boolean"},
+        multi:      {type:"boolean"},
+        map:        {type:"editor", language:'javascript'},
+        reduce:     {type:"editor", language:'javascript'},
+        finalize:   {type:"editor", language:'javascript'},
+        options:    {type:"text", size:"medium"},
+        aggregation:{type:"select", duplication:true, options:{
+            " $group":   {type:"text", size:"large", placeholder:"'_id':'$name', 'nb_tweets':{'$sum':1}", isObject:true},
+            " $limit":   {type:"text", size:"small", placeholder:"max", isObject:false},
+            " $match":   {type:"text", size:"large", placeholder:"'database':/^mongo/", isObject:true},
+            " $project": {type:"text", size:"large", placeholder:"'city':'$_id'", isObject:true},
+            " $sort":    {type:"text", size:"medium", placeholder:"'name':1, 'age':-1", isObject:true},
+            " $unwind":  {type:"text", size:"medium", placeholder:"'tags'", isObject:false},
+            " $skip":    {type:"text", size:"small", placeholder:"offset", isObject:false}
+        }}
+    };
+
+    $scope.queriesActionsFilters = {
+        "find": {
+            inputs: ["query", "fields", "sort", "skip", "limit"]
+        },
+        "findOne": {
+            inputs: ["query"]
+        },
+        "aggregate" : {
+            inputs: ["aggregation"]
+        },
+        "mapReduce": {
+            inputs: ["map", "reduce", "finalize", "options"]
+        },
+        "update": {
+            inputs: ["query", "document", "upsert", "multi"]
+        },
+        "insert": {
+            inputs: ["document"]
+        },
+        "remove": {
+            inputs: ["query"]
+        },
+        "ensureIndex": {
+            inputs: ["query", "options"]
+        }
+    };
+
+    $scope.watchedValues = {};
+    $scope.delete = function(array, key) {
+        array.splice(key, 1);
+    };
+    $scope.$on('MgQueryChangeEvent', function(event, params) {
+        $scope.watchedValues[params.input] = params.value;
+        if(params.active != undefined) {
+            $scope.watchedValues["has"+params.input.charAt(0).toUpperCase() + params.input.slice(1)] = params.active;
+        }
+    });
+    $scope.submitQuery = function() {
+        $scope.$emit('MongoDBQuerySubmitEvent', $scope.watchedValues);
+    };
+}

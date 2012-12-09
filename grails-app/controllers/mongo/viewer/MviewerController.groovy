@@ -306,7 +306,7 @@ class MviewerController {
         def col = db.getCollection(mongoJson.colname)
 
         col.remove(mongoJson.criteria ?: new BasicDBObject())
-        render status:200, text:[message:'Document inserted'] as JSON
+        render status:200, text:[message:'Document removed'] as JSON
     }
 
     /**

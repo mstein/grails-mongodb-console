@@ -18,6 +18,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
     $scope.documents = [];
     $scope.resultSet = {type:'document', elements:[]};
     $scope.totalCount = 0;
+    $scope.latestQuery = null;
     $scope.editors = {};
     $scope.resultTypes = {
         json:{editable:false, removable:false},
@@ -25,58 +26,6 @@ function DBListCtrl($scope, $timeout, mongodb) {
     };
 
     $scope.currentAction= "find";
-    $scope.queriesActions = ["find", "findOne", "aggregate", "mapReduce", "update", "insert", "remove"];
-
-    $scope.queriesInputs = {
-        query:      {type:"text", size:"large", placeholder:"example : 'field':'value', '$gt':{'age' : 18}", label:false, show:true},
-        fields:     {type:"text", size:"medium", placeholder:"'name':1, '_id':0"},
-        sort:       {type:"text", size:"medium", placeholder:"n:1, a:-1"},
-        skip:       {type:"text", size:"small", placeholder:"offset"},
-        limit:      {type:"text", size:"small", placeholder:"max"},
-        document:   {type:"text", size:"large", placeholder:"'name':'bob', 'age':24"},
-        upsert:     {type:"boolean"},
-        multi:      {type:"boolean"},
-        map:        {type:"editor", language:'javascript'},
-        reduce:     {type:"editor", language:'javascript'},
-        finalize:   {type:"editor", language:'javascript'},
-        options:    {type:"text", size:"medium"},
-        aggregation:{type:"select", duplication:true, options:{
-            " $group":   {type:"text", size:"large", placeholder:"'_id':'$name', 'nb_tweets':{'$sum':1}", isObject:true},
-            " $limit":   {type:"text", size:"small", placeholder:"max", isObject:false},
-            " $match":   {type:"text", size:"large", placeholder:"'database':/^mongo/", isObject:true},
-            " $project": {type:"text", size:"large", placeholder:"'city':'$_id'", isObject:true},
-            " $sort":    {type:"text", size:"medium", placeholder:"'name':1, 'age':-1", isObject:true},
-            " $unwind":  {type:"text", size:"medium", placeholder:"'tags'", isObject:false},
-            " $skip":    {type:"text", size:"small", placeholder:"offset", isObject:false}
-        }}
-    };
-
-    $scope.queriesActionsFilters = {
-        "find": {
-            inputs: ["query", "fields", "sort", "skip", "limit"]
-        },
-        "findOne": {
-            inputs: ["query"]
-        },
-        "aggregate" : {
-            inputs: ["aggregation"]
-        },
-        "mapReduce": {
-            inputs: ["map", "reduce", "finalize", "options"]
-        },
-        "update": {
-            inputs: ["query", "document", "upsert", "multi"]
-        },
-        "insert": {
-            inputs: ["document"]
-        },
-        "remove": {
-            inputs: ["query"]
-        },
-        "ensureIndex": {
-            inputs: ["query", "options"]
-        }
-    };
 
     $scope.init = function(selectedDB, selectedCol) {
         mongodb.listDatabases().success(function(data) {
@@ -280,7 +229,9 @@ function DBListCtrl($scope, $timeout, mongodb) {
         bootbox.confirm("This action cannot be undone. Delete this document ?", function(confirm){
             if (confirm) {
                 // Delete document
-                mongodb[$scope.currentCollection].remove({"_id":id});
+                mongodb[$scope.currentCollection].remove({"_id":id}).success(function(data){
+                    $scope.selectCollection($scope.currentCollection);
+                });
             }
         });
     };
