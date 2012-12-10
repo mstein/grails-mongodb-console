@@ -69,7 +69,17 @@ function MongoJSON() {}
         return value;
     }
 
-    function str(key, holder, tengen) {
+    function str(key, holder, options) {
+        var tengen = false;
+        var escapeHtml = false;
+        if(options != undefined) {
+            if(options.tengen != undefined) {
+                tengen = options.tengen;
+            }
+            if(options.escapeHtml != undefined) {
+                escapeHtml = options.escapeHtml;
+            }
+        }
 
 // Produce a string from holder[key].
 
@@ -105,6 +115,10 @@ function MongoJSON() {}
                     return value.call();
                 }
             case 'string':
+                if(escapeHtml) {
+                    console.log("escaping html !");
+                    value = escapeHtmlChars(value);
+                }
                 return enclose(quote(value), holder[key], useTengen);
 
             case 'number':
@@ -148,7 +162,7 @@ function MongoJSON() {}
 
                     length = value.length;
                     for (i = 0; i < length; i += 1) {
-                        partial[i] = str(i, value, useTengen) || 'null';
+                        partial[i] = str(i, value, options) || 'null';
                     }
 
 // Join all of the elements together, separated with commas, and wrap them in
@@ -170,7 +184,7 @@ function MongoJSON() {}
                     for (i = 0; i < length; i += 1) {
                         if (typeof rep[i] === 'string') {
                             k = rep[i];
-                            v = str(k, value, useTengen);
+                            v = str(k, value, options);
                             if (v) {
                                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
                             }
@@ -182,7 +196,7 @@ function MongoJSON() {}
 
                     for (k in value) {
                         if (Object.prototype.hasOwnProperty.call(value, k)) {
-                            v = str(k, value, useTengen);
+                            v = str(k, value, options);
                             if (v) {
                                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
                             }
@@ -207,8 +221,7 @@ function MongoJSON() {}
 // If the MongoJSON object does not yet have a stringify method, give it one.
 
     if (typeof MongoJSON.stringify !== 'function') {
-        MongoJSON.stringify = function (value, replacer, space, tengen) {
-
+        MongoJSON.stringify = function (value, replacer, space, options) {
 // The stringify method takes a value and an optional replacer, and an optional
 // space parameter, and returns a JSON text. The replacer can be a function
 // that can replace values, or an array of strings that will select the keys.
@@ -246,7 +259,7 @@ function MongoJSON() {}
 // Make a fake root object containing our value under the key of ''.
 // Return the result of stringifying the value.
 
-            return str('', {'': value}, tengen);
+            return str('', {'': value}, options);
         };
     }
 
@@ -433,8 +446,6 @@ function MongoJSON() {}
             if(value['$date']) {
                 val = new MongoISODate(value["$date"]);
             }
-        } else if (value != null && typeof value === 'string') {
-            val = escapeHtml(value);
         }
         return val;
     }
@@ -448,7 +459,7 @@ function MongoJSON() {}
         "/": '&#x2F;'
     };
 
-    function escapeHtml(string) {
+    function escapeHtmlChars(string) {
         return String(string).replace(/[&<>"'\/]/g, function (s) {
             return entityMap[s];
         });
