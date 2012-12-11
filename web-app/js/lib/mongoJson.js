@@ -116,7 +116,6 @@ function MongoJSON() {}
                 }
             case 'string':
                 if(escapeHtml) {
-                    console.log("escaping html !");
                     value = escapeHtmlChars(value);
                 }
                 return enclose(quote(value), holder[key], useTengen);
@@ -370,7 +369,6 @@ function MongoJSON() {}
             // Allow keys to tolerate the lack of double quote in certain circumstances
             if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+,|}/g.test(text)) {
                 text = text.replace(unquotedKeyPattern, quoteKeys);
-                console.log(text);
             }
 
 // In the second stage, we run the text against regular expressions that look
@@ -454,13 +452,14 @@ function MongoJSON() {}
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
-        '"': '&quot;',
+        '\\': "&#92;",
+        '"': '&#92;&quot;',
         "'": '&#39;',
         "/": '&#x2F;'
     };
 
     function escapeHtmlChars(string) {
-        return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return String(string).replace(/[&<>\\\"'\/]/g, function (s) {
             return entityMap[s];
         });
     }
