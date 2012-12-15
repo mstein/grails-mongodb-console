@@ -28,7 +28,7 @@
             <td width="10px">
                 <input type="checkbox" />
             </td>
-            <td ng-click="selectCollection(collection)"><a ng-click="selectCollection(collection)">{{collection}}</</td>
+            <td ng-click="selectCollection(collection)"><a href="${createLink(controller:'mongo')}/{{currentDB}}/{{collection}}" ng-click="selectCollection(collection)">{{collection}}</a></td>
             <td width="10px" nowrap="nowrap">
                 <a><i class="icon-edit"></i></a>
                 <a><i class="icon-trash"></i></a>

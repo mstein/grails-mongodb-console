@@ -20,8 +20,20 @@ class MviewerController {
         session.mviewer.currentCol = colname
     }
 
+    def tplDatabase() {
+        render template: '/database/table', model: [databases:mongo.mongo.getDatabaseNames()]
+    }
+
+    def tplCollections() {
+        render template: '/collection/table', model: [databases:mongo.mongo.getDatabaseNames()]
+    }
+
+    def tplDocuments(){
+        render template: '/document/list', model: [databases:mongo.mongo.getDatabaseNames()]
+    }
+
     def index() {
-        [databases:mongo.mongo.getDatabaseNames()]
+        [databases:mongo.mongo.getDatabaseNames(), currentDB: params.dbname, currentCol: params.colname]
     }
 
     def listDb() {
@@ -343,7 +355,7 @@ class MviewerController {
         def additionals = mongoJson.pipeline.size() > 1 ? mongoJson.pipeline[1..mongoJson.pipeline.size()-1] as BasicDBObject[] : [] as BasicDBObject[]
         def output = col.aggregate(first, additionals)
 
-        def results = output.commandResult?.result?.inject([]) { coll, BasicDBObject entry ->
+        Collection results = output.commandResult?.result?.inject([]) { coll, BasicDBObject entry ->
             def args = [:]
             for(key in entry.keySet()) {
                 args[key] = marshallDocument(entry[key])
@@ -352,6 +364,13 @@ class MviewerController {
             coll
         }
 
+        // The results may be very big
+        // To prevent the client to hang out because of a big amount of documents, we arbritrary limit the number of results.
+        // TODO : add a flag to inform the user that the output has been truncated and ask him to precise the query
+        // TODO 2 : handle something like pagination on the results so that the user can browse the whole set without having memory issue
+        if(results.size() > 60) {
+            results = results[0..60]
+        }
         render status:200, text:results as JSON
     }
 

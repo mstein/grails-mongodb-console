@@ -32,10 +32,13 @@ function DBListCtrl($scope, $timeout, mongodb) {
             $scope.databases = data.databases;
             $scope.totalSize = data.totalSize;
             if(selectedDB != null) {
-                $scope.selectdb(selectedDB);
-            }
-            if(selectedCol != null) {
-                $scope.selectCollection(selectedCol);
+                $scope.selectdb(selectedDB).success(function() {
+
+                    if(selectedCol != null) {
+                        $scope.selectCollection(selectedCol);
+
+                    }
+                });
             }
         });
     };
@@ -82,7 +85,7 @@ function DBListCtrl($scope, $timeout, mongodb) {
         $scope.resultSet.elements = [];
         $scope.populateDocuments([]);
 
-        mongodb.use(dbname).success(function(data) {
+        return mongodb.use(dbname).success(function(data) {
             $scope.collections = data;
         });
     };
@@ -93,7 +96,6 @@ function DBListCtrl($scope, $timeout, mongodb) {
         var args = {};
         var offset = params != undefined ?params.offset : null;
         var max = params != undefined ? params.max : null;
-
         mongodb[colname].find().skip(offset).limit(max).exec(function(data) {
             $scope.populateDocuments(data);
         }, function(data){alert(data);});

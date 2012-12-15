@@ -25,7 +25,7 @@
             <td width="10px">
                 <input type="checkbox" />
             </td>
-            <td ng-click="selectdb(db.name)"><a ng-click="selectdb(db.name)">{{db.name}}</a></td>
+            <td ng-click="selectdb(db.name)"><a ng-click="selectdb(db.name)" href="${createLink(controller:'mongo')}/{{db.name}}">{{db.name}}</a></td>
             <td ng-click="selectdb(db.name)">&nbsp;</td>
             <td ng-click="selectdb(db.name)">{{db.sizeOnDisk | fileSize}}</td>
             <td width="40px">

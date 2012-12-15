@@ -1,8 +1,12 @@
-MongoDBConsoleModule.factory('mongodb', ['$http', function($http) {
+MongoDBConsoleModule.factory('mongodb', ['$http', 'grails', function($http, grails) {
     MongoDBService.$http = $http;
+    MongoDBService.grails = grails;
     MongoDBService.fn.$http = $http;
+    MongoDBService.fn.grails = grails;
     MongoCollection.prototype.$http = $http;
+    MongoCollection.prototype.grails = grails;
     MongoDBQuery.prototype.$http = $http;
+    MongoDBQuery.prototype.grails = grails;
     return MongoDBService;
 }]);
 
@@ -14,7 +18,7 @@ MongoDBService.fn = MongoDBService.prototype = {
     constructor:MongoDBService,
     use:function(dbname) {
         MongoDBService.$db = dbname;
-        var promise = this.$http.get('mviewer/listCollections?dbname='+dbname);
+        var promise = this.$http.get(this.grails.createLink({controller:'mviewer', action:'listCollections', params:{dbname:dbname}}));
         var $self = this;
         var db = dbname;
         promise.success(function(data) {
@@ -26,11 +30,12 @@ MongoDBService.fn = MongoDBService.prototype = {
         return promise;
     },
     listDatabases:function() {
-        return this.$http.get('mviewer/listDb');
+        return this.$http.get(this.grails.createLink({controller:'mviewer', action:'listDb'}));
     },
     dropDatabase:function() {
         if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
-            return this.$http.post('mviewer/dropDb', {dbname:MongoDBService.$db}).success(function(data) {
+            var url = this.grails.createLink({controller:'mviewer', action:'dropDb'});
+            return this.$http.post(url, {dbname:MongoDBService.$db}).success(function(data) {
                 MongoDBService.$db = null;
             })
         } else {
@@ -38,7 +43,8 @@ MongoDBService.fn = MongoDBService.prototype = {
         }
     },
     createDatabase:function(dbname) {
-        return this.$http.post('mviewer/createDb', {dbname:dbname}).success(function() {
+        var url = this.grails.createLink({controller:'mviewer', action:'createDb'});
+        return this.$http.post(url, {dbname:dbname}).success(function() {
             MongoDBService.$db = dbname;
         });
     },
@@ -46,7 +52,8 @@ MongoDBService.fn = MongoDBService.prototype = {
         // TODO Capped collection == support config
         if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
             var $self=this;
-            return this.$http.post('mviewer/createCollection', {dbname:MongoDBService.$db, newColname:colname}).success(function(data) {
+            var url = this.grails.createLink({controller:'mviewer', action:'createCollection'});
+            return this.$http.post(url, {dbname:MongoDBService.$db, newColname:colname}).success(function(data) {
                 $self[colname] = new MongoCollection($self, MongoDBService.$db, colname);
             });
         } else {
@@ -82,11 +89,13 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
     };
     MongoCollection.prototype.remove = function(criteria) {
         var data = {dbname:this._db, colname:this._name, criteria:criteria};
-        return this.$http.post('mviewer/remove', MongoJSON.stringify(data));
+        var url = this.grails.createLink({controller:'mviewer', action:'remove'});
+        return this.$http.post(url, MongoJSON.stringify(data));
     };
     MongoCollection.prototype.insert = function(document) {
         var data = {dbname:this._db, colname:this._name, document:document};
-        return this.$http.post('mviewer/insert', MongoJSON.stringify(data));
+        var url = this.grails.createLink({controller:'mviewer', action:'insert'});
+        return this.$http.post(url, MongoJSON.stringify(data));
     };
 
     MongoCollection.prototype.update = function(criteria, document, upsert, multi) {
@@ -110,11 +119,13 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
         if(document._id != null && document != undefined) {
             delete document._id;
         }
-        return this.$http.post('mviewer/update', MongoJSON.stringify(data));
+        var url = this.grails.createLink({controller:'mviewer', action:'update'});
+        return this.$http.post(url, MongoJSON.stringify(data));
     };
     MongoCollection.prototype.renameCollection=function(newColname) {
         var $self = this;
-        return this.$http.post('mviewer/renameCollection', {dbname:this._db, colname:this._name, newColname:newColname}).success(function(){
+        var url = this.grails.createLink({controller:'mviewer', action:'renameCollection'});
+        return this.$http.post(url, {dbname:this._db, colname:this._name, newColname:newColname}).success(function(){
             $self._mongodbService[$self._name] = undefined;
             $self._name = newColname;
             $self._mongodbService[newColname] = $self;
@@ -122,14 +133,16 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
     };
     MongoCollection.prototype.dropCollection = function() {
         var $self = this;
-        return this.$http.post('mviewer/dropCollection', {dbname:this._db, colname:this._name}).success(function(){
+        var url = this.grails.createLink({controller:'mviewer', action:'dropCollection'});
+        return this.$http.post(url, {dbname:this._db, colname:this._name}).success(function(){
             $self._mongodbService[$self._name] = undefined;
             delete this;
         });
     };
 
     MongoCollection.prototype.aggregate = function(pipeline) {
-        return this.$http.post('mviewer/aggregate', MongoJSON.stringify({dbname:this._db, colname:this._name, pipeline:pipeline}), {transformResponse:parseMongoJson});
+        var url = this.grails.createLink({controller:'mviewer', action:'aggregate'});
+        return this.$http.post(url, MongoJSON.stringify({dbname:this._db, colname:this._name, pipeline:pipeline}), {transformResponse:parseMongoJson});
     };
 }
 
@@ -181,7 +194,8 @@ function MongoDBQuery(db, collection, query, fields) {
         if(this._fields != null) {
             args['fields'] = this._fields;
         }
-        this.$http.post('mviewer/find', MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
+        var url = this.grails.createLink({controller:'mviewer', action:'find'});
+        this.$http.post(url, MongoJSON.stringify(args), {transformResponse:parseMongoJson}).success(function(data) {
             successCallback(data);
         }).error(function(data){ errorCallback(data); });
     };
@@ -194,7 +208,8 @@ function MongoDBQuery(db, collection, query, fields) {
         if(this._query != null) {
             args['query'] = this._query;
         }
-        this.$http.post('mviewer/count', MongoJSON.stringify(args)).success(function(data) {
+        var url = this.grails.createLink({controller:'mviewer', action:'count'});
+        this.$http.post(url, MongoJSON.stringify(args)).success(function(data) {
             successCallback(data);
         }).error(function(data){ errorCallback(data); });
     };

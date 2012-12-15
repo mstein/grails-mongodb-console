@@ -5,20 +5,7 @@
 </head>
 <body>
 
-%{-- List of a database --}%
-<div id="page-db" ng-show="!currentDB && !currentCollection">
-    <g:render template="/database/table" />
-</div>
-
-%{-- List collections of a database --}%
-<div id="page-collection" ng-show="currentDB && !currentCollection">
-    <g:render template="/collection/table" />
-</div>
-
-%{-- Documents of a collection --}%
-<div id="page-document" ng-show="currentDB && currentCollection">
-    <g:render template="/document/list" />
-</div>
+<div ng-view></div>
 
 </body>
 </html>

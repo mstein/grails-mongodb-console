@@ -4,6 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
+    <meta name="fragment" content="!" />
+
     <title>MongoDB Viewer Plugin</title>
 
     <link rel="shortcut icon" href="${resource(dir: 'img', file: 'favicon.ico')}" type="image/x-icon" >
@@ -48,15 +50,12 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongoQueries.js")}"></script>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongodbService.js")}"></script>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "paginator.js")}"></script>
+  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "routing.js")}"></script>
+  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "paginator.js")}"></script>
     <g:layoutHead/>
 </head>
 
-<body class="body-application" ng-controller="DBListCtrl" ng-init="init(${
-    session.mviewer?.with {
-        (currentDB ? '\'' + currentDB + '\'' : '') + (currentCol ? ',\'' + currentCol + '\'' : '')
-    }
-})">
+<body class="body-application" ng-controller="DBListCtrl" ng-init="init(${(currentDB ? '\'' + currentDB + '\'' : '') + (currentCol ? ',\'' + currentCol + '\'' : '')})">
 
 <g:render template="/layouts/navigation"/>
 

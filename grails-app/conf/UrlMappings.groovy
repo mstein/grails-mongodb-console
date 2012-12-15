@@ -7,6 +7,11 @@ class UrlMappings {
 			}
 		}
 
+        "/mongo/$dbname?/$colname?" {
+            controller = "mviewer"
+            action = "index"
+        }
+
 		"/$action?/$id?"(controller: "mviewer")
 
 		"500"(view:'/error')
