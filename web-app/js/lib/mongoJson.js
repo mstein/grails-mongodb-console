@@ -32,16 +32,15 @@ function MongoJSON() {}
         rep;
 
 // A function used by a Regex replacer to tolerate unquoted keys
-    var unquotedKeyPattern = /({|,)\s*([a-zA-Z0-9_$]+)\s*: *(.+?)(,|})/g;
-    function quoteKeys(match, startSymbol, key, value, endSymbol, options) {
+    //"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?
+    var unquotedKeyPattern = /({|,)\s*([a-zA-Z0-9_$]+)\s*: *("[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)(?=,|})/g;
+    function quoteKeys(match, startSymbol, key, value, options) {
         var val = value;
-        if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+,|}/g.test(val)) {
+        if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|}/.test(val)) {
             // add the end symbol as it wouldn't match the pattern without it
-            val = (value+endSymbol).replace(unquotedKeyPattern, quoteKeys)
-        } else {
-            val += endSymbol
+            val = value.replace(unquotedKeyPattern, quoteKeys)
         }
-        return startSymbol + '"'+ key +'":' + val
+        return startSymbol + '"'+ key +'":' + val;
     }
 
     function quote(string) {
@@ -367,7 +366,7 @@ function MongoJSON() {}
             }*/
 
             // Allow keys to tolerate the lack of double quote in certain circumstances
-            if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+,|}/g.test(text)) {
+            if(/\{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|\}/.test(text)) {
                 text = text.replace(unquotedKeyPattern, quoteKeys);
             }
 
@@ -389,12 +388,10 @@ function MongoJSON() {}
                 .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
                 .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
-
 // In the third stage we use the eval function to compile the text into a
 // JavaScript structure. The '{' operator is subject to a syntactic ambiguity
 // in JavaScript: it can begin a block or an object literal. We wrap the text
 // in parens to eliminate the ambiguity.
-
                 j = eval('(' + text + ')');
 
 // In the optional fourth stage, we recursively walk the new structure, passing
@@ -406,7 +403,6 @@ function MongoJSON() {}
             }
 
 // If the text is not JSON parseable, then a SyntaxError is thrown.
-
             throw new SyntaxError('MongoJSON.parse on :'+text);
         };
     }
