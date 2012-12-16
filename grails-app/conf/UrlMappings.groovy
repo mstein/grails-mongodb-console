@@ -9,7 +9,7 @@ class UrlMappings {
 
         "/mongo/$dbname?/$colname?" {
             controller = "mviewer"
-            action = "index"
+            action = "dispatchLink"
         }
 
 		"/$action?/$id?"(controller: "mviewer")

@@ -8,7 +8,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputCopy">Name</label>
                 <div class="controls">
-                    <input type="text" id="inputCopy" value="{{currentDB}}-copy"/>
+                    <input type="text" id="inputCopy" value="{{currentDB()}}-copy"/>
                 </div>
             </div>
         </form>

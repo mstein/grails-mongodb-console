@@ -20,6 +20,10 @@ class MviewerController {
         session.mviewer.currentCol = colname
     }
 
+    def dispatchLink() {
+        redirect url: "/#/mongo${params.dbname? '/'+params.dbname : ''}${params.colname ? '/'+params.colname : ''}"
+    }
+
     def tplDatabase() {
         render template: '/database/table', model: [databases:mongo.mongo.getDatabaseNames()]
     }

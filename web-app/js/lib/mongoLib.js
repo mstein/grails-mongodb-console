@@ -9,22 +9,22 @@
  * @constructor
  */
 function MongoObjectId(val) {
-    this.value = val;
+    this.$oid = val;
 
     MongoObjectId.prototype.tengenJSON = function(value) {
-        return "<span class=\"mongo-object-id\">ObjectId(" + value + ')</span>';
+        return '<span class="mongo-object-id">ObjectId("' + this.$oid + '")</span>';
     };
 
     MongoObjectId.prototype.toStrictJSON = function() {
-        return {"$oid":this.value};
+        return this;
     };
 
     MongoObjectId.prototype.toJSON = function() {
-        return this.value;
+        return this;
     };
 
     MongoObjectId.prototype.toString = function() {
-        return this.value;
+        return this.$oid;
     };
 }
 

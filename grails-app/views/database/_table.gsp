@@ -21,13 +21,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="db in databases" class="item" ng-class="{active: db.name == currentDB}">
+        <tr ng-repeat="db in databases()" class="item" ng-class="{active: db.name == currentDB}">
             <td width="10px">
                 <input type="checkbox" />
             </td>
-            <td ng-click="selectdb(db.name)"><a ng-click="selectdb(db.name)" href="${createLink(controller:'mongo')}/{{db.name}}">{{db.name}}</a></td>
-            <td ng-click="selectdb(db.name)">&nbsp;</td>
-            <td ng-click="selectdb(db.name)">{{db.sizeOnDisk | fileSize}}</td>
+            <td ng-click="changePath('/mongo/'+db.name)"><a href="#/mongo/{{db.name}}">{{db.name}}</a></td>
+            <td>&nbsp;</td>
+            <td>{{db.sizeOnDisk | fileSize}}</td>
             <td width="40px">
                 <a href="#"><i class="icon-edit"></i></a>
                 <a href="#"><i class="icon-trash"></i></a>

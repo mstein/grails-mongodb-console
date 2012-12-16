@@ -3,11 +3,11 @@
     <div class="title">
         <div class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown">
-                {{currentDB}}
+                {{currentDB()}}
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu" role="menu">
-                <li><a ng-click="selectdb(currentDB)"> Collection</a></li>
+                <li><a ng-click="selectdb(currentDB())"> Collections</a></li>
                 <li class="divider"></li>
                 <li><a ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a></li>
                 <li><a ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a></li>
@@ -19,7 +19,7 @@
             </ul>
         </div>
         <span class="divider"></span>
-        <span ng-show="!renamingCol" ng-dblclick="renameCol('rename-new-col')">{{currentCollection}}</span>
+        <span ng-show="!renamingCol" ng-dblclick="renameCol('rename-new-col')">{{currentCollection()}}</span>
 
         <div class="rename input-append" ng-show="renamingCol">
             <div class="btn-group">
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div ng-show="currentCollection" class="nav-buttons">
+    <div ng-show="currentCollection()" class="nav-buttons">
         <a class="btn btn-icon" ng-click="dropCol()"><i class="icon-trash"></i> Drop</a>
         <a class="btn btn-icon" ng-click="createDoc()"><i class="icon-plus"></i> New document</a>
         <a class="btn btn-icon" ng-click=""><i class="icon-share"></i> Export results</a>
@@ -44,12 +44,12 @@
 </div>
 
 <g:render template="/document/find" />
-<div class="pagination-top" ng-show="currentCollection && totalCount > 0">
-    <paginator id="top-paginator" total="{{totalCount}}"/>
+<div class="pagination-top" ng-show="currentCollection && resultSet().totalCount > 0">
+    <paginator id="top-paginator" total="{{resultSet().totalCount}}"/>
 </div>
 
-<div class="main documents" ng-show="resultSet.elements.length>0">
-    <div class="item-entry" ng-repeat="document in resultSet.elements" ng-class="{active: editMode}">
+<div class="main documents" ng-show="resultSet().elements.length>0">
+    <div class="item-entry" ng-repeat="document in resultSet().elements" ng-class="{active: editMode}">
         <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-class="{active: editMode}">
             <div class="head" ng-init="editMode = false">
                 <label>
@@ -57,10 +57,10 @@
                     Object ID : <span class="mongo-object-id">{{document._id.toString() || 'null'}}</span>
                 </label>
                 <div class="actions">
-                    <a ng-show="resultTypes[resultSet.type].editable"
+                    <a ng-show="resultTypes[resultSet().type].editable"
                        ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode"
                        ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
-                    <a ng-show="resultTypes[resultSet.type].removable" ng-click="deleteDocument(document._id)"><i class="icon-trash"></i></a>
+                    <a ng-show="resultTypes[resultSet().type].removable" ng-click="deleteDocument(document._id)"><i class="icon-trash"></i></a>
                 </div>
             </div>
 
@@ -77,6 +77,6 @@
 
 <p ng-show="resultSet.elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
 
-<div class="pagination-bottom" ng-show="currentCollection && totalCount > 0">
+<div class="pagination-bottom" ng-show="currentCollection && resultSet().totalCount > 0">
     <paginator synchronized-with="top-paginator"/>
 </div>

@@ -42,16 +42,21 @@
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "bootbox.js")}"></script>
 
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "MongoDBConsoleModule.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular", file: "MongoDBConsoleModule.js")}"></script>
+
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "mongoLib.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file:"mongoJson.js")}"></script>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "databases.js")}"></script>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/filters", file: "commonFilters.js")}"></script>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongoQueries.js")}"></script>
 
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "mongodbService.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "routing.js")}"></script>
-  <script src="${resource(plugin: 'mongo-viewer', dir: "js/modules", file: "paginator.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/filters", file: "commonFilters.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular", file: "routing.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "mongoQueries.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "paginator.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "mongodbService.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongoContextHolder.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DBListCtrl.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DocumentListCtrl.js")}"></script>
+
+
     <g:layoutHead/>
 </head>
 

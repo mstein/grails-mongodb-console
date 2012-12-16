@@ -1,4 +1,4 @@
-<ul class="well" ng-show="currentDB">
+<ul class="well" ng-show="currentDB()">
     <li class="well-mongo dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             Databases
@@ -8,30 +8,30 @@
             <li><a ng-click="createDB()"><i class="icon-plus"></i> Create DB</a></li>
             <li><a ng-click="createDB()"><i class="icon-download-alt"></i> Import DB</a></li>
             <li class="divider"></li>
-            <li ng-repeat="db in databases" ng-class="{active: db.name == currentDB}">
-                <a ng-click="selectdb(db.name)">
+            <li ng-repeat="db in databases()" ng-class="{active: db.name == currentDB()}">
+                <a href="#/mongo/{{db.name}}">
                     <strong>{{db.name}}</strong> <em>({{db.sizeOnDisk | fileSize}})</em><br/>
                     <span class="extra"></span>
                 </a>
             </li>
         </ul>
     </li>
-    <li class="well-db" ng-class="{active:currentDB && !currentCollection}">
-        <a ng-click="selectdb(currentDB)">
-            {{currentDB}} ({{ currentDBSize | fileSize }})<br/>
-            <span ng-show="collections.length>0">Collections ({{collections.length}})</span>
-            <span ng-show="collections.length==0">Empty</span>
+    <li class="well-db" ng-class="{active:currentDB() && !currentCollection()}">
+        <a href="#/mongo/{{currentDB()}}">
+            {{currentDB()}} ({{ currentDBSize() | fileSize }})<br/>
+            <span ng-show="collections().length>0">Collections ({{collections().length}})</span>
+            <span ng-show="collections().length==0">Empty</span>
             <span class="extra"></span>
         </a>
     </li>
-    <li ng-repeat="collection in collections" class="item-collection" ng-class="{active:collection == currentCollection}">
-        <a href="${createLink(controller: 'mongo')}/{{currentDB}}/{{collection}}" ng-click="selectCollection(collection)">
+    <li ng-repeat="collection in collections()" class="item-collection" ng-class="{active:collection == currentCollection()}">
+        <a href="#/mongo/{{currentDB()}}/{{collection}}">
             {{collection}}
             <span class="extra"></span>
         </a>
     </li>
 </ul>
-<ul class="well" ng-show="!currentDB">
+<ul class="well" ng-show="!currentDB()">
     <li>
         <span>
             Mongo v2.2.0<br>

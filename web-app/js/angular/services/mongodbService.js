@@ -214,3 +214,7 @@ function MongoDBQuery(db, collection, query, fields) {
         }).error(function(data){ errorCallback(data); });
     };
 }
+
+function parseMongoJson(data, headerGetter) {
+    return MongoJSON.parseTengen(data);
+}
