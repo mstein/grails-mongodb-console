@@ -7,6 +7,7 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
         totalSize:0,
         collections:[],
         resultSet:{type:'document', elements:[], totalCount: 0},
+
         dbSelectable:function() {
             var size = 0;
             for(var key in this.databases) {
@@ -17,9 +18,11 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
             }
             return size > 0;
         },
+
         collectionSelectable:function() {
             return this.collections.length > 0;
         },
+
         populateDocuments:function(data) {
             this.resultSet.type = "document";
             if(data.results != null) {

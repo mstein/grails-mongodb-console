@@ -85,6 +85,25 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         });
     };
 
+    /**
+     * Select a collection as tag it as "current"
+     * Also perform a find (without criteria) but with limited number of results.
+     *
+     * @param colname
+     * @param params
+     */
+    $scope.selectCollection = function(colname, params) {
+        $scope.cancel();
+        mongoContextHolder.currentCollection = colname;
+        $scope.renColName = colname;
+        var args = {};
+        var offset = params != undefined ?params.offset : null;
+        var max = params != undefined ? params.max : null;
+        mongodb[colname].find().skip(offset).limit(max).exec(function(data) {
+            mongoContextHolder.populateDocuments(data);
+        }, function(data){alert(data);});
+    };
+
     $scope.createDB = function() {
         $scope.cancel();
         $scope.creatingDB = true;
@@ -116,14 +135,6 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         }, 500);
     };
 
-    $scope.createDoc = function() {
-        $scope.cancel();
-        $scope.creatingDoc = true;
-        $("#createDoc").modal({show: true});
-        $scope.setEditable("new-doc", true);
-        $scope.focus("#new-doc");
-    };
-
     $scope.validateDBCreation = function() {
         var newDbname = $scope.newDbname;
 
@@ -132,24 +143,20 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 mongoContextHolder.currentDB = newDbname;
                 mongoContextHolder.currentCollection = null;
                 $scope.cancel();
+                $location.path('/mongo/' + newDbname);
                 mongoContextHolder.databases = data.databases;
                 mongoContextHolder.populateDocuments([]);
-                mongodb(mongoContextHolder.currentDB).success(function(data) {
-                    mongoContextHolder.collections = data;
-                });
             });
     };
 
-    $scope.validateColnameChange = function() {
-        var newColname = $scope.renColName;
+    $scope.validateColnameChange = function(renColName) {
+        var newColname = renColName;
         mongodb[mongoContextHolder.currentCollection].renameCollection(newColname)
             .success(function() {
                 mongoContextHolder.currentCollection = newColname;
                 $scope.cancel();
-
-                mongodb(mongoContextHolder.currentDB).success(function(data) {
-                    mongoContextHolder.collections = data;
-                });
+                $scope.selectdb(mongoContextHolder.currentDB);
+                $location.path('/mongo/'+ mongoContextHolder.currentDB + '/'+ newColname);
             });
     };
 
@@ -159,20 +166,24 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
             .success(function() {
                 mongoContextHolder.currentCollection = newColname;
                 $scope.cancel();
-                mongodb(mongoContextHolder.currentDB).success(function(data) {
-                    mongoContextHolder.collections = data;
-                });
+                $scope.selectdb(mongoContextHolder.currentDB);
             }).error(function(data){
                 alert(data);
             });
     };
 
-    $scope.dropCol = function() {
-        bootbox.confirm("This action cannot be undone. Drop the collection '" + mongoContextHolder.currentCollection + "' from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
+    $scope.dropCol = function(col) {
+        var colname = mongoContextHolder.currentCollection;
+        if(col != undefined && col != null){
+            colname = col;
+        }
+        bootbox.confirm("This action cannot be undone. Drop the collection '" + colname + "' from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
             if (confirm) {
-                mongodb[mongoContextHolder.currentCollection].dropCollection()
+                mongodb[colname].dropCollection()
                     .success(function() {
                         mongoContextHolder.currentCollection = null;
+                        mongoContextHolder.resultSet.elements = [];
+                        $location.path('/mongo/' + mongoContextHolder.currentDB);
                         $scope.cancel();
                         mongodb(mongoContextHolder.currentDB).success(function(data) {
                             mongoContextHolder.collections = data;
@@ -183,15 +194,21 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         });
     };
 
-    $scope.dropDB = function() {
-        bootbox.confirm("This action cannot be undone. Drop the database '"+mongoContextHolder.currentDB + "'?", function(confirm){
+    $scope.dropDB = function(db) {
+        var dbname = mongoContextHolder.currentDB;
+        if(db != undefined && db != null) {
+            dbname = db;
+        }
+        bootbox.confirm("This action cannot be undone. Drop the database '"+ dbname + "'?", function(confirm){
             if (confirm) {
+                mongodb.use(dbname, true);
                 mongodb.dropDatabase()
                     .success(function(data) {
                         mongoContextHolder.currentDB = null;
                         mongoContextHolder.currentCollection = null;
                         mongoContextHolder.currentDBSize = 0;
                         $scope.cancel();
+                        $location.path('/mongo');
                         mongoContextHolder.databases = data.databases;
                         mongoContextHolder.collections = [];
                         mongoContextHolder.populateDocuments([]);

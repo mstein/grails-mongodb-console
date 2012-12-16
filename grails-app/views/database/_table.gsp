@@ -30,7 +30,7 @@
             <td>{{db.sizeOnDisk | fileSize}}</td>
             <td width="40px">
                 <a href="#"><i class="icon-edit"></i></a>
-                <a href="#"><i class="icon-trash"></i></a>
+                <a ng-click="dropDB(db.name)"><i class="icon-trash"></i></a>
             </td>
         </tr>
         </tbody>

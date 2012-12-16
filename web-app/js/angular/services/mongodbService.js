@@ -10,24 +10,36 @@ MongoDBConsoleModule.factory('mongodb', ['$http', 'grails', function($http, grai
     return MongoDBService;
 }]);
 
-function MongoDBService(dbname) {
-    return MongoDBService.fn.use(dbname);
+function MongoDBService(dbname, noData) {
+    return MongoDBService.fn.use(dbname, noData);
 }
 
 MongoDBService.fn = MongoDBService.prototype = {
     constructor:MongoDBService,
-    use:function(dbname) {
+    /**
+     * Set the current DB context and get the list of the collection of the db, unless noData is defined to TRUE.
+     *
+     * @param dbname The name of the database to use
+     * @param noData If set to TRUE, then the function will not send a listCollection command to the server. It will also return NULL.
+     * This is usefull if you don't want to pull some data, for operation like a drop database
+     * @return {*}
+     */
+    use:function(dbname, noData) {
+        noData = noData != undefined && noData != null ? noData : false;
         MongoDBService.$db = dbname;
-        var promise = this.$http.get(this.grails.createLink({controller:'mviewer', action:'listCollections', params:{dbname:dbname}}));
-        var $self = this;
-        var db = dbname;
-        promise.success(function(data) {
-            $.each(data, function(index, value) {
-                $self[value] = new MongoCollection($self, db, value);
+        if(!noData) {
+            var promise = this.$http.get(this.grails.createLink({controller:'mviewer', action:'listCollections', params:{dbname:dbname}}));
+            var $self = this;
+            var db = dbname;
+            promise.success(function(data) {
+                $.each(data, function(index, value) {
+                    $self[value] = new MongoCollection($self, db, value);
+                });
             });
-        });
 
-        return promise;
+            return promise;
+        }
+        return null;
     },
     listDatabases:function() {
         return this.$http.get(this.grails.createLink({controller:'mviewer', action:'listDb'}));

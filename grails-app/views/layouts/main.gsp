@@ -54,6 +54,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "mongodbService.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongoContextHolder.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DBListCtrl.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "CollectionListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DocumentListCtrl.js")}"></script>
 
 
@@ -82,7 +83,6 @@
 <g:render template="/database/create"/>
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>
-<g:render template="/document/create"/>
 <g:javascript>
     $(function(){
         $(".modal").on("hidden", function(){

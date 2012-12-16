@@ -21,25 +21,6 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
         document:{editable:true, removable:true}
     };
 
-    /**
-     * Select a collection as tag it as "current"
-     * Also perform a find (without criteria) but with limited number of results.
-     *
-     * @param colname
-     * @param params
-     */
-    $scope.selectCollection = function(colname, params) {
-        $scope.cancel();
-        mongoContextHolder.currentCollection = colname;
-        $scope.renColName = colname;
-        var args = {};
-        var offset = params != undefined ?params.offset : null;
-        var max = params != undefined ? params.max : null;
-        mongodb[colname].find().skip(offset).limit(max).exec(function(data) {
-            mongoContextHolder.populateDocuments(data);
-        }, function(data){alert(data);});
-    };
-
     $scope.$on("DatabaseLoadedEvent", function() {
         $scope.selectCollection($routeParams.collection);
     });
@@ -52,6 +33,17 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
             $scope.selectCollection(value);
         }
     });
+
+    /**
+     * Display the new doc insertion UI
+     */
+    $scope.createDoc = function() {
+        $scope.cancel();
+        $scope.creatingDoc = true;
+        $("#createDoc").modal({show: true});
+        $scope.setEditable("new-doc", true);
+        $scope.focus("new-doc");
+    };
 
     /**
      * Inserts a new document
@@ -110,16 +102,18 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
      */
     // TODO : this should be done elsewhere
     $scope.setEditable = function(id, enable) {
-        if(enable) {
-            $("#" + id).css("height", $("#" + id).height());
-            var editor = ace.edit(id);
-            editor.setTheme("ace/theme/merbivore_soft");
-            editor.setShowInvisibles(false);
-            editor.setShowPrintMargin(false);
-            editor.getSession().setMode("ace/mode/json");
-            $scope.editors[id] = editor;
-        } else {
-            $scope.editors[id].destroy();
+        if(!$scope.editors[id]) {
+            if(enable) {
+                $("#" + id).css("height", $("#" + id).height());
+                var editor = ace.edit(id);
+                editor.setTheme("ace/theme/merbivore_soft");
+                editor.setShowInvisibles(false);
+                editor.setShowPrintMargin(false);
+                editor.getSession().setMode("ace/mode/json");
+                $scope.editors[id] = editor;
+            } else {
+                $scope.editors[id].destroy();
+            }
         }
     };
 

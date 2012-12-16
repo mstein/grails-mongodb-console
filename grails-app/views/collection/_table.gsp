@@ -5,6 +5,7 @@
     </div>
 
     <div class="nav-buttons" ng-show="currentDB() && !currentCollection()">
+        <a class="btn btn-icon" ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a>
         <a class="btn btn-icon" ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a>
         <a class="btn btn-icon" ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a>
         <a class="btn btn-icon" ng-click=""><i class="icon-download-alt"></i> Import</a>
@@ -31,7 +32,7 @@
             <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)"><a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a></td>
             <td width="10px" nowrap="nowrap">
                 <a><i class="icon-edit"></i></a>
-                <a><i class="icon-trash"></i></a>
+                <a ng-click="dropCol(collection)"><i class="icon-trash"></i></a>
             </td>
         </tr>
         </tbody>

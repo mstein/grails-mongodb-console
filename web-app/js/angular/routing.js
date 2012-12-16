@@ -7,6 +7,6 @@ MongoDBConsoleModule.config(['$routeProvider','$locationProvider', 'grailsProvid
     $routeProvider
         .when('/mongo/',{templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplDatabase'})})
         .when('/mongo/:db/:collection', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplDocuments'}), controller: DocumentListCtrl})
-        .when('/mongo/:db', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplCollections'}), controller: DocumentListCtrl })
+        .when('/mongo/:db', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplCollections'}), controller: CollectionListCtrl})
         .otherwise({redirectTo: '/mongo/'});
 }]);

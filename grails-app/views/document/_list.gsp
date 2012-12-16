@@ -1,3 +1,4 @@
+<g:render template="/document/create"/>
 
 <div class="title-buttons">
     <div class="title">
@@ -7,7 +8,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu" role="menu">
-                <li><a ng-click="selectdb(currentDB())"> Collections</a></li>
+                <li><a ng-click="changePath('/mongo/' + currentDB())"> Collections</a></li>
                 <li class="divider"></li>
                 <li><a ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a></li>
                 <li><a ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a></li>
@@ -24,7 +25,7 @@
         <div class="rename input-append" ng-show="renamingCol">
             <div class="btn-group">
                 <input type="text" class="span3" id="rename-new-col" ng-model="renColName" value="{{renColName}}" />
-                <button class="btn btn-primary" ng-click="validateColnameChange()">
+                <button class="btn btn-primary" ng-click="validateColnameChange(renColName)">
                     <i class="icon-white icon-ok"></i>
                 </button>
                 <button class="btn" ng-click="cancel()">
@@ -75,7 +76,7 @@
     </div>
 </div>
 
-<p ng-show="resultSet.elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
+<p ng-show="resultSet().elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
 
 <div class="pagination-bottom" ng-show="currentCollection && resultSet().totalCount > 0">
     <paginator synchronized-with="top-paginator"/>

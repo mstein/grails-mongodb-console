@@ -87,7 +87,7 @@ class MviewerController {
             render status: 500, text:mongoException.message
             return
         }
-        forward action: 'listDocuments', params:[dbname:dbname, colname:colname]
+        render status: 200
     }
 
     def renameCollection() {
