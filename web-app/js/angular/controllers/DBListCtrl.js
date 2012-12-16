@@ -170,7 +170,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.dropCol = function() {
         bootbox.confirm("This action cannot be undone. Drop the collection '" + mongoContextHolder.currentCollection + "' from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
             if (confirm) {
-                mongodb[$scope.currentCollection].dropCollection()
+                mongodb[mongoContextHolder.currentCollection].dropCollection()
                     .success(function() {
                         mongoContextHolder.currentCollection = null;
                         $scope.cancel();
