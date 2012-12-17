@@ -43,13 +43,98 @@ function MongoJSON() {}
         return startSymbol + '"'+ key +'":' + val;
     }
 
-    function quote(string) {
+    // Parsing any mongodb 10Gen JSON types and converts them into their strict JSON equivalent :
+    function mongoMarshalling(text) {
+
+//  ObjectId becomes $oid
+//  DBRef becomes $ref, $id
+//  Date & ISODate become $date
+//  Timestamp becomes $timestamp
+//  undefined becomes $undefined
+//  Regexp becomes $regex & $options
+//  #Special case : NumberLong becomes $numberLong, which is NOT a mongo representation, but needed for our own scheme
+// TODO
+//  BinData
+//  Support DBRef with the third parameter (the dbname), and support parsing of the id parameter of the DBRef to allow any mongodb bson type
+
+        // ObjectId
+        if(/ObjectId\(.+\)/.test(text)) {
+            text = text.replace(/ObjectId\("([a-zA-Z0-9\-]+)"\)/g, '{"$oid":"$1"}');
+        }
+        // DBRef
+        if(/DBRef\(.+\)/.test(text)) {
+            text = text.replace(/DBRef\("([a-zA-Z0-9\-]+)", *([^\n\r]*?)\)\s*(?=,|\}|\])/gm, function(match, reference, id){
+                return '{"$ref":"'+reference+'", "$id":'+mongoMarshalling(id)+'}';
+            });
+        }
+        // empty Date call are replaced by the current date
+        if(/(ISO)?Date\(\)/.test(text)) {
+            var date = new Date();
+            text = text.replace(/(ISO)?Date\(\)/g, '{"$date":"'+date.toJSON()+'"}');
+        }
+        // Date & ISODate
+        if(/(ISO)?Date\(.+\)/.test(text)) {
+            text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:']+)"\)/g, '{"$date":"$2"}');
+        }
+        // Timestamp
+        if(/Timestamp\(.+\)/.test(text)) {
+            text = text.replace(/Timestamp\(([0-9]+), ([0-9]+)\)/g, '{"$timestamp":{"t": $1, "i": $2}}');
+        }
+        // undefined
+        if(/[^\r\n{}\[\]]: *undefined/i.test(text)) {
+            text = text.replace(/([^\r\n{}\[\]]: *)(undefined)/gi, '$1{"$undefined": true}');
+        }
+        // # Javascript Big Number Issue
+        // A javascript Number cannot be greater than 9007199254740992 (2^53), so if a user inputs a number greater than this
+        // without using the NumberLong() syntax, his input will be rounded by Javascript, which may cause unwanted behavior and data corruption
+        // if it where used in a update or remove command
+        // To prevent this, we marshall all numbers greater than 9007199254740992 as NumberLong()
+        if(/[^\r\n{}\[\]]: *[0-9]{16,}/i.test(text)) {
+            text = text.replace(/([^\r\n{}\[\]]: *)([0-9]{16,})/gi, function(match, key, number){
+                var asNumber = parseInt(number);
+                var result = number;
+                // Check if the number is too big, then transform it into a NumberLong
+                if(asNumber + 1 == asNumber) {
+                    result = '{"$numberLong":"'+number+'"}';
+                }
+                return key + result;
+            });
+        }
+        // NumberLong
+        if(/NumberLong\(.+\)/.test(text)) {
+            text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '{"$numberLong":"$1"}');
+        }
+        // Regexp
+        if(/\[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
+            text = text.replace(/\/([^\r\n]*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
+                return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
+            });
+        }
+        /*// unescaped doublequote inside double quote are escaped
+         if(/"(.*?)"(.*?)"/gi.test(text)){
+         text = text.replace(/"(.*?)"(.*?)"/gi, '"$1\\"$2"');
+         }
+         // Prevent JS script from executing :
+         if(/<script>.*?<\/script>/gi.test(text)) {
+         text = text.replace(/<script>(.*?)<\/script>/gi, '&lt;script&gt;$1&lt;/script&gt;');
+         }*/
+
+        // Allow keys to tolerate the lack of double quote in certain circumstances
+        if(/\{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|\}/.test(text)) {
+            text = text.replace(unquotedKeyPattern, quoteKeys);
+        }
+
+        return text;
+    }
+
+
+
 
 // If the string contains no control characters, no quote characters, and no
 // backslash characters, then we can safely slap some quotes around it.
 // Otherwise we must also replace the offending characters with safe escape
 // sequences.
-
+    function quote(string) {
         escapable.lastIndex = 0;
         return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
             var c = meta[a];
@@ -309,66 +394,7 @@ function MongoJSON() {}
 
 // TenGen conversion phase
 // Parsing any mongodb 10Gen JSON types and converts them into their strict JSON equivalent :
-//  ObjectId becomes $oid
-//  DBRef becomes $ref, $id
-//  Date & ISODate become $date
-//  Timestamp becomes $timestamp
-//  undefined becomes $undefined
-//  Regexp becomes $regex & $options
-//  #Special case : NumberLong becomes $numberLong, which is NOT a mongo representation, but needed for our own scheme
-// TODO
-//  BinData
-//  Support DBRef with the third parameter (the dbname), and support parsing of the id parameter of the DBRef to allow any mongodb bson type
-
-
-            // ObjectId
-            if(/ObjectId\(.+\)/.test(text)) {
-                text = text.replace(/ObjectId\("([a-zA-Z0-9\-]+)"\)/g, '{"$oid":"$1"}');
-            }
-            // DBRef
-            if(/DBRef\(.+\)/.test(text)) {
-                text = text.replace(/DBRef\("([a-zA-Z0-9\-]+)", ([^\n\r]*?)\)/gm, '{"$ref":"$1", "$id":$2}');
-            }
-            // empty Date call are replaced by the current date
-            if(/(ISO)?Date\(\)/.test(text)) {
-                var date = new Date();
-                text = text.replace(/(ISO)?Date\(\)/g, '{"$date":"'+date.toJSON()+'"}');
-            }
-            // Date & ISODate
-            if(/(ISO)?Date\(.+\)/.test(text)) {
-                text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:']+)"\)/g, '{"$date":"$2"}');
-            }
-            // Timestamp
-            if(/Timestamp\(.+\)/.test(text)) {
-                text = text.replace(/Timestamp\(([0-9]+), ([0-9]+)\)/g, '{"$timestamp":{"t": $1, "i": $2}}');
-            }
-            // undefined
-            if(/[^\r\n{}\[\]]: *undefined/i.test(text)) {
-                text = text.replace(/([^\r\n{}\[\]]: *)(undefined)/gi, '$1{"$undefined": true}');
-            }
-            // NumberLong
-            if(/NumberLong\(.+\)/.test(text)) {
-                text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '{"$numberLong":"$1"}');
-            }
-            // Regexp
-            if(/\[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
-                text = text.replace(/\/([^\r\n]*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
-                    return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
-                });
-            }
-            /*// unescaped doublequote inside double quote are escaped
-            if(/"(.*?)"(.*?)"/gi.test(text)){
-                text = text.replace(/"(.*?)"(.*?)"/gi, '"$1\\"$2"');
-            }
-            // Prevent JS script from executing :
-            if(/<script>.*?<\/script>/gi.test(text)) {
-                text = text.replace(/<script>(.*?)<\/script>/gi, '&lt;script&gt;$1&lt;/script&gt;');
-            }*/
-
-            // Allow keys to tolerate the lack of double quote in certain circumstances
-            if(/\{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|\}/.test(text)) {
-                text = text.replace(unquotedKeyPattern, quoteKeys);
-            }
+            text = mongoMarshalling(text);
 
 // In the second stage, we run the text against regular expressions that look
 // for non-JSON patterns. We are especially concerned with '()' and 'new'

@@ -499,7 +499,7 @@ class MviewerController {
             // The client may ask for the specified entry afterward
             case com.mongodb.DBRef:
                 com.mongodb.DBRef dbref = element
-                res = [$ref:dbref.ref, $id:dbref.id]
+                res = [$ref:dbref.ref, $id:marshallDocument(dbref.id)]
                 break
             // Embedded documents have their field marshalled individually
             case DBObject:
