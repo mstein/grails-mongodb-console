@@ -158,7 +158,7 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
     $scope.$on('PaginationChangeEvent', function(event, params){
         // Check if the latest documents were the result of a find query
         var previousQuery = mongoContextHolder.resultSet.query;
-        if(previousQuery.type == 'find' || previousQuery.type == 'aggregate') {
+        if(previousQuery.type == 'find') {
             if(previousQuery.object) {
                 // we assume that the object is a MongoQuery instance
                 // The query is done with a duplicated one, so that we keep the original
@@ -169,7 +169,23 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                     mongoContextHolder.populateDocuments(data, query);
                 });
             }
+        } else if(previousQuery.type == 'aggregate'){
+            if(previousQuery.object) {
+                // we assume that the object is an array of aggregate instruction
+                // The query is done with a duplicated one, so that we keep the original
+                var dupPipeline = previousQuery.object.slice();
 
+                // Add a skip in the pipeline
+                dupPipeline.push({"$skip":params.offset});
+
+                // Reexecute the aggregate command with the new offset
+                var cur = mongodb[mongoContextHolder.currentCollection].aggregate(dupPipeline);
+                cur.success(function(data){
+                    var query = { type:"aggregate", object:previousQuery.object };
+                    mongoContextHolder.populateDocuments(data.results, query, "json");
+                    mongoContextHolder.resultSet.totalCount = data.totalCount;
+                });
+            }
         } else {
             $scope.selectCollection(mongoContextHolder.currentCollection, params);
         }
@@ -251,7 +267,8 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                     cur = mongodb[mongoContextHolder.currentCollection].aggregate(pipeline);
                     cur.success(function(data){
                         var query = { type:"aggregate", object:pipeline };
-                        $scope.populateDocuments(data, query, "json");
+                        mongoContextHolder.populateDocuments(data.results, query, "json");
+                        mongoContextHolder.resultSet.totalCount = data.totalCount;
                         $scope.$broadcast('PaginationResetRequestEvent');
                     });
                 }

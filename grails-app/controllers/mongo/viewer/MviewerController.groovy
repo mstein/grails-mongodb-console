@@ -356,8 +356,9 @@ class MviewerController {
         }
 
         def first = mongoJson.pipeline[0]
-        def additionals = mongoJson.pipeline.size() > 1 ? mongoJson.pipeline[1..mongoJson.pipeline.size()-1] as BasicDBObject[] : [] as BasicDBObject[]
-        def output = col.aggregate(first, additionals)
+        def additionals = mongoJson.pipeline.size() > 1 ? mongoJson.pipeline[1..mongoJson.pipeline.size()-1] as Collection<BasicDBObject> : [] as Collection<BasicDBObject>
+
+        def output = col.aggregate(first, additionals.toArray() as DBObject[])
 
         Collection results = output.commandResult?.result?.inject([]) { coll, BasicDBObject entry ->
             def args = [:]
@@ -372,10 +373,12 @@ class MviewerController {
         // To prevent the client to hang out because of a big amount of documents, we arbritrary limit the number of results.
         // TODO : add a flag to inform the user that the output has been truncated and ask him to precise the query
         // TODO 2 : handle something like pagination on the results so that the user can browse the whole set without having memory issue
-        if(results.size() > 60) {
-            results = results[0..60]
+        def totalCount = results.size();
+        if(results.size() > 100) {
+            results = results[0..100]
         }
-        render status:200, text:results as JSON
+
+        render status:200, text:[results:results, totalCount: totalCount] as JSON
     }
 
     /**
