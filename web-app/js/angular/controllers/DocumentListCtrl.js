@@ -51,6 +51,7 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
     $scope.validateCreateDocument = function() {
         var editor = $scope.editors["new-doc"];
         var newDocument = MongoJSON.parseTengen(editor.getValue());
+        $scope.setEditable("new-doc", false);
         mongodb[mongoContextHolder.currentCollection].insert(newDocument).success(function() {
             $scope.selectCollection(mongoContextHolder.currentCollection);
         });
@@ -75,8 +76,29 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
         if(newDocument._id != undefined) {
             delete newDocument._id;
         }
-        mongodb[mongoContextHolder.currentCollection].update({_id:docId}, {"$set":newDocument}).success(function(data) {
+        var encapsulatedDocument = newDocument;
+
+        // Encapsulate the document in a "$set" if a projection is applied to the current resultset
+        var latestQuery = mongoContextHolder.resultSet.query;
+        if(latestQuery.type == "find" || latestQuery.type == "findOne") {
+            if(latestQuery.object){
+                var nbFields = 0;
+                if(latestQuery.object._fields) {
+                    for(var f in latestQuery.object._fields) {
+                        if (latestQuery.object._fields.hasOwnProperty(f)) {
+                            nbFields++;
+                            break;// getting one is enough to consider the object not empty
+                        }
+                    }
+                    if(nbFields > 0) {
+                        encapsulatedDocument = {"$set":newDocument};
+                    }
+                }
+            }
+        }
+        mongodb[mongoContextHolder.currentCollection].update({_id:docId}, encapsulatedDocument).success(function(data) {
             $scope.selectCollection(mongoContextHolder.currentCollection);
+            $scope.$broadcast('PaginationResetRequestEvent');
         });
     };
 
@@ -102,19 +124,37 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
      */
     // TODO : this should be done elsewhere
     $scope.setEditable = function(id, enable) {
-        if(!$scope.editors[id]) {
-            if(enable) {
-                $("#" + id).css("height", $("#" + id).height());
-                var editor = ace.edit(id);
-                editor.setTheme("ace/theme/merbivore_soft");
-                editor.setShowInvisibles(false);
-                editor.setShowPrintMargin(false);
-                editor.getSession().setMode("ace/mode/json");
-                $scope.editors[id] = editor;
-            } else {
-                $scope.editors[id].destroy();
+        /*if(!$scope.editors[id]) {*/
+        var originalPre = $("#" + id);
+        if(enable) {
+            var existing = $('#'+id + '-editor');
+            if(existing.length > 0) {
+                existing.remove();
             }
+            var duplicatedPre = $("<"+ originalPre.prop('tagName') +"></"+ originalPre.prop('tagName') +">");
+            originalPre.css("height", originalPre.height());
+            duplicatedPre.css("height", originalPre.height());
+
+            duplicatedPre.html(originalPre.html());
+            duplicatedPre.attr('id', id + '-editor');
+            duplicatedPre.attr('class', originalPre.attr('class'));
+            duplicatedPre.attr('style', originalPre.attr('style'));
+            originalPre.hide();
+            originalPre.after(duplicatedPre);
+
+            var editor = ace.edit(id + '-editor');
+            editor.setTheme("ace/theme/merbivore_soft");
+            editor.setShowInvisibles(false);
+            editor.setShowPrintMargin(false);
+            editor.getSession().setMode("ace/mode/json");
+            $scope.editors[id] = editor;
+        } else {
+            var existingEditor= $("#" + id + '-editor');
+            originalPre.show();
+            $scope.editors[id].destroy();
+            existingEditor.remove();
         }
+        /*}*/
     };
 
     /**
