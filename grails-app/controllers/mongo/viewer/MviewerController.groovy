@@ -369,16 +369,52 @@ class MviewerController {
             coll
         }
 
+        def totalCount = results.size();
+
         // The results may be very big
         // To prevent the client to hang out because of a big amount of documents, we arbritrary limit the number of results.
-        // TODO : add a flag to inform the user that the output has been truncated and ask him to precise the query
-        // TODO 2 : handle something like pagination on the results so that the user can browse the whole set without having memory issue
-        def totalCount = results.size();
-        if(results.size() > 100) {
-            results = results[0..100]
+        if(results.size() > 30) {
+            // Cache the result in the session if the number of documents is > than 30, this will allow the user to navigate in the results
+            // in a paginated mode without having to re-execute the aggregate command and preventing his browser to hang because of a mass of
+            // results to display
+            log.info "Cached aggregate results in session"
+            session.cachedQuery = [
+                    type:"aggregate",
+                    results:results,
+                    totalCount: totalCount
+            ]
+            results = results[0..30]
         }
 
         render status:200, text:[results:results, totalCount: totalCount] as JSON
+    }
+
+    /**
+     * Allows to query the session cache
+     * TODO : add a consistent cache cleaning strategy
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param offset
+     * @param max
+     * @return
+     */
+    def mongodbConsoleCache() {
+        if (session.cachedQuery && session.cachedQuery.results) {
+            def cachedResults = session.cachedQuery.results
+            def offset = request.JSON?.offset?.toInteger() ?: 0
+            def max = request.JSON?.max?.toInteger() ?: 30
+            def upperOffset = [(offset + max), cachedResults.size()-1].min()
+            def totalCount = session.cachedQuery.totalCount ?: 0
+
+            if (offset < cachedResults.size()){
+                render([type: session.cachedQuery.type, results:session.cachedQuery.results[offset..upperOffset-1], totalCount: totalCount] as JSON)
+            } else {
+                // The offset and/or max value(s) are incorrects
+                render ([type: session.cachedQuery.type, results:[], error:'Invalid offset', totalCount: totalCount] as JSON)
+            }
+        } else {
+            render ([type: session.cachedQuery.type, results:[], empty:true] as JSON)
+        }
     }
 
     /**

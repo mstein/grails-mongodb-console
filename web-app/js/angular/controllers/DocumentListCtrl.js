@@ -9,7 +9,7 @@
  *
  * @constructor
  */
-function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
+function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $http, grails) {
     $scope.currentAction= "find";
 
     $scope.totalCount = 0;
@@ -211,16 +211,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
             }
         } else if(previousQuery.type == 'aggregate'){
             if(previousQuery.object) {
-                // we assume that the object is an array of aggregate instruction
-                // The query is done with a duplicated one, so that we keep the original
-                var dupPipeline = previousQuery.object.slice();
-
-                // Add a skip in the pipeline
-                dupPipeline.push({"$skip":params.offset});
-
-                // Reexecute the aggregate command with the new offset
-                var cur = mongodb[mongoContextHolder.currentCollection].aggregate(dupPipeline);
-                cur.success(function(data){
+                // Ask the server-side session cache for the results
+                var url = grails.createLink({controller:'mviewer', action:'mongodbConsoleCache'});
+                $http.post(url, {offset:params.offset, max: params.max}, {transformResponse:parseMongoJson}).success(function(data){
                     var query = { type:"aggregate", object:previousQuery.object };
                     mongoContextHolder.populateDocuments(data.results, query, "json");
                     mongoContextHolder.resultSet.totalCount = data.totalCount;
