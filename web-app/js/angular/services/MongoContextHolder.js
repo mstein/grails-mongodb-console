@@ -6,7 +6,12 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
         databases:{},
         totalSize:0,
         collections:[],
-        resultSet:{type:'document', elements:[], totalCount: 0},
+        resultSet:{
+            type:'document', // The type of the returned document : document, json
+            elements:[],     // The elements (actual query results)
+            totalCount: 0,   // The total number of elements, without the limit (so totalCount may be > than the elements.length
+            query:{type:"unknown"}         // The query that was performed
+        },
 
         dbSelectable:function() {
             var size = 0;
@@ -23,8 +28,12 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
             return this.collections.length > 0;
         },
 
-        populateDocuments:function(data) {
-            this.resultSet.type = "document";
+        populateDocuments:function(data, query, type) {
+            type = type != undefined && type != null ? type : "document";
+            query = query != undefined && query != null ? query : {"type":"unknown"};
+
+            this.resultSet.type = type;
+            this.resultSet.query = query;
             if(data.results != null) {
                 this.resultSet.elements = data.results;
             } else {

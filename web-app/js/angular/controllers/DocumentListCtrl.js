@@ -118,10 +118,61 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
     };
 
     /**
+     * The user may have issued a find query with custom skip() value. This value will be considered as a "min" offset
+     * for the paginator.
+     *
+     * @return {number} The number of documents to ignore completely (deduced from the total too for the paginator point of view)
+     */
+    $scope.contextOffset = function(){
+        var previousQuery = mongoContextHolder.resultSet.query;
+        var minSkip = 0;
+        if(previousQuery.type == 'find' && previousQuery.object) {
+            if(previousQuery.object._skip && previousQuery.object._skip > 0) {
+                minSkip = previousQuery.object._skip;
+            }
+        }
+        return minSkip;
+    };
+
+    /**
+     * The default max elements per page for pagination is 30, but the user may alter this when issuing a find query
+     * with custom limit() value, this method take that in account.
+     *
+     * @return {number} The max number of elements allowed to be displayed per page. Whether return the default value or
+     * the contextual one (meaning that a find query was perform with custom limit() value)
+     */
+    $scope.contextMax = function() {
+        var previousQuery = mongoContextHolder.resultSet.query;
+        var limit = 30;
+        if(previousQuery.type == 'find' && previousQuery.object) {
+            if(previousQuery.object._limit && previousQuery.object._limit > 0) {
+                limit = previousQuery.object._limit;
+            }
+        }
+        return limit;
+    };
+
+    /**
      * Handle paginator events
      */
     $scope.$on('PaginationChangeEvent', function(event, params){
-        $scope.selectCollection(mongoContextHolder.currentCollection, params);
+        // Check if the latest documents were the result of a find query
+        var previousQuery = mongoContextHolder.resultSet.query;
+        if(previousQuery.type == 'find' || previousQuery.type == 'aggregate') {
+            if(previousQuery.object) {
+                // we assume that the object is a MongoQuery instance
+                // The query is done with a duplicated one, so that we keep the original
+                var duplicatedQuery = mongodb[mongoContextHolder.currentCollection].find();
+                angular.extend(duplicatedQuery, previousQuery.object);
+                duplicatedQuery.skip(params.offset).exec(function(data){
+                    var query = { type:"find", object:previousQuery.object};
+                    mongoContextHolder.populateDocuments(data, query);
+                });
+            }
+
+        } else {
+            $scope.selectCollection(mongoContextHolder.currentCollection, params);
+        }
     });
 
     /**
@@ -152,14 +203,18 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                     cur.skip(params.skip)
                 }
                 cur.exec(function(data){
-                    mongoContextHolder.populateDocuments(data);
+                    var query = { type:"find", object:cur };
+                    mongoContextHolder.populateDocuments(data, query);
+                    $scope.$broadcast('PaginationResetRequestEvent');
                 });
                 break;
             case 'findOne':
                 cur = mongodb[mongoContextHolder.currentCollection].findOne(MongoJSON.parseTengen('{'+params.query+'}'));
                 cur.exec(function(data){
-                    mongoContextHolder.populateDocuments(data);
+                    var query = { type:"findOne", object:cur };
+                    mongoContextHolder.populateDocuments(data, query);
                     mongoContextHolder.resultSet.totalCount = 1;
+                    $scope.$broadcast('PaginationResetRequestEvent');
                 });
                 break;
             case 'update':
@@ -174,6 +229,7 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                                 multi
                             ).success(function(data) {
                                 $scope.selectCollection(mongoContextHolder.currentCollection);
+                                $scope.$broadcast('PaginationResetRequestEvent');
                             });
                     }
                 }
@@ -194,8 +250,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
 
                     cur = mongodb[mongoContextHolder.currentCollection].aggregate(pipeline);
                     cur.success(function(data){
-                        mongoContextHolder.resultSet.elements = data;
-                        mongoContextHolder.resultSet.type = 'json';
+                        var query = { type:"aggregate", object:pipeline };
+                        $scope.populateDocuments(data, query, "json");
+                        $scope.$broadcast('PaginationResetRequestEvent');
                     });
                 }
                 break;
@@ -207,6 +264,7 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                             if(confirm) {
                                 mongodb[mongoContextHolder.currentCollection].remove(MongoJSON.parseTengen('{'+params.query+'}')).success(function(data){
                                     $scope.selectCollection(mongoContextHolder.currentCollection);
+                                    $scope.$broadcast('PaginationResetRequestEvent');
                                 });
                             }
                         }
@@ -217,6 +275,7 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder) {
                 if(params.hasDocument && params.document != null) {
                     mongodb[mongoContextHolder.currentCollection].insert(MongoJSON.parseTengen('{'+params.document+'}')).success(function() {
                         $scope.selectCollection(mongoContextHolder.currentCollection);
+                        $scope.$broadcast('PaginationResetRequestEvent');
                     });
                 }
                 break;

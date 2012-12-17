@@ -12,6 +12,7 @@ class UrlMappings {
             action = "dispatchLink"
         }
 
+        // dev only
 		"/$action?/$id?"(controller: "mviewer")
 
 		"500"(view:'/error')

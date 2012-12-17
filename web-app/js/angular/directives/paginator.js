@@ -5,6 +5,7 @@ function PaginatorCtrl($scope) {
     $scope.truncated = false;
     $scope.uri = null;
     $scope.additionalParams = {};
+    $scope.minOffset = 0;
 
     $scope.range = function (start, end) {
         var ret = [];
@@ -39,10 +40,15 @@ function PaginatorCtrl($scope) {
         }
     };
 
+    $scope.ajustedTotal = function() {
+        var ajustedTotal = $scope.total - $scope.minOffset;
+        return ajustedTotal >= 0 ? ajustedTotal : 0;
+    };
+
     $scope.totalPage = function() {
         var total = 0;
         if($scope.maxPerPage > 0) {
-            total = Math.ceil($scope.total / $scope.maxPerPage);
+            total = Math.ceil($scope.ajustedTotal() / $scope.maxPerPage);
             if(total > $scope.maxPageNumbers) {
                 $scope.truncated = true;
             } else {
@@ -55,10 +61,9 @@ function PaginatorCtrl($scope) {
     $scope.pages = function() {
         var pagesInterval = [];
         if($scope.truncated) {
-
             if($scope.currentPage < 5) {
                 // first 5
-                pagesInterval.push(1, 2, 3, 4, 5, '...');
+                pagesInterval.push(1, 2, 3, 4, 5);
                 pagesInterval.push('...', $scope.totalPage());
             } else if($scope.currentPage >= 5) {
                 // first page and a gap
@@ -71,19 +76,23 @@ function PaginatorCtrl($scope) {
                 }
             }
         } else {
-            pagesInterval = $scope.range(1, $scope.totalPage());
+            pagesInterval = $scope.range(1, $scope.totalPage()+1);
         }
         return pagesInterval;
     };
 
     $scope.onSelect = function() {
-        $scope.$emit('PaginationChangeEvent', {offset: ($scope.currentPage - 1) * $scope.maxPerPage, max:$scope.maxPerPage});
+        $scope.$emit('PaginationChangeEvent', {offset: ($scope.currentPage - 1) * $scope.maxPerPage + $scope.minOffset, max:$scope.maxPerPage, page:$scope.currentPage-1});
     };
+
+    $scope.$on('PaginationResetRequestEvent', function(event, params) {
+        $scope.currentPage = 1;
+    });
 }
 
 
 
-MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolate) {
+MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolate, $parse) {
     var paginators={};
     var directiveDefinitionObject = {
         transclude:'element',
@@ -100,6 +109,24 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                 paginators[attrs.id] = scope;
             }
 
+            // Watch for any min-offset or max attributes changes
+            if(attrs.max) {
+                scope.$watch(function() {
+                    return scope.$parent.$eval(attrs.max);
+                }, function(value){
+                    scope.maxPerPage = parseInt(value);
+                });
+            }
+
+            // Watch for any min-offset or max attributes changes
+            if(attrs.minOffset){
+                scope.$watch(function(){
+                    return scope.$parent.$eval(attrs.minOffset);
+                }, function(newValue){
+                    scope.minOffset = parseInt(newValue);
+                });
+            }
+
             // The paginator is synchronized to another one, pull its scope and
             // make sure the total & current page update are synchronized
             if(attrs.synchronizedWith != undefined) {
@@ -111,6 +138,12 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                     });
                     paginators[attrs.synchronizedWith].$watch('currentPage', function(newVal){
                         scope.currentPage = newVal;
+                    });
+                    paginators[attrs.synchronizedWith].$watch('maxPerPage', function(newVal){
+                        scope.maxPerPage = newVal;
+                    });
+                    paginators[attrs.synchronizedWith].$watch('minOffset', function(newVal){
+                        scope.minOffset = newVal;
                     });
                     paginators[attrs.synchronizedWith].$watch('total', function(newVal){
                         scope.total = newVal;

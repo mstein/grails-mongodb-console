@@ -102,7 +102,7 @@ MongoDBConsoleModule.directive('mgQueryTextfield', function factory(grails) {
                 scope.$emit('MgQueryChangeEvent', {input:attrs.name, value:newVal, active:scope.hasModel});
             });
             scope.$watch('hasModel', function(newVal) {
-                scope.$emit('MgQueryChangeEvent', {input:attrs.name, value:'', active:scope.hasModel});
+                scope.$emit('MgQueryChangeEvent', {input:attrs.name, value:scope.model, active:newVal});
             });
         }
     };

@@ -37,7 +37,6 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         mongodb.listDatabases().success(function(data) {
             mongoContextHolder.databases = data.databases;
             mongoContextHolder.totalSize = data.totalSize;
-            console.log(mongoContextHolder.databases);
             if(selectedDB && selectedCol) {
                 $location.path('/mongo/'+selectedDB+'/'+selectedCol);
             } else if(selectedDB){
@@ -99,8 +98,9 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         var args = {};
         var offset = params != undefined ?params.offset : null;
         var max = params != undefined ? params.max : null;
-        mongodb[colname].find().skip(offset).limit(max).exec(function(data) {
-            mongoContextHolder.populateDocuments(data);
+        var query = mongodb[colname].find().skip(offset).limit(max);
+        query.exec(function(data) {
+            mongoContextHolder.populateDocuments(data, {type:"find", object:query});
         }, function(data){alert(data);});
     };
 

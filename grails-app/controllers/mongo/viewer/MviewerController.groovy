@@ -21,7 +21,7 @@ class MviewerController {
     }
 
     def dispatchLink() {
-        redirect url: "/#/mongo${params.dbname? '/'+params.dbname : ''}${params.colname ? '/'+params.colname : ''}"
+        redirect url: "/$controllerName#/mongo${params.dbname? '/'+params.dbname : ''}${params.colname ? '/'+params.colname : ''}"
     }
 
     def tplDatabase() {

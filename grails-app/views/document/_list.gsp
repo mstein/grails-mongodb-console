@@ -46,7 +46,7 @@
 
 <g:render template="/document/find" />
 <div class="pagination-top" ng-show="currentCollection && resultSet().totalCount > 0">
-    <paginator id="top-paginator" total="{{resultSet().totalCount}}"/>
+    <paginator id="top-paginator" total="{{resultSet().totalCount}}" max="contextMax()" min-offset="contextOffset()" />
 </div>
 
 <div class="main documents" ng-show="resultSet().elements.length>0">
@@ -79,5 +79,5 @@
 <p ng-show="resultSet().elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
 
 <div class="pagination-bottom" ng-show="currentCollection && resultSet().totalCount > 0">
-    <paginator synchronized-with="top-paginator"/>
+    <paginator synchronized-with="top-paginator" max="" min-offset=""/>
 </div>

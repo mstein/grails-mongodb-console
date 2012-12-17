@@ -21,7 +21,7 @@ MongoDBService.fn = MongoDBService.prototype = {
      *
      * @param dbname The name of the database to use
      * @param noData If set to TRUE, then the function will not send a listCollection command to the server. It will also return NULL.
-     * This is usefull if you don't want to pull some data, for operation like a drop database
+     * This is useful if you don't want to pull some data, for operation like a drop database
      * @return {*}
      */
     use:function(dbname, noData) {

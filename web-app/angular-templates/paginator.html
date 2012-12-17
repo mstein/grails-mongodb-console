@@ -1,5 +1,5 @@
 <div class="pagination">
-    <div class="left">Page <strong>{{currentPage}}</strong> of <strong>{{totalPage()}}</strong> - <strong>{{total}}</strong> documents</div>
+    <div class="left">Page <strong>{{currentPage}}</strong> of <strong>{{totalPage()}}</strong> - <strong>{{ajustedTotal()}}</strong> total documents</div>
     <ul class="right" ng-show="pages().length>1">
         <li ng-class="{disabled: currentPage == 1}"><a ng-click="previous()">« Previous</a></li>
         <li ng-class="{active: currentPage == (n)}" ng-repeat="n in pages()">
