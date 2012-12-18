@@ -33,7 +33,7 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
             query = query != undefined && query != null ? query : {"type":"unknown"};
 
             // Special case for indexes
-            if(this.currentCollection == "system.indexes") {
+            if((query.type == "find" || query.type == "findOne") && query.object._collection == "system.indexes") {
                 type = "index";
             }
 
