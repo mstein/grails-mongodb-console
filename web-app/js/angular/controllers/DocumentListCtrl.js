@@ -20,11 +20,11 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
     $scope.latestQuery = null;
 
     $scope.resultTypes = {
-        json:{editable:false, removable:false},
-        document:{editable:true, removable:true, remove:function(document){
+        json:{editable:false, removable:false, elementName:'result', elementNameMulti:'results'},
+        document:{editable:true, removable:true, elementName:'document', elementNameMulti:'documents', remove:function(document){
             $scope.deleteDocument(document._id);
         }},
-        index:{editable:false, removable:true, remove:function(index){
+        index:{editable:false, removable:true, elementName:'index', elementNameMulti:'indexes', remove:function(index){
             $scope.dropIndex(index);
         }}
     };

@@ -46,7 +46,12 @@
 
 <g:render template="/document/find" />
 <div class="pagination-top" ng-show="currentCollection && resultSet().totalCount > 0">
-    <paginator id="top-paginator" total="{{resultSet().totalCount}}" max="contextMax()" min-offset="contextOffset()" />
+    <paginator id="top-paginator"
+               total="{{resultSet().totalCount}}"
+               max="contextMax()"
+               min-offset="contextOffset()"
+               element-name="resultTypes[resultSet().type].elementName"
+               element-name-multi="resultTypes[resultSet().type].elementNameMulti" />
 </div>
 
 <div class="main documents" ng-show="resultSet().elements.length>0">

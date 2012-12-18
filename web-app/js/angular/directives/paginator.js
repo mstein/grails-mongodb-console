@@ -6,6 +6,16 @@ function PaginatorCtrl($scope) {
     $scope.uri = null;
     $scope.additionalParams = {};
     $scope.minOffset = 0;
+    $scope.elementName = "document";
+    $scope.elementNameMulti = "documents";
+
+    $scope.eName = function() {
+        if($scope.ajustedTotal() > 1) {
+            return $scope.elementNameMulti;
+        } else {
+            return $scope.elementName;
+        }
+    };
 
     $scope.range = function (start, end) {
         var ret = [];
@@ -118,12 +128,28 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                 });
             }
 
-            // Watch for any min-offset or max attributes changes
+            // Watch for any min-offset attributes changes
             if(attrs.minOffset){
                 scope.$watch(function(){
                     return scope.$parent.$eval(attrs.minOffset);
                 }, function(newValue){
                     scope.minOffset = parseInt(newValue);
+                });
+            }
+
+            if(attrs.elementName) {
+                scope.$watch(function(){
+                    return scope.$parent.$eval(attrs.elementName);
+                }, function(newValue){
+                    scope.elementName = newValue;
+                });
+            }
+
+            if(attrs.elementNameMulti) {
+                scope.$watch(function(){
+                    return scope.$parent.$eval(attrs.elementNameMulti);
+                }, function(newValue){
+                    scope.elementNameMulti = newValue;
                 });
             }
 
@@ -147,6 +173,12 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                     });
                     paginators[attrs.synchronizedWith].$watch('total', function(newVal){
                         scope.total = newVal;
+                    });
+                    paginators[attrs.synchronizedWith].$watch('elementName', function(newVal){
+                        scope.elementName = newVal;
+                    });
+                    paginators[attrs.synchronizedWith].$watch('elementNameMulti', function(newVal){
+                        scope.elementNameMulti = newVal;
                     });
                 }
             }
