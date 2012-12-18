@@ -32,6 +32,11 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
             type = type != undefined && type != null ? type : "document";
             query = query != undefined && query != null ? query : {"type":"unknown"};
 
+            // Special case for indexes
+            if(this.currentCollection == "system.indexes") {
+                type = "index";
+            }
+
             this.resultSet.type = type;
             this.resultSet.query = query;
             if(data.results != null) {

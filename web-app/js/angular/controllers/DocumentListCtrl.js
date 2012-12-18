@@ -6,10 +6,13 @@
  * @param $routeParams The $routeParams service allowing to get the params from the $route service and watch for changes
  * @param mongodb The mongodb service, used to send mongodb commands to the server
  * @param mongoContextHolder The mongo context holder, containing many shared value with other controllers
+ * @param $http
+ * @param grails
+ * @param $location
  *
  * @constructor
  */
-function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $http, grails) {
+function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $http, grails, $location) {
     $scope.currentAction= "find";
 
     $scope.totalCount = 0;
@@ -18,7 +21,12 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
 
     $scope.resultTypes = {
         json:{editable:false, removable:false},
-        document:{editable:true, removable:true}
+        document:{editable:true, removable:true, remove:function(document){
+            $scope.deleteDocument(document._id);
+        }},
+        index:{editable:false, removable:true, remove:function(index){
+            $scope.dropIndex(index);
+        }}
     };
 
     $scope.$on("DatabaseLoadedEvent", function() {
@@ -107,12 +115,33 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
      * @param id
      */
     $scope.deleteDocument = function(id) {
-        bootbox.confirm("This action cannot be undone. Delete this document ?", function(confirm){
+        bootbox.confirm("This action cannot be undone. Delete document of id "+MongoJSON.stringify(id, null, null, {tengen:true})+"?", function(confirm){
             if (confirm) {
                 // Delete document
                 mongodb[mongoContextHolder.currentCollection].remove({"_id":id}).success(function(data){
                     $scope.selectCollection(mongoContextHolder.currentCollection);
                 });
+            }
+        });
+    };
+
+    /**
+     * Drops an index based on its keys
+     * @param index
+     */
+    $scope.dropIndex = function(index) {
+        bootbox.confirm("This action cannot be undone. Drop index of key "+MongoJSON.stringify(index.key)+"?", function(confirm){
+            if (confirm) {
+                // Retrieve the targetted collection from the namespace field
+                // the namespace include the database name, and we don't need it
+                var targetCollection = index.ns.substring(mongoContextHolder.currentDB.length+1);
+                mongodb[targetCollection].dropIndex(index.key).success(function(){
+                    if(mongoContextHolder.resultSet.query.type == "find") {
+                        $scope.redoLastFindQuery();
+                    } else {
+                        $scope.selectCollection(mongoContextHolder.currentCollection);
+                    }
+                }).error(function(data){ alert(data.error);});
             }
         });
     };
@@ -193,10 +222,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
     };
 
     /**
-     * Handle paginator events
+     * Perform again the last find query if it exists
      */
-    $scope.$on('PaginationChangeEvent', function(event, params){
-        // Check if the latest documents were the result of a find query
+    $scope.redoLastFindQuery = function(params) {
         var previousQuery = mongoContextHolder.resultSet.query;
         if(previousQuery.type == 'find') {
             if(previousQuery.object) {
@@ -204,11 +232,27 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
                 // The query is done with a duplicated one, so that we keep the original
                 var duplicatedQuery = mongodb[mongoContextHolder.currentCollection].find();
                 angular.extend(duplicatedQuery, previousQuery.object);
-                duplicatedQuery.skip(params.offset).exec(function(data){
+
+                if(params && params.offset) {
+                    duplicatedQuery.skip(params.offset);
+                }
+
+                duplicatedQuery.exec(function(data){
                     var query = { type:"find", object:previousQuery.object};
                     mongoContextHolder.populateDocuments(data, query);
                 });
             }
+        }
+    };
+
+    /**
+     * Handle paginator events
+     */
+    $scope.$on('PaginationChangeEvent', function(event, params){
+        // Check if the latest documents were the result of a find query
+        var previousQuery = mongoContextHolder.resultSet.query;
+        if(previousQuery.type == 'find') {
+            $scope.redoLastFindQuery(params);
         } else if(previousQuery.type == 'aggregate'){
             if(previousQuery.object) {
                 // Ask the server-side session cache for the results
@@ -332,6 +376,24 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
             case "mapReduce":
                 break;
             case "ensureIndex":
+                if(params.query != null) {
+                    var options = null;
+                    if(params.hasOptions && params.options != null) {
+                        options = MongoJSON.parseTengen('{'+params.options+'}');
+                    }
+                    var indexKey = MongoJSON.parseTengen('{'+params.query+'}');
+                    mongodb[mongoContextHolder.currentCollection].ensureIndex(indexKey, options).success(function(){
+                        //$location.path('/mongo/default_db/system.indexes');
+                        var indexQuery = mongodb['system.indexes'].find({"ns":mongoContextHolder.currentDB+"."+mongoContextHolder.currentCollection});
+                        indexQuery.exec(function(data){
+                            var query = { type:"find", object:indexQuery };
+                            mongoContextHolder.populateDocuments(data, query, "index");
+                            $scope.$broadcast('PaginationResetRequestEvent');
+                        }, function(data){ alert(data);});
+                    }).error(function(data){
+                            alert(data.error);
+                    });
+                }
                 break;
         }
     });

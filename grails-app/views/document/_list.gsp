@@ -61,7 +61,7 @@
                     <a ng-show="resultTypes[resultSet().type].editable"
                        ng-click="setEditable('json-document-'+document._id.toString(), !editMode); editMode = !editMode"
                        ng-class="{active: editMode}"><i class="icon-pencil"></i></a>
-                    <a ng-show="resultTypes[resultSet().type].removable" ng-click="deleteDocument(document._id)"><i class="icon-trash"></i></a>
+                    <a ng-show="resultTypes[resultSet().type].removable" ng-click="resultTypes[resultSet().type].remove(document)"><i class="icon-trash"></i></a>
                 </div>
             </div>
 

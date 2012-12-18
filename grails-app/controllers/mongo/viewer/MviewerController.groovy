@@ -437,16 +437,69 @@ class MviewerController {
         }
     }
 
-    // TODO
+    /**
+     * Creates an index on a collection
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.ensureIndex(<keys>, <options>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
+     * @param keys (Required) A json document describing the keys on which the index will be built on
+     * @param options (Optional) Additional options for this index (sparse, unique, ...)
+     */
     def ensureIndex() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
 
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        try {
+            if (mongoJson.options && mongoJson.options instanceof DBObject) {
+                col.ensureIndex(mongoJson.keys as DBObject, mongoJson.options as DBObject)
+            } else {
+                col.ensureIndex(mongoJson.keys as DBObject)
+            }
+        } catch(Throwable e) {
+            render status: 500, text: ([error:e.message] as JSON)
+            return
+        }
+
+        render status: 200
     }
 
-    def reIndex() {
-
-    }
-
+    /**
+     * Drops an index on a collection
+     *
+     * Equivalent to a call to the mongo shell entry below :
+     *      db.collection.dropIndex(<keys>)
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database on which this query should be ran
+     * @param colname (Required) The name of the collection on which this query should be ran
+     * @param keys (Required) A json document describing the keys which identify the index
+     */
     def dropIndex() {
+        def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)
+
+        def db = mongo.getDB(mongoJson.dbname)
+        def col = db.getCollection(mongoJson.colname)
+
+        try {
+            col.dropIndex(mongoJson.keys as DBObject)
+        } catch(Throwable e) {
+            render status: 500, text: ([error:e.message] as JSON)
+            return
+        }
+
+        render status: 200
+    }
+
+    // TODO
+    def reIndex() {
 
     }
 

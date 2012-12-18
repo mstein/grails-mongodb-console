@@ -310,6 +310,9 @@ function MongoJSON() {}
 // that can replace values, or an array of strings that will select the keys.
 // A default replacer method can be provided. Use of the space parameter can
 // produce text that is more easily readable.
+// options include :
+// - tengen : a boolean determining if the parser should stringify into a 10gen JSON (BSON) syntax, with the ObjectId, NumberLong, etc. (default to FALSE)
+// - escapeHtml : a boolean determining if the content of each entry should be escaping html tags (default to FALSE)
 
             var i;
             gap = '';

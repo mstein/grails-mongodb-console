@@ -156,6 +156,16 @@ function MongoCollection(mongodbService, db, name, sizeOnDisk) {
         var url = this.grails.createLink({controller:'mviewer', action:'aggregate'});
         return this.$http.post(url, MongoJSON.stringify({dbname:this._db, colname:this._name, pipeline:pipeline}), {transformResponse:parseMongoJson});
     };
+
+    MongoCollection.prototype.ensureIndex = function(keys, options) {
+        var url = this.grails.createLink({controller:'mviewer', action:'ensureIndex'});
+        return this.$http.post(url, MongoJSON.stringify({dbname:this._db, colname:this._name, keys:keys, options:options}));
+    };
+
+    MongoCollection.prototype.dropIndex = function(keys) {
+        var url = this.grails.createLink({controller:'mviewer', action:'dropIndex'});
+        return this.$http.post(url, MongoJSON.stringify({dbname:this._db, colname:this._name, keys:keys}));
+    };
 }
 
 function MongoDBQuery(db, collection, query, fields) {
