@@ -1,5 +1,6 @@
 package mongo.viewer
 
+
 import grails.converters.JSON
 
 import com.gmongo.GMongo
@@ -8,6 +9,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import com.mongodb.DBObject
 import com.mongodb.MongoException
+import com.mongodb.WriteConcern
 
 class MviewerController {
 
@@ -295,8 +297,11 @@ class MviewerController {
 
         // Convert $numberLong
         mongoJson.document = convertTypeDocument(mongoJson.document)
-        println mongoJson.document
-        col.insert(mongoJson.document as BasicDBObject)
+        try {
+            col.insert(mongoJson.document as BasicDBObject, WriteConcern.SAFE)
+        } catch(e) {
+            log.error e
+        }
         render status:200, text:[message:'Document inserted'] as JSON
     }
 
@@ -512,6 +517,9 @@ class MviewerController {
 
     }
 
+    def importData() {
+        println "test"
+    }
 
     /**
      * Marshall the document received from the Mongo driver into the JSON (almost)strict format.

@@ -22,6 +22,9 @@
     </style>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "jquery-1.8.2.min.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "jquery-ui-1.10.1.widget.min.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "jquery.iframe-transport.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "jquery.fileupload.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/ace", file: "ace.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "angular.min.js")}"></script>
 
@@ -56,6 +59,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DBListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "CollectionListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DocumentListCtrl.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "GridFSCtrl.js")}"></script>
 
 
     <g:layoutHead/>
@@ -83,6 +87,7 @@
 <g:render template="/database/create"/>
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>
+<g:render template="/collection/import"/>
 <g:javascript>
     $(function(){
         $(".modal").on("hidden", function(){

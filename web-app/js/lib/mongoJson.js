@@ -33,11 +33,11 @@ function MongoJSON() {}
 
 // A function used by a Regex replacer to tolerate unquoted keys
     // the value pattern means allows : "strings", true, false, null, {object}, [array], number, -number, numberEpower, numberE-power
-    var unquotedKeyPattern = /(\{|,)\s*([a-zA-Z0-9_$]+)\s*: *("[^"\\\n\r]*"|true|false|null|\{.+?\}|\[.+\]|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)\s*(?=,|\})/g;
+    var unquotedKeyPattern = /(\{|,|\[)\s*([a-zA-Z0-9_$]+)\s*: *("[^"\\\n\r]*"|true|false|null|\{.+?\}|\[.+\]|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)\s*(?=,|\}|\])/g;
     function quoteKeys(match, startSymbol, key, value, options) {
         var val = value;
         if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|}/.test(val)) {
-            // add the end symbol as it wouldn't match the pattern without it
+            console.log(val);
             val = value.replace(unquotedKeyPattern, quoteKeys)
         }
         return startSymbol + '"'+ key +'":' + val;

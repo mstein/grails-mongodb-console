@@ -73,10 +73,15 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.selectdb = function(dbname) {
         $scope.cancel();
         mongoContextHolder.currentDB = dbname;
-        mongoContextHolder.currentDBSize = mongoContextHolder.databases[dbname].sizeOnDisk;
         mongoContextHolder.currentCollection = null;
         mongoContextHolder.resultSet.elements = [];
         mongoContextHolder.populateDocuments([]);
+        if(dbname != undefined && dbname != null && dbname != '') {
+            mongoContextHolder.currentDBSize = mongoContextHolder.databases[dbname].sizeOnDisk;
+        } else {
+            mongoContextHolder.currentDBSize = 0;
+            return;
+        }
 
         return mongodb.use(dbname).success(function(data) {
             mongoContextHolder.collections = data;
@@ -133,6 +138,37 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         $timeout(function() {
             $scope.focus(inputId);
         }, 500);
+    };
+
+    $scope.importData = function(inputId) {
+        $scope.cancel();
+        $("#importData").modal({
+            show: true
+        });
+        $timeout(function() {
+            $scope.focus(inputId);
+        }, 500);
+    };
+
+    $scope.validateImportDataCollection = function(collection, fileInput) {
+        alert("hey ho");
+        $('#'+fileInput).fileupload({
+            dataType: 'json',
+            /*add: function (e, data) {
+                data.context = $('<button/>').text('Upload')
+                    .appendTo(document.body)
+                    .click(function () {
+                        $(this).replaceWith($('<p/>').text('Uploading...'));
+                        data.submit();
+                    });
+            },*/
+            done: function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).after($('#'+fileInput));
+                });
+            }
+        });
+        $('#'+fileInput).fileupload('send');
     };
 
     $scope.validateDBCreation = function() {
