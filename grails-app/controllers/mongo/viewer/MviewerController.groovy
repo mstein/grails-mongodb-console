@@ -1,12 +1,15 @@
 package mongo.viewer
 
-import com.mongodb.BasicDBList
+
 import grails.converters.JSON
+
 import com.gmongo.GMongo
+import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
-import com.mongodb.MongoException
-import com.mongodb.DBObject
 import com.mongodb.DBCursor
+import com.mongodb.DBObject
+import com.mongodb.MongoException
+import com.mongodb.WriteConcern
 
 class MviewerController {
 
@@ -66,7 +69,7 @@ class MviewerController {
         try {
             //db.command("copyDb")
         }catch(e) {
-            e.printStackTrace()
+            log.error e.message, e
         }
     }
 
@@ -99,7 +102,7 @@ class MviewerController {
             mviewerSession(request.JSON.dbname, request.JSON.newColname)
             render status: 200
         } catch(e) {
-            e.printStackTrace()
+            log.error e.message, e
             render status: 500
         }
     }
@@ -113,7 +116,7 @@ class MviewerController {
             mviewerSession(request.JSON.dbname)
             render status: 200
         } catch(e) {
-            e.printStackTrace()
+            log.error e.message, e
             render status: 500
         }
     }
@@ -294,8 +297,11 @@ class MviewerController {
 
         // Convert $numberLong
         mongoJson.document = convertTypeDocument(mongoJson.document)
-        println mongoJson.document
-        col.insert(mongoJson.document as BasicDBObject)
+        try {
+            col.insert(mongoJson.document as BasicDBObject, WriteConcern.SAFE)
+        } catch(e) {
+            log.error e
+        }
         render status:200, text:[message:'Document inserted'] as JSON
     }
 
@@ -369,7 +375,7 @@ class MviewerController {
             coll
         }
 
-        def totalCount = results.size();
+        def totalCount = results.size()
 
         // The results may be very big
         // To prevent the client to hang out because of a big amount of documents, we arbritrary limit the number of results.
@@ -511,6 +517,9 @@ class MviewerController {
 
     }
 
+    def importData() {
+        println "test"
+    }
 
     /**
      * Marshall the document received from the Mongo driver into the JSON (almost)strict format.

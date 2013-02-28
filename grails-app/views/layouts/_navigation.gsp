@@ -32,7 +32,7 @@
                 </ul>
                 <ul class="nav">
                     <li ng-class="{active: !currentDB && !currentCollection && collections.length == 0}"><a href="${createLink(controller:'mongo')}" ng-click="homepage()">MongoDB home</a></li>
-                    <li><a href="#gridfs">GridFS</a></li>
+                    <li><a href="#/gridfs/">GridFS</a></li>
                     <li><a href="#administrative">Administrative data</a></li>
                 </ul>
             </div>

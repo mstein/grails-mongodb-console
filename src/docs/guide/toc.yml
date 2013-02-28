@@ -1,0 +1,34 @@
+introduction:
+  title: Introduction
+  license: License
+  contributors: Contributors
+  technologies: Technologies
+  changes: Change Log
+gettingStarted:
+  title: Getting Started
+  browsers: Browsers compatibility
+  mongodbGorm: MongoDB GORM plugin
+  hosts: Switching hosts
+features:
+  title: Features
+  mongodbClassic:
+    title: MongoDB Classic
+    browsing: Browsing data
+    create: Database and collection creation
+    insert: Inserting data
+    update: Updating data
+    remove: Removing data
+    aggregation: Aggregation framework
+    indexing: Indexing
+  mongodbGridFS:
+    title: MongoDB GridFS
+    browsing: Browsing files
+    uploading: Uploading files
+    downloading: Downloading files
+    grouping: Grouping files
+  mongodbMonitoring:
+    title: MongoDB Monitoring
+    replicaSet: Replica Sets
+    sharding: Sharding
+    operations: Operations monitoring
+    resources: Resources monitoring
