@@ -88,6 +88,7 @@
 <g:render template="/database/copy"/>
 <g:render template="/collection/create"/>
 <g:render template="/collection/import"/>
+<g:render template="/collection/rename"/>
 <g:javascript>
     $(function(){
         $(".modal").on("hidden", function(){

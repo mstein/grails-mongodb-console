@@ -2,6 +2,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.creatingDB = false;
     $scope.copyingDB = false;
     $scope.renamingCol = false;
+    $scope.renamingACol = false;
     $scope.creatingCol = false;
     $scope.creatingDoc = false;
     $scope.newDbname = null;
@@ -129,6 +130,13 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         $scope.focus(inputId);
     };
 
+    $scope.renameACol = function(col) {
+        $scope.cancel();
+        $scope.renamingACol = col;
+        $("#renameACol").modal({ show: true });
+        $timeout(function() { $scope.focus("rename-a-col"); }, 500);
+    }
+
     $scope.createCol = function(inputId) {
         $scope.cancel();
         $scope.creatingCol = true;
@@ -182,8 +190,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 $location.path('/mongo/' + newDbname);
                 mongoContextHolder.databases = data.databases;
                 mongoContextHolder.populateDocuments([]);
-                $().toastmessage('showSuccessToast', newDbname + ' created ');
-                $().toastmessage('showErrorToast', 'Database \'' + newDbname + '\' created');
+                $().toastmessage('showSuccessToast', 'Database \'' + newDbname + '\' created');
             }).error(function(){
                 $().toastmessage('showErrorToast', 'Create database \'' + newDbname + '\' failed');
             });
@@ -198,6 +205,19 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 $scope.cancel();
                 $scope.selectdb(mongoContextHolder.currentDB);
                 $location.path('/mongo/'+ mongoContextHolder.currentDB + '/'+ newColname);
+                $().toastmessage('showSuccessToast', 'Collection \'' +  oldColname + '\' rename to \'' + newColname + '\'');
+            }).error(function() {
+                $().toastmessage('showErrorToast', 'Collection \'' + oldColname + '\' rename to \'' + newColname + '\' failed');
+            });
+    };
+
+    $scope.validateAColnameChange = function(newColname) {
+        var oldColname = mongodb[$scope.renamingACol]._name;
+        mongodb[$scope.renamingACol].renameCollection(newColname)
+            .success(function() {
+                mongoContextHolder.currentCollection = newColname;
+                $scope.cancel();
+                $scope.selectdb(mongoContextHolder.currentDB);
                 $().toastmessage('showSuccessToast', 'Collection \'' +  oldColname + '\' rename to \'' + newColname + '\'');
             }).error(function() {
                 $().toastmessage('showErrorToast', 'Collection \'' + oldColname + '\' rename to \'' + newColname + '\' failed');
@@ -276,6 +296,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         $scope.copyingDB = false;
         $scope.creatingDoc = false;
         $scope.renamingCol = false;
+        $scope.renamingACol = false;
         $scope.creatingCol = false;
         $scope.renColName = mongoContextHolder.currentCollection;
         $scope.newColname = null;

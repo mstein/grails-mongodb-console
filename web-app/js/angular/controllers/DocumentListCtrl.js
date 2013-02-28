@@ -62,6 +62,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
         $scope.setEditable("new-doc", false);
         mongodb[mongoContextHolder.currentCollection].insert(newDocument).success(function() {
             $scope.selectCollection(mongoContextHolder.currentCollection);
+            $().toastmessage('showSuccessToast', 'Document created');
+        }).error(function(){
+            $().toastmessage('showErrorToast', 'Create document failed');
         });
     };
 
@@ -120,6 +123,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
                 // Delete document
                 mongodb[mongoContextHolder.currentCollection].remove({"_id":id}).success(function(data){
                     $scope.selectCollection(mongoContextHolder.currentCollection);
+                    $().toastmessage('showSuccessToast', 'Document \'' + id + '\' dropped');
+                }).error(function(){
+                    $().toastmessage('showSuccessToast', 'Drop document \'' + id + '\' failed');
                 });
             }
         });

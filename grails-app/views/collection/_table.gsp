@@ -29,9 +29,11 @@
             <td width="10px">
                 <input type="checkbox" />
             </td>
-            <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)"><a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a></td>
+            <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)">
+                <a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a>
+            </td>
             <td width="10px" nowrap="nowrap">
-                <a><i class="icon-edit"></i></a>
+                <a ng-click="renameACol(collection)"><i class="icon-edit"></i></a>
                 <a ng-click="dropCol(collection)"><i class="icon-trash"></i></a>
             </td>
         </tr>
