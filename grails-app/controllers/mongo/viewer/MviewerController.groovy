@@ -39,6 +39,11 @@ class MviewerController {
         render template: '/document/list', model: [databases:mongo.mongo.getDatabaseNames()]
     }
 
+    def tplMonitoring() {
+        render template: '/monitoring/index'
+
+    }
+
     def index() {
         [databases:mongo.mongo.getDatabaseNames(), currentDB: params.dbname, currentCol: params.colname]
     }

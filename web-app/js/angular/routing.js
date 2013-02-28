@@ -11,5 +11,6 @@ MongoDBConsoleModule.config(['$routeProvider','$locationProvider', 'grailsProvid
         .when('/gridfs/:db/:collection', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplCollections'})})
         .when('/gridfs/:db', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplCollections'})})
         .when('/gridfs/', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplDatabase'}), controller: GridFSCtrl})
+        .when('/monitoring/', {templateUrl: grailsProvider.createLink({controller:'mviewer', action:'tplMonitoring'}), controller: GridFSCtrl})
         .otherwise({redirectTo: '/mongo/'});
 }]);

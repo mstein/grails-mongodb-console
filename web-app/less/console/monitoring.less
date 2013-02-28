@@ -1,0 +1,66 @@
+.monitoring {
+    padding-top: 2px;
+    h3 {
+        font-size: 18px;
+        line-height: 18px;
+    }
+    .table {
+        border: 1px solid #CCC;
+    }
+    .memory {
+        padding-top: 10px;
+        .item {
+            h4 {
+                font-size: 13px;
+                line-height: 18px;
+                margin-bottom: 0;
+            }
+            .progress {
+                height: 30px;
+                margin-bottom: 10px;
+                background: white;
+                .box-shadow(0 0 0 white);
+                position: relative;
+                .label-before, .label-behind {
+                    position: absolute;
+                    color: white;
+                    font-size: 13px;
+                    z-index: 3;
+                    left: 8px;
+                    top: 6px;
+                }
+                .label-behind {
+                    z-index: 1;
+                    color: black;
+                }
+                .bar {
+                    z-index: 2;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 30px;
+                    overflow: hidden;
+                    #gradient > .vertical(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+                }
+            }
+        }
+    }
+
+    .log {
+        height: 100px;
+        margin-bottom: 15px;
+        overflow: scroll;
+        background: #2e363f;
+        color: white;
+        position: relative;
+        pre {
+            border: 0 none;
+            background: 0 none;
+            margin: 0;
+            padding: 10px;
+            font-size: 11px;
+            line-height: 14px;
+            color: white;
+        }
+    }
+}
