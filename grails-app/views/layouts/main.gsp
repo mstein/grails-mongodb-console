@@ -41,6 +41,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-affix.js")}"></script>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "bootbox.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "toastmessage.js")}"></script>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular", file: "MongoDBConsoleModule.js")}"></script>
 
@@ -56,7 +57,6 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DBListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "CollectionListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DocumentListCtrl.js")}"></script>
-
 
     <g:layoutHead/>
 </head>

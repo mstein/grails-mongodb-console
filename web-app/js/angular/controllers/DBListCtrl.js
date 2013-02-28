@@ -146,17 +146,25 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 $location.path('/mongo/' + newDbname);
                 mongoContextHolder.databases = data.databases;
                 mongoContextHolder.populateDocuments([]);
+                $().toastmessage('showSuccessToast', newDbname + ' created ');
+                $().toastmessage('showErrorToast', 'Database \'' + newDbname + '\' created');
+            }).error(function(){
+                $().toastmessage('showErrorToast', 'Create database \'' + newDbname + '\' failed');
             });
     };
 
     $scope.validateColnameChange = function(renColName) {
         var newColname = renColName;
+        var oldColname = mongodb[mongoContextHolder.currentCollection]._name;
         mongodb[mongoContextHolder.currentCollection].renameCollection(newColname)
             .success(function() {
                 mongoContextHolder.currentCollection = newColname;
                 $scope.cancel();
                 $scope.selectdb(mongoContextHolder.currentDB);
                 $location.path('/mongo/'+ mongoContextHolder.currentDB + '/'+ newColname);
+                $().toastmessage('showSuccessToast', 'Collection \'' +  oldColname + '\' rename to \'' + newColname + '\'');
+            }).error(function() {
+                $().toastmessage('showErrorToast', 'Collection \'' + oldColname + '\' rename to \'' + newColname + '\' failed');
             });
     };
 
@@ -167,8 +175,10 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 mongoContextHolder.currentCollection = newColname;
                 $scope.cancel();
                 $scope.selectdb(mongoContextHolder.currentDB);
+                $().toastmessage('showSuccessToast', 'Collection \'' + newColname + '\' created ');
             }).error(function(data){
                 alert(data);
+                $().toastmessage('showErrorToast', 'Create collection \'' + newColname + '\' failed');
             });
     };
 
@@ -179,15 +189,19 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         }
         bootbox.confirm("This action cannot be undone. Drop the collection '" + colname + "' from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
             if (confirm) {
-                mongodb[colname].dropCollection()
-                    .success(function() {
-                        mongoContextHolder.currentCollection = null;
-                        mongoContextHolder.resultSet.elements = [];
-                        $location.path('/mongo/' + mongoContextHolder.currentDB);
-                        $scope.cancel();
-                        mongodb(mongoContextHolder.currentDB).success(function(data) {
-                            mongoContextHolder.collections = data;
+                mongodb[colname].dropCollection().success(function() {
+                    mongoContextHolder.currentCollection = null;
+                    mongoContextHolder.resultSet.elements = [];
+                    $location.path('/mongo/' + mongoContextHolder.currentDB);
+                    $scope.cancel();
+                    mongodb(mongoContextHolder.currentDB).success(function(data) {
+                        mongoContextHolder.collections = data;
+                        $().toastmessage('showSuccessToast', 'Database \'' + colname + '\' dropped');
+                    }).error(function(){
+                        $().toastmessage('showErrorToast', 'Drop database \'' + colname + '\' failed');
                     });
+                }).error(function(){
+                    $().toastmessage('showErrorToast', 'Drop database \'' + colname + '\' failed');
                 });
             }
 
@@ -212,6 +226,9 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                         mongoContextHolder.databases = data.databases;
                         mongoContextHolder.collections = [];
                         mongoContextHolder.populateDocuments([]);
+                        $().toastmessage('showSuccessToast', 'Database \'' + dbname + '\' dropped');
+                    }).error(function(){
+                        $().toastmessage('showErrorToast', 'Drop database \'' + dbname + '\' failed');
                     });
             }
 
