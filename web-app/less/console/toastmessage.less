@@ -14,13 +14,11 @@
 	display: block;
 	height: auto;
 	background: #FFF;
-	color: #666;
+	color: rgba(0,0,0,.8);
 	padding: 10px;
     padding-bottom: 0;
     padding-right: 40px;
 	margin: 0 0 12px 0;
-    .border-radius(3px);
-    //.box-shadow(0 2px 5px rgba(0,0,0,.4));
 }
 
 .toast-item p {
@@ -49,25 +47,19 @@
  *
  */
 .toast-type-notice {
-    .alert-info();
+    background: #a9d3e7;
 }
 
 .toast-type-success {
-    .alert-success();
-    color: #3b4c33;
-    #gradient>.vertical(#e6f3e0, #dff0d8);
-    border: 1px solid #c1d2b9;
+    background: #addca3;
 }
 
 .toast-type-warning {
-    .alert-danger();
+    background: #e7e2a9;
 }
 
 .toast-type-error {
-    .alert-error();
-    color: #ad2727;
-    #gradient>.vertical(#ffecec, #ffe7e7);
-    border: 1px solid #d7b1b1;
+    background: #e7a9a9;
 }
 
 /**
