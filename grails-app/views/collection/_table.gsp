@@ -8,6 +8,7 @@
         <a class="btn btn-icon" ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a>
         <a class="btn btn-icon" ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a>
         <a class="btn btn-icon" ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a>
+        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click="dropCols()"><i class="icon-trash"></i> Drop collections</a>
         <a class="btn btn-icon" ng-click="importData('import-data-col')"><i class="icon-download-alt"></i> Import</a>
         <a class="btn btn-icon" ng-click=""><i class="icon-share"></i> Export</a>
     </div>
@@ -27,7 +28,7 @@
 
         <tr ng-repeat="collection in collections()">
             <td width="10px">
-                <input type="checkbox" />
+                <input type="checkbox" ng-model="selectedCol[collection]" />
             </td>
             <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)">
                 <a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a>

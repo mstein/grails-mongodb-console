@@ -236,33 +236,3 @@ table.table {
         display: block;
     }
 }
-
-/* common settings checkbox and radiobutton */
-input[type="checkbox"], input[type="radio"] {
-    -khtml-appearance: none;
-    background: url(../img/radio-checkbox.png) no-repeat;
-    width: 20px;
-    height: 20px;
-    -webkit-appearance: caret;
-    vertical-align: middle;
-}
-input[type="checkbox"] {
-    background-position-x: left;
-    margin-top:0;
-}
-input[type="radio"] {
-    background-position-x: right;
-}
-input[type="checkbox"]:hover, input[type="radio"]:hover {
-    background-position-y: -40px;
-}
-input[type="checkbox"]:checked, input[type="radio"]:checked {
-    background-position-y: -20px;
-}
-input[type="checkbox"]:checked:hover, input[type="radio"]:checked:hover {
-    background-position-y: -60px;
-}
-/* disabled settings for checkbox and radiobutton */
-input[type="radio"]:disabled, input[type="checkbox"]:disabled {
-    opacity: .3;
-}

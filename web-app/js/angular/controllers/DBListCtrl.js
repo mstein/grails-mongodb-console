@@ -9,6 +9,12 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.newColname = null;
     $scope.renColName = null;
 
+    $scope.selectedCol = {};
+    $scope.countColSelected = 0;
+
+    $scope.selectedDB = {};
+    $scope.countDBSelected = 0;
+
     $scope.currentDB = function() {
         return mongoContextHolder.currentDB;
     };
@@ -45,6 +51,42 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
             }
             $scope.$broadcast("DatabasesListLoadedEvent");
         });
+    };
+
+    $scope.$watch('selectedCol', function () {
+        var count = 0;
+        angular.forEach($scope.selectedCol, function (value, field) {
+            if (value) count++;
+        });
+        $scope.countColSelected = count;
+    }, true);
+
+    $scope.dropCols = function() {
+        if ($scope.countColSelected > 0) {
+            bootbox.confirm("Drop " + $scope.countColSelected + " collection(s) from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
+                if (confirm) {
+                    alert("TODO");
+                }
+            });
+        }
+    };
+
+    $scope.$watch('selectedDB', function () {
+        var count = 0;
+        angular.forEach($scope.selectedDB, function (value, field) {
+            if (value) count++;
+        });
+        $scope.countDBSelected = count;
+    }, true);
+
+    $scope.dropDatabases = function() {
+        if ($scope.countDBSelected > 0) {
+            bootbox.confirm("Drop " + $scope.countDBSelected + " database(s) ?", function(confirm){
+                if (confirm) {
+                    alert("TODO");
+                }
+            });
+        }
     };
 
     $scope.$watch(function() { return $routeParams.db; }, function(value) {
@@ -260,7 +302,6 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                     $().toastmessage('showErrorToast', 'Drop database \'' + colname + '\' failed');
                 });
             }
-
         });
     };
 
