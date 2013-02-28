@@ -196,32 +196,32 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
             });
     };
 
-    $scope.validateColnameChange = function(renColName) {
+    function renameCollection(collection, renColName) {
         var newColname = renColName;
-        var oldColname = mongodb[mongoContextHolder.currentCollection]._name;
-        mongodb[mongoContextHolder.currentCollection].renameCollection(newColname)
+        var oldColname = mongodb[collection]._name;
+        var current = false;
+        if (mongoContextHolder.currentCollection)
+            current = true;
+        mongodb[collection].renameCollection(newColname)
             .success(function() {
-                mongoContextHolder.currentCollection = newColname;
+                if (current)
+                    mongoContextHolder.currentCollection = newColname;
                 $scope.cancel();
                 $scope.selectdb(mongoContextHolder.currentDB);
-                $location.path('/mongo/'+ mongoContextHolder.currentDB + '/'+ newColname);
+                if (current)
+                    $location.path('/mongo/'+ mongoContextHolder.currentDB + '/'+ newColname);
                 $().toastmessage('showSuccessToast', 'Collection \'' +  oldColname + '\' rename to \'' + newColname + '\'');
             }).error(function() {
                 $().toastmessage('showErrorToast', 'Collection \'' + oldColname + '\' rename to \'' + newColname + '\' failed');
             });
+    }
+
+    $scope.validateColnameChange = function(renColName) {
+        renameCollection(mongoContextHolder.currentCollection, renColName);
     };
 
     $scope.validateAColnameChange = function(newColname) {
-        var oldColname = mongodb[$scope.renamingACol]._name;
-        mongodb[$scope.renamingACol].renameCollection(newColname)
-            .success(function() {
-                mongoContextHolder.currentCollection = newColname;
-                $scope.cancel();
-                $scope.selectdb(mongoContextHolder.currentDB);
-                $().toastmessage('showSuccessToast', 'Collection \'' +  oldColname + '\' rename to \'' + newColname + '\'');
-            }).error(function() {
-                $().toastmessage('showErrorToast', 'Collection \'' + oldColname + '\' rename to \'' + newColname + '\' failed');
-            });
+        renameCollection($scope.renamingACol, newColname);
     };
 
     $scope.validateCreateCollection = function() {
