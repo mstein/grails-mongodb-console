@@ -37,7 +37,6 @@ function MongoJSON() {}
     function quoteKeys(match, startSymbol, key, value, options) {
         var val = value;
         if(/{|,\s*[a-zA-Z0-9_$]+\s*: *.+?,|}/.test(val)) {
-            console.log(val);
             val = value.replace(unquotedKeyPattern, quoteKeys)
         }
         return startSymbol + '"'+ key +'":' + val;
