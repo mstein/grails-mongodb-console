@@ -5,6 +5,7 @@
     <div class="nav-buttons">
         <a class="btn btn-icon" ng-click="createDB()"><i class="icon-plus"></i> Create DB</a>
         <a class="btn btn-icon"><i class="icon-download-alt"></i> Import DB</a>
+        <span class="divider"></span>
         <a class="btn btn-icon" ng-class="{disabled: (!countDBSelected)}" ng-click="dropDatabases()"><i class="icon-trash"></i> Drop databases</a>
     </div>
 </div>

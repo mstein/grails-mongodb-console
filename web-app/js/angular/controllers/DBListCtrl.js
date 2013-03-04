@@ -332,6 +332,11 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         });
     };
 
+    $scope.onKeypressRename = function($event, value) {
+        console.log($event);
+        if ($event.keyCode == 13)
+            $scope.validateColnameChange(value);
+    }
     $scope.cancel = function() {
         $scope.creatingDB = false;
         $scope.copyingDB = false;

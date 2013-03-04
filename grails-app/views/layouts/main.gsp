@@ -27,6 +27,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "jquery.fileupload.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/ace", file: "ace.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js", file: "angular.min.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib", file: "angular-ui.js")}"></script>
 
     <g:render template="/template/grailsService"/>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-transition.js")}"></script>
@@ -43,8 +44,8 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-typeahead.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/bootstrap/", file: "bootstrap-affix.js")}"></script>
 
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "bootbox.js")}"></script>
-    <script src="${resource(plugin: 'mongo-viewer', dir: "js/plugins/", file: "toastmessage.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib/", file: "bootbox.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/lib/", file: "toastmessage.js")}"></script>
 
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular", file: "MongoDBConsoleModule.js")}"></script>
 

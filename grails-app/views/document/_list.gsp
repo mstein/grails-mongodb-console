@@ -24,7 +24,7 @@
 
         <div class="rename input-append" ng-show="renamingCol">
             <div class="btn-group">
-                <input type="text" class="span3" id="rename-new-col" ng-model="renColName" value="{{renColName}}" />
+                <input type="text" class="span3" id="rename-new-col" ng-model="renColName" value="{{renColName}}" ui-event="{keypress: 'onKeypressRename($event, renColName)'}" />
                 <button class="btn btn-primary" ng-click="validateColnameChange(renColName)">
                     <i class="icon-white icon-ok"></i>
                 </button>
@@ -41,6 +41,8 @@
         <a class="btn btn-icon" ng-click=""><i class="icon-share"></i> Export results</a>
         <a class="btn btn-icon" ng-click=""><i class="icon-th-list"></i> Ensure Index</a>
         <a class="btn btn-icon" ng-click=""><i class="icon-refresh"></i> Re-index</a>
+        <span class="divider"></span>
+        <a class="btn btn-icon" ng-class="{disabled: (!countDocumentsSelected)}" ng-click="dropDocuments()"><i class="icon-trash"></i> Drop documents</a>
     </div>
 </div>
 
@@ -59,7 +61,7 @@
         <div class="document-entry editable-{{editMode}} doc-{{$index}}" ng-class="{active: editMode}">
             <div class="head" ng-init="editMode = false">
                 <label>
-                    <input type="checkbox" value="{{document._id.toString()}}"/>
+                    <input type="checkbox" ng-model="selectedDocuments[document._id]" />
                     Object ID : <span class="mongo-object-id">{{document._id.toString() || 'null'}}</span>
                 </label>
                 <div class="actions">

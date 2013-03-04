@@ -8,9 +8,10 @@
         <a class="btn btn-icon" ng-click="dropDB()"><i class="icon-trash"></i> Drop DB</a>
         <a class="btn btn-icon" ng-click="copyDB()"><i class="icon-repeat"></i> Copy DB</a>
         <a class="btn btn-icon" ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a>
-        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click="dropCols()"><i class="icon-trash"></i> Drop collections</a>
         <a class="btn btn-icon" ng-click="importData('import-data-col')"><i class="icon-download-alt"></i> Import</a>
-        <a class="btn btn-icon" ng-click=""><i class="icon-share"></i> Export</a>
+        <span class="divider"></span>
+        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click="dropCols()"><i class="icon-trash"></i> Drop collections</a>
+        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click=""><i class="icon-share"></i> Export</a>
     </div>
 </div>
 

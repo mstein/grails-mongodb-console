@@ -18,6 +18,9 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
     $scope.totalCount = 0;
     $scope.editors = {};
     $scope.latestQuery = null;
+    $scope.selectedDocuments = {};
+    $scope.countDocumentsSelected = 0;
+
 
     $scope.resultTypes = {
         json:{editable:false, removable:false, elementName:'result', elementNameMulti:'results'},
@@ -403,4 +406,23 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
                 break;
         }
     });
+
+    $scope.$watch('selectedDocuments', function () {
+        var count = 0;
+        angular.forEach($scope.selectedDocuments, function (value, field) {
+            if (value) count++;
+        });
+        $scope.countDocumentsSelected = count;
+    }, true);
+
+    $scope.dropDocuments = function() {
+        if ($scope.countDocumentsSelected > 0) {
+            bootbox.confirm("Drop " + $scope.countDocumentsSelected + " document(s) ?", function(confirm){
+                if (confirm) {
+                    alert("TODO");
+                }
+            });
+        }
+    }
+
 }
