@@ -1,1 +1,1 @@
-var MongoDBConsoleModule = angular.module('MongoDBConsoleModule', ['GrailsModule']);
+var MongoDBConsoleModule = angular.module('MongoDBConsoleModule', ['GrailsModule', 'ui']);

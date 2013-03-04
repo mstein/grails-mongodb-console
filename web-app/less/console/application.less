@@ -176,9 +176,23 @@ ul.well {
         //.box-shadow(~"0 1px 0 rgba(255,255,255,0.6)");
 
         .nav-buttons {
+            /*
             position: absolute;
             right: 0;
             top: 22px;
+            */
+            position: relative;
+            top: auto;
+            right: auto;
+            border-top: 1px solid #CCC;
+            padding-top: 8px;
+            padding-bottom: 5px;
+            .divider {
+                border-left: 1px solid #CCC;
+                margin-right: 9px;
+                margin-left: 5px;
+                padding: 4px 0 7px;
+            }
         }
     }
 
@@ -284,4 +298,3 @@ ul.well {
     }
 
 }
-
