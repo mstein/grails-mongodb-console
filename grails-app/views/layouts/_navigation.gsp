@@ -18,10 +18,10 @@
                         </a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                             <li class="nav-header">
-                                Mongo v2.2.0<br>
-                                Master shard<br>
-                                Uptime : 120 days<br>
-                                192.168.34.1:27017<br>
+                                Mongo v{{serverInfo.version}}<br>
+                                Master : {{serverInfo.ismaster}}<br>
+                                Uptime : {{serverInfo.uptimeMillis | duration}}<br>
+                                {{serverInfo.serverUsed}}<br>
                             </li>
                             <li><a href="#/monitoring/"><i class="icon-arrow-left"></i> More infos</a></li>
                             <li class="divider"></li>

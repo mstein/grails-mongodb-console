@@ -8,6 +8,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.newDbname = null;
     $scope.newColname = null;
     $scope.renColName = null;
+    $scope.serverInfo = null;
 
     $scope.selectedCol = {};
     $scope.countColSelected = 0;
@@ -50,6 +51,23 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
                 $location.path('/mongo/'+selectedDB);
             }
             $scope.$broadcast("DatabasesListLoadedEvent");
+        });
+    };
+
+    /**
+     * Ask for serverStatus and buildInfo
+     */
+    $scope.serverInfo = function() {
+        $scope.serverInfo = {};
+
+        mongodb.buildInfo().success(function(data){
+            $.extend ($scope.serverInfo, data);
+        });
+        mongodb.serverStatus().success(function(data){
+            $.extend ($scope.serverInfo, data);
+        });
+        mongodb.isMaster().success(function(data){
+            $.extend ($scope.serverInfo, data);
         });
     };
 

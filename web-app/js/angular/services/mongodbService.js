@@ -77,7 +77,13 @@ MongoDBService.fn = MongoDBService.prototype = {
 
     },
     serverStatus:function() {
-
+        return this.$http.get(this.grails.createLink({controller:'mviewer', action:'serverStatus'}));
+    },
+    buildInfo:function() {
+        return this.$http.get(this.grails.createLink({controller:'mviewer', action:'buildInfo'}));
+    },
+    isMaster:function() {
+        return this.$http.get(this.grails.createLink({controller:'mviewer', action:'isMaster'}));
     },
     stats:function() {
 

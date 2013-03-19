@@ -34,10 +34,10 @@
 <ul class="well" ng-show="!currentDB()">
     <li>
         <span>
-            Mongo v2.2.0<br>
-            Master shard<br>
-            Uptime : 120 days<br>
-            192.168.34.1:27017<br>
+          Mongo v{{serverInfo.version}}<br>
+          Master : {{serverInfo.ismaster}}<br>
+          Uptime : {{serverInfo.uptimeMillis | duration}}<br>
+          {{serverInfo.serverUsed}}<br>
         </span>
     </li>
 </ul>

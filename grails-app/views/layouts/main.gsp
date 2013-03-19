@@ -67,7 +67,7 @@
     <g:layoutHead/>
 </head>
 
-<body class="body-application" ng-controller="DBListCtrl" ng-init="init(${(currentDB ? '\'' + currentDB + '\'' : '') + (currentCol ? ',\'' + currentCol + '\'' : '')})">
+<body class="body-application" ng-controller="DBListCtrl" ng-init="init(${(currentDB ? '\'' + currentDB + '\'' : '') + (currentCol ? ',\'' + currentCol + '\'' : '')}); serverInfo();">
 
 <g:render template="/layouts/navigation"/>
 

@@ -48,6 +48,18 @@ class MviewerController {
         [databases:mongo.mongo.getDatabaseNames(), currentDB: params.dbname, currentCol: params.colname]
     }
 
+    def buildInfo() {
+        render (mongo.getDB("admin").command('buildinfo') as JSON)
+    }
+
+    def serverStatus() {
+        render (mongo.getDB("admin").command('serverStatus') as JSON)
+    }
+
+    def isMaster() {
+        render (mongo.getDB("admin").command('isMaster') as JSON)
+    }
+
     def listDb() {
         def resp = mongo.getDB("admin").command("listDatabases")
         render ([totalSize: resp.totalSize,
