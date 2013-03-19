@@ -38,7 +38,7 @@
             return stringResult;
         }
     })
-    .filter('duration', function($filter){
+    .filter('duration', function(){
         return function(input, precision, alwaysDisplayAll) {
             if(!input) return "";
 
@@ -50,9 +50,6 @@
                 // Assume its already an number
                 inputNumber = input;
             }
-
-            // Assumes that the input is millis
-            var days, hours, minutes, seconds, millis;
 
             // The field that may or may not be displayed
             var selectedFields = {months:false, days:false, hours: false, minutes: false, seconds: false, millis: false};
@@ -85,16 +82,13 @@
                 selectedFields.seconds = true;
             }
 
-            var durationComponents = [];
+            // Assumes that the input is millis
             for(i=0; i < fields.length; i++) {
                 if(selectedFields[fields[i].name]) {
                     var currentFieldValue = Math.floor(inputNumber / fields[i].ratio);
-
-                    //durationComponents.push(inputNumber / fields[i].ratio);
                     if(currentFieldValue != 0 || (currentFieldValue == 0 && alwaysDisplayAll)) {
                         stringResult += "" + currentFieldValue + fields[i].label.short + " ";
                     }
-
                     inputNumber = (inputNumber % fields[i].ratio);
                 }
             }
