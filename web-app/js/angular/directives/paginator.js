@@ -178,6 +178,7 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
             // make sure the total & current page update are synchronized
             if(attrs.synchronizedWith != undefined) {
                 if(paginators[attrs.synchronizedWith] != undefined) {
+                    scope.id = paginators[attrs.synchronizedWith].id;
                     scope.total = paginators[attrs.synchronizedWith].total;
                     scope.currentPage = paginators[attrs.synchronizedWith].currentPage;
                     scope.$watch('currentPage', function(newVal){
