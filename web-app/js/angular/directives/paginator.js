@@ -8,6 +8,7 @@ function PaginatorCtrl($scope) {
     $scope.minOffset = 0;
     $scope.elementName = "document";
     $scope.elementNameMulti = "documents";
+    $scope.explicitReset = false;
 
     $scope.eName = function() {
         if($scope.ajustedTotal() > 1) {
@@ -95,8 +96,19 @@ function PaginatorCtrl($scope) {
         $scope.$emit('PaginationChangeEvent', {offset: ($scope.currentPage - 1) * $scope.maxPerPage + $scope.minOffset, max:$scope.maxPerPage, page:$scope.currentPage-1});
     };
 
+    /**
+     * Reset the paginator current page to the first one.
+     * If explicitReset is true, then the paginator can only be reset by a event that explicitely target this paginator
+     * with the "id" parameter
+     */
     $scope.$on('PaginationResetRequestEvent', function(event, params) {
-        $scope.currentPage = 1;
+        // If params.id is defined, we only reset the paginator if the $scope.id match
+        if(params != undefined && params.id != undefined && $scope.id != undefined && params.id == $scope.id) {
+            $scope.currentPage = 1;
+        } else if((params == undefined || params.id == undefined) && $scope.id == undefined && !$scope.explicitReset) {
+            // No params.id defined, and we don't have $scope.id
+            $scope.currentPage = 1;
+        }
     });
 }
 
@@ -117,8 +129,9 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
         link:function(scope, element, attrs) {
             if(attrs.id != undefined) {
                 paginators[attrs.id] = scope;
+                scope.id = attrs.id;
             }
-
+            // TODO : can be refactored to removed redundancy
             // Watch for any min-offset or max attributes changes
             if(attrs.max) {
                 scope.$watch(function() {
@@ -153,6 +166,14 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                 });
             }
 
+            if(attrs.explicitReset) {
+                scope.$watch(function(){
+                    return scope.$parent.$eval(attrs.explicitReset);
+                }, function(newValue){
+                    scope.explicitReset = newValue;
+                });
+            }
+
             // The paginator is synchronized to another one, pull its scope and
             // make sure the total & current page update are synchronized
             if(attrs.synchronizedWith != undefined) {
@@ -179,6 +200,9 @@ MongoDBConsoleModule.directive('paginator', function factory(grails, $interpolat
                     });
                     paginators[attrs.synchronizedWith].$watch('elementNameMulti', function(newVal){
                         scope.elementNameMulti = newVal;
+                    });
+                    paginators[attrs.synchronizedWith].$watch('explicitReset', function(newVal){
+                        scope.explicitReset = newVal;
                     });
                 }
             }
