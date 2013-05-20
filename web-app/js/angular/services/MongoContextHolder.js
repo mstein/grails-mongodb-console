@@ -13,6 +13,31 @@ MongoDBConsoleModule.factory('mongoContextHolder', ['grails', function(grails) {
             query:{type:"unknown"}         // The query that was performed
         },
 
+        buckets:function() {
+            // TODO : cache or something
+            var filesMatches = [];
+            var chunksMatches = [];
+            var buckets = [];
+            var patternFile = /(.+)\.files$/i;
+            var patternChunk = /(.+)\.chunks$/i;
+
+            $.each(this.collections, function(index, col){
+                if(col.match(patternFile)) {
+                    filesMatches.push(patternFile.exec(col)[1]);
+                }
+                if(col.match(patternChunk)) {
+                    chunksMatches.push(patternChunk.exec(col)[1]);
+                }
+            });
+
+            // intersect filesMatches & chuncksMatches
+            $.each(chunksMatches, function(index, truncatedName) {
+                if($.inArray(truncatedName, filesMatches) != -1) {
+                    buckets.push(truncatedName);
+                }
+            });
+            return buckets;
+        },
         dbSelectable:function() {
             var size = 0;
             for(var key in this.databases) {

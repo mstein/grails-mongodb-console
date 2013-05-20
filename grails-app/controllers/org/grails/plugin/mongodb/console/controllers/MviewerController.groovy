@@ -1,4 +1,4 @@
-package mongo.viewer
+package org.grails.plugin.mongodb.console.controllers
 
 
 import grails.converters.JSON
@@ -10,10 +10,12 @@ import com.mongodb.DBCursor
 import com.mongodb.DBObject
 import com.mongodb.MongoException
 import com.mongodb.WriteConcern
+import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 class MviewerController {
 
     GMongo mongo
+    def mongoViewerService
 
     private mviewerSession(dbname = null, colname = null) {
         if(!session.mviewer) {
@@ -125,12 +127,31 @@ class MviewerController {
     }
 
     def dropCollection() {
-        def db = mongo.getDB(request.JSON.dbname)
-        def col = db.getCollection(request.JSON.colname)
+        String dbname = request.JSON.dbname
+        if(!dbname) {
+            render status:500, text:"Database not specified."
+            return
+        }
+
+        def db = mongo.getDB(dbname)
+        def colname = request.JSON.colname
+        if(!colname) {
+            colname = request.JSON.colnames
+        }
+        def col = []
+        if(colname) {
+            if(colname instanceof Collection){
+                col = colname.collect {
+                    db.getCollection(it.toString())
+                }
+            } else {
+                col = [db.getCollection(colname.toString())]
+            }
+        }
 
         try {
-            col.drop()
-            mviewerSession(request.JSON.dbname)
+            col*.drop()
+            mviewerSession(dbname)
             render status: 200
         } catch(e) {
             log.error e.message, e
@@ -535,7 +556,27 @@ class MviewerController {
     }
 
     def importData() {
-        println "test"
+        CommonsMultipartFile file = params.importFile
+        String dbname = params.dbname
+        String colname = params.colname
+        if(dbname && colname) {
+            log.info "Importing file into db ${dbname} and collection ${colname}"
+            try {
+                mongoViewerService.import(dbname, colname, file.inputStream)
+            } catch(Exception e) {
+                log.error e
+                render status: 500, text:[message:"An error has occured during the import."]
+                return
+            }
+        } else if(!dbname) {
+            render status:500, text: [message:"Database name not specified"]
+            return
+        } else if (!colname) {
+            render status:500, text: [message:"Collection name not specified"]
+            return
+        }
+
+        render status:200
     }
 
     /**

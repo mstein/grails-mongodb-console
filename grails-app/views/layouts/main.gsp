@@ -13,6 +13,7 @@
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'img', file: 'apple-touch-icon-retina.png')}">
 
     <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "bootstrap.css")}"/>
+    <link rel="stylesheet" href="${resource(plugin: 'mongo-viewer', dir: "css", file: "toLessify.css")}"/>
 
     <style type="text/css">
     body {
@@ -56,7 +57,9 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular", file: "routing.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "mongoQueries.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "paginator.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "fileUpload.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "mongodbService.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongodbGridFsService.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongoContextHolder.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DBListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "CollectionListCtrl.js")}"></script>

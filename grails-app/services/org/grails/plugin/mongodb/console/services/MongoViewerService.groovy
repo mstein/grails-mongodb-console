@@ -1,3 +1,5 @@
+package org.grails.plugin.mongodb.console.services
+
 import com.gmongo.GMongo
 import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
@@ -49,7 +51,7 @@ class MongoViewerService {
      * @param stopOnError (Optional) If set to TRUE, will stop the import process on the first error encountered (throws an exception), Default to FALSE.
      */
     private importFromJSON(String db, String collection, InputStream input, Boolean drop = false, Boolean upsert = false, Boolean stopOnError = false) {
-        def isMaster = runCommand('ismaster')?.ismaster
+        def isMaster = runCommand('ismaster')?.'ismaster'
         if (!isMaster) {
             log.error "Cannot import data to the specified server : The mongodb instance is not a master or a primary."
             throw new MongoException("Cannot import data to the specified server : The mongodb instance is not a master or a primary.")
@@ -67,8 +69,8 @@ class MongoViewerService {
         // visual purpose. So we are doing a simple check : if the last character of the line is not the character "}" (end of a document)
         // then the line is not a complete document, and the next line should be considered as part of the document.
         for(line in lines) {
-            def openBracketsCount = (line =~ /{/).count + lastOpenBracketsCount
-            def closeBracketsCount = (line =~ /}/).count + lastCloseBracketsCount
+            def openBracketsCount = (line =~ /\{/).count + lastOpenBracketsCount
+            def closeBracketsCount = (line =~ /\}/).count + lastCloseBracketsCount
             if (!line.trim().endsWith('}') || openBracketsCount != closeBracketsCount) {
                 buffer.append(line)
                 lastOpenBracketsCount = openBracketsCount
@@ -137,9 +139,9 @@ class MongoViewerService {
      */
     def runCommand(command) {
         if (command instanceof Map) {
-            return mongo.getDB("admin").command(new BasicDBObject(command)) as JSON
+            return mongo.getDB("admin").command(new BasicDBObject(command))
         } else {
-            return mongo.getDB("admin").command(command?.toString()) as JSON
+            return mongo.getDB("admin").command(command?.toString())
         }
     }
 }

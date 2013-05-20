@@ -72,7 +72,23 @@ MongoDBService.fn = MongoDBService.prototype = {
             alert('No database selected');
         }
     },
-
+    dropCollections:function(collections) {
+        if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
+            var $self = this;
+            var url = this.grails.createLink({controller:'mviewer', action:'dropCollection'});
+            return this.$http.post(url, {dbname:MongoDBService.$db, colnames:collections}).success(function(){
+                if(typeof collections === 'string') {
+                    $self[collections] = undefined;
+                } else if(typeof collections === 'array') {
+                    for(var i = 0; i < collections.length ;i++) {
+                        $self[collections[i]] = undefined;
+                    }
+                }
+            });
+        } else {
+            alert('No database selected');
+        }
+    },
     copyDatabase:function (newName) {
 
     },

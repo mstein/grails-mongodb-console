@@ -81,9 +81,29 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
 
     $scope.dropCols = function() {
         if ($scope.countColSelected > 0) {
-            bootbox.confirm("Drop " + $scope.countColSelected + " collection(s) from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
+            bootbox.confirm("This action cannot be undone. Are you sure you want to drop the " + $scope.countColSelected + " selected collection(s) from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
                 if (confirm) {
-                    alert("TODO");
+                    var allCol = [];
+                    for(var col in $scope.selectedCol) {
+                        allCol.push(col);
+                    }
+                    //mongodb.use(mongoContextHolder.currentDB);
+                    mongodb.dropCollections(allCol).success(function() {
+                        mongoContextHolder.currentCollection = null;
+                        mongoContextHolder.resultSet.elements = [];
+
+                        $location.path('/mongo/' + mongoContextHolder.currentDB);
+                        $scope.cancel();
+                        $scope.selectedCol = {};
+                        mongodb(mongoContextHolder.currentDB).success(function(data) {
+                            mongoContextHolder.collections = data;
+                            $().toastmessage('showSuccessToast', 'Collections \'' + allCol + '\' dropped');
+                        }).error(function(){
+                            $().toastmessage('showErrorToast', 'Drop collections \'' + allCol + '\' failed');
+                        });
+                    }).error(function(){
+                        $().toastmessage('showErrorToast', 'Drop collections \'' + allCol + '\' failed');
+                    });
                 }
             });
         }
@@ -195,7 +215,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         $scope.renamingACol = col;
         $("#renameACol").modal({ show: true });
         $timeout(function() { $scope.focus("rename-a-col"); }, 500);
-    }
+    };
 
     $scope.createCol = function(inputId) {
         $scope.cancel();
@@ -218,26 +238,10 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         }, 500);
     };
 
-    $scope.validateImportDataCollection = function(collection, fileInput) {
-        alert("hey ho");
-        $('#'+fileInput).fileupload({
-            dataType: 'json',
-            /*add: function (e, data) {
-                data.context = $('<button/>').text('Upload')
-                    .appendTo(document.body)
-                    .click(function () {
-                        $(this).replaceWith($('<p/>').text('Uploading...'));
-                        data.submit();
-                    });
-            },*/
-            done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).after($('#'+fileInput));
-                });
-            }
-        });
-        $('#'+fileInput).fileupload('send');
-    };
+    $scope.$on('fileuploaddone', function(e, data){
+        data.scope.cancel();
+        $scope.selectdb(mongoContextHolder.currentDB);
+    });
 
     $scope.validateDBCreation = function() {
         var newDbname = $scope.newDbname;
@@ -354,7 +358,8 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         console.log($event);
         if ($event.keyCode == 13)
             $scope.validateColnameChange(value);
-    }
+    };
+
     $scope.cancel = function() {
         $scope.creatingDB = false;
         $scope.copyingDB = false;

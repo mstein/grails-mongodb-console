@@ -1,12 +1,16 @@
+package org.grails.plugin.mongodb.console.services
+
 import com.gmongo.GMongo
 import com.mongodb.DB
 import com.mongodb.DBCollection
+import com.mongodb.DBCursor
 import com.mongodb.WriteConcern
 import com.mongodb.gridfs.GridFS
 
 import java.util.concurrent.ConcurrentHashMap
 
 class MongoFileStoreService {
+    static transactional = false
     def grailsApplication
     GMongo mongo
 
@@ -20,12 +24,12 @@ class MongoFileStoreService {
      * - files : the DBCollection corresponding to the file metadata collection of the bucket
      * - chunks : the DBCollection corresponding to the file binary chunks collection of the bucket
      */
-    Map<String, DBCollection> getCollections(String bucket) {
-        def gfs = getGridfs(bucket)
+    Map<String, DBCollection> getCollections(String dbname, String bucket) {
+        def gfs = getGridfs(dbname, bucket)
         [files:gfs.getDB().getCollection("${bucket}.files"), chunks:gfs.getDB().getCollection("${bucket}.chunks")]
     }
 
-    private getGridfs(String bucket) {
+    private getGridfs(String dbname, String bucket) {
         if(!mongo) {
             if(grailsApplication.config.mongodb?.host) {
                 String host = grailsApplication.config.mongodb?.host
@@ -47,8 +51,8 @@ class MongoFileStoreService {
 
         def gridfs = _gridfs[bucket]
         if (!gridfs) {
-            def dbname = grailsApplication.config.mongodb?.database ?: grailsApplication.metadata['app.name']
-            dbname = dbname ? dbname + 'files' : 'files' // use db '<DBNAME>files' for files
+            //def dbname = grailsApplication.config.mongodb?.database ?: grailsApplication.metadata['app.name']
+            //dbname = dbname ? dbname + 'files' : 'files' // use db '<DBNAME>files' for files
             DB db = mongo.mongo.getDB(dbname)
 
             db.writeConcern = WriteConcern.SAFE
@@ -58,5 +62,16 @@ class MongoFileStoreService {
         }
 
         gridfs
+    }
+
+    /**
+     *
+     * @param dbname
+     * @param bucket
+     * @return
+     */
+    DBCursor fileList(String dbname, String bucket) {
+        GridFS gridFs = getGridfs(dbname, bucket)
+        return gridFs.fileList
     }
 }

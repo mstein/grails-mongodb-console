@@ -1,10 +1,10 @@
 <div class="pagination">
-    <div class="left">Page <strong>{{currentPage}}</strong> of <strong>{{totalPage()}}</strong> - <strong>{{ajustedTotal()}}</strong> total {{eName()}}</div>
+    <div class="left" ng-bind-html-unsafe="pageInfos()"></div>
     <ul class="right" ng-show="pages().length>1">
-        <li ng-class="{disabled: currentPage == 1}"><a ng-click="previous()">« Previous</a></li>
+        <li ng-class="{disabled: currentPage == 1}"><a ng-click="previous()">{{previousLabel}}</a></li>
         <li ng-class="{active: currentPage == (n)}" ng-repeat="n in pages()">
             <a ng-click="select(n)">{{n}}</a>
         </li>
-        <li ng-class="{disabled: currentPage == totalPage()}"><a ng-click="next()">Next »</a></li>
+        <li ng-class="{disabled: currentPage == totalPage()}"><a ng-click="next()">{{nextLabel}}</a></li>
     </ul>
 </div>

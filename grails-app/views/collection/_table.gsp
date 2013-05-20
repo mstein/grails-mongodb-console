@@ -29,14 +29,14 @@
 
         <tr ng-repeat="collection in collections()">
             <td width="10px">
-                <input type="checkbox" ng-model="selectedCol[collection]" />
+                <input type="checkbox" ng-model="selectedCol[collection]" ng-disabled="collection == 'system.indexes'"/>
             </td>
             <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)">
                 <a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a>
             </td>
             <td width="10px" nowrap="nowrap">
-                <a ng-click="renameACol(collection)"><i class="icon-edit"></i></a>
-                <a ng-click="dropCol(collection)"><i class="icon-trash"></i></a>
+                <a ng-click="renameACol(collection)" ng-show="collection != 'system.indexes'"><i class="icon-edit"></i></a>
+                <a ng-click="dropCol(collection)" ng-show="collection != 'system.indexes'"><i class="icon-trash"></i></a>
             </td>
         </tr>
         </tbody>

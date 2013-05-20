@@ -8,7 +8,7 @@
             </a>
 
             <div id="logo">
-                <a class="brand">Mongo Viewer Plugin</a>
+                <a class="brand">MongoDB Console Plugin</a>
             </div>
 
             <div class="nav-collapse collapse">

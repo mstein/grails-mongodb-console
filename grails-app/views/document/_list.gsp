@@ -50,10 +50,10 @@
 <div class="pagination-top" ng-show="currentCollection && resultSet().totalCount > 0">
     <paginator id="top-paginator"
                total="{{resultSet().totalCount}}"
-               max="contextMax()"
+               max-per-page="contextMax()"
                min-offset="contextOffset()"
                element-name="resultTypes[resultSet().type].elementName"
-               element-name-multi="resultTypes[resultSet().type].elementNameMulti" />
+               element-name-multi="resultTypes[resultSet().type].elementNameMulti"/>
 </div>
 
 <div class="main documents" ng-show="resultSet().elements.length>0">
@@ -86,5 +86,5 @@
 <p ng-show="resultSet().elements.length==0">This collection is empty. <a ng-click="createDoc()">Create a document</a>.</p>
 
 <div class="pagination-bottom" ng-show="currentCollection && resultSet().totalCount > 0">
-    <paginator synchronized-with="top-paginator" max="" min-offset=""/>
+    <paginator synchronized-with="top-paginator"/>
 </div>

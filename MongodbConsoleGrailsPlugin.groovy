@@ -1,4 +1,5 @@
 import com.gmongo.GMongo
+import org.grails.plugin.mongodb.console.services.MongoViewerService
 
 class MongodbConsoleGrailsPlugin {
     def version = "0.1"
