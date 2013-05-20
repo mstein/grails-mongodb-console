@@ -1,6 +1,6 @@
 package org.grails.plugin.mongodb.console.controllers
 
-
+import com.doc4web.util.packaging.ZipBuilder
 import grails.converters.JSON
 
 import com.gmongo.GMongo
@@ -555,6 +555,13 @@ class MviewerController {
 
     }
 
+    /**
+     * Import documents into a collection from a json file
+     *
+     * @param importFile The file to import
+     * @param dbname (Required) The name of the database
+     * @param colname (Required) The name of the collection
+     */
     def importData() {
         CommonsMultipartFile file = params.importFile
         String dbname = params.dbname
@@ -577,6 +584,52 @@ class MviewerController {
         }
 
         render status:200
+    }
+
+    /**
+     * Export a collection into a file and send it to the client
+     *
+     * Consumes a JSON document containing the keys listed for this action.
+     * @param dbname (Required) The name of the database
+     * @param colname (Required) The name of the collection
+     * @param query (Optional) A query to filter the result to export in the collection
+     */
+    def exportCollection() {
+        /*def rawJSON = request.reader.text
+        def mongoJson = com.mongodb.util.JSON.parse(rawJSON)*/
+        String dbname = params.dbname
+        List<String> colnames = params.list('colnames')
+
+        if(!dbname || !colnames) {
+            render status:500, text:[message:'Missing database name or collection name.']
+            return
+        }
+
+        // TODO : this operation may be slow
+        def date = new Date().format("yyyy-MM-dd_HH'h'mm'm'ss's'")
+        response.setContentType("application/octet-stream")
+
+        if(colnames.size() > 1) {
+            ByteArrayOutputStream zippedOutput = new ByteArrayOutputStream()
+            def zipBuilder = new ZipBuilder(zippedOutput)
+            zipBuilder.zip {
+                for(colname in colnames) {
+                    ByteArrayOutputStream output = mongoViewerService.export(dbname, colname, params.query ?: null)
+                    if(output.size() > 0) {
+                        "$colname" {
+                            file("export_${dbname}_${colname}__${date}.json", output)
+                        }
+                    }
+                }
+            }
+            response.setHeader("Content-Disposition", "attachment;filename=export_${dbname}_${date}.zip")
+            zippedOutput.writeTo(response.outputStream)
+        } else {
+            String colname = colnames.first()
+            response.setHeader("Content-Disposition", "attachment;filename=export_${dbname}_${colname}_${date}.json")
+            ByteArrayOutputStream output = mongoViewerService.export(dbname, colname, params.query ?: null)
+            response.outputStream << output
+        }
     }
 
     /**

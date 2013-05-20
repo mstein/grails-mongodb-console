@@ -89,6 +89,17 @@ MongoDBService.fn = MongoDBService.prototype = {
             alert('No database selected');
         }
     },
+    // NOTE : This function is SYNCHRONOUS
+    exportCollections:function(collections) {
+        if(MongoDBService.$db != undefined && MongoDBService.$db != null) {
+            var $self = this;
+            var url = this.grails.createLink({controller:'mviewer', action:'exportCollection'});
+            window.location.href = url + '?'+$.param({dbname:MongoDBService.$db, colnames:collections}, true);
+            //return this.$http.post(url, {dbname:MongoDBService.$db, colnames:collections});
+        } else {
+            alert('No database selected');
+        }
+    },
     copyDatabase:function (newName) {
 
     },

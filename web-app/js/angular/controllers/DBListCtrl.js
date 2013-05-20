@@ -10,8 +10,7 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.renColName = null;
     $scope.serverInfo = null;
 
-    $scope.selectedCol = {};
-    $scope.countColSelected = 0;
+
 
     $scope.selectedDB = {};
     $scope.countDBSelected = 0;
@@ -69,44 +68,6 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
         mongodb.isMaster().success(function(data){
             $.extend ($scope.serverInfo, data);
         });
-    };
-
-    $scope.$watch('selectedCol', function () {
-        var count = 0;
-        angular.forEach($scope.selectedCol, function (value, field) {
-            if (value) count++;
-        });
-        $scope.countColSelected = count;
-    }, true);
-
-    $scope.dropCols = function() {
-        if ($scope.countColSelected > 0) {
-            bootbox.confirm("This action cannot be undone. Are you sure you want to drop the " + $scope.countColSelected + " selected collection(s) from the db '"+mongoContextHolder.currentDB + "'?", function(confirm){
-                if (confirm) {
-                    var allCol = [];
-                    for(var col in $scope.selectedCol) {
-                        allCol.push(col);
-                    }
-                    //mongodb.use(mongoContextHolder.currentDB);
-                    mongodb.dropCollections(allCol).success(function() {
-                        mongoContextHolder.currentCollection = null;
-                        mongoContextHolder.resultSet.elements = [];
-
-                        $location.path('/mongo/' + mongoContextHolder.currentDB);
-                        $scope.cancel();
-                        $scope.selectedCol = {};
-                        mongodb(mongoContextHolder.currentDB).success(function(data) {
-                            mongoContextHolder.collections = data;
-                            $().toastmessage('showSuccessToast', 'Collections \'' + allCol + '\' dropped');
-                        }).error(function(){
-                            $().toastmessage('showErrorToast', 'Drop collections \'' + allCol + '\' failed');
-                        });
-                    }).error(function(){
-                        $().toastmessage('showErrorToast', 'Drop collections \'' + allCol + '\' failed');
-                    });
-                }
-            });
-        }
     };
 
     $scope.$watch('selectedDB', function () {

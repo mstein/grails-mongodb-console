@@ -16,7 +16,7 @@
                 <li><a ng-click="createCol('create-new-col')"><i class="icon-plus"></i> Create Collection</a></li>
                 <li class="divider"></li>
                 <li><a ng-click=""><i class="icon-download-alt"></i> Import</a></li>
-                <li><a ng-click=""><i class="icon-share"></i> Export</a></li>
+                <li><a ng-click="exportCol()"><i class="icon-share"></i> Export</a></li>
             </ul>
         </div>
         <span class="divider"></span>

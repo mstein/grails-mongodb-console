@@ -423,6 +423,14 @@ function DocumentListCtrl($scope, $routeParams, mongodb, mongoContextHolder, $ht
                 }
             });
         }
-    }
+    };
+
+    $scope.exportCol = function() {
+        bootbox.confirm("Confirm the export generation for the "+mongoContextHolder.currentCollection+" collection? This action can be slow depending on the collection size.", function(confirm){
+            if(confirm) {
+                mongodb.exportCollections(mongoContextHolder.currentCollection);
+            }
+        });
+    };
 
 }

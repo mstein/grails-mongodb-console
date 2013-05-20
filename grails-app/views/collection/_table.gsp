@@ -11,7 +11,7 @@
         <a class="btn btn-icon" ng-click="importData('import-data-col')"><i class="icon-download-alt"></i> Import</a>
         <span class="divider"></span>
         <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click="dropCols()"><i class="icon-trash"></i> Drop collections</a>
-        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click=""><i class="icon-share"></i> Export</a>
+        <a class="btn btn-icon" ng-class="{disabled: (!countColSelected)}" ng-click="exportCols()"><i class="icon-share"></i> Export</a>
     </div>
 </div>
 

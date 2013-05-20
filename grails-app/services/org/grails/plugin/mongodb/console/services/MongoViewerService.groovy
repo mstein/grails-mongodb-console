@@ -2,6 +2,7 @@ package org.grails.plugin.mongodb.console.services
 
 import com.gmongo.GMongo
 import com.mongodb.BasicDBObject
+import com.mongodb.DBCursor
 import com.mongodb.DBObject
 import com.mongodb.MongoException
 import com.mongodb.WriteConcern
@@ -36,7 +37,7 @@ class MongoViewerService {
     }
 
     private importFromCSV(String db, String collection, InputStream input, Boolean drop = false, Boolean upsert = false, Boolean stopOnError = false){
-
+        // TODO
     }
 
     /**
@@ -129,6 +130,43 @@ class MongoViewerService {
             }
         }
 
+    }
+
+    /**
+     * Export the documents of the specified collection in a json file.
+     * Can be used to export a full collection or a subset (filtered by a query).
+     *
+     * TODO Handle a full query (including skip, limit, field, etc.), currently only take the query itself
+     *
+     * @param db The database name where the collection is stored
+     * @param collection The collection name
+     * @param query (Optional) A query to filter the result to export
+     * @return ByteArrayOutputStream A outputstream representing the export file
+     */
+    ByteArrayOutputStream export(String db, String collection, Map mapQuery = null) {
+        def mongoCollection = mongo.getDB(db).getCollection(collection)
+        if(mongoCollection) {
+            DBCursor results
+            if(mapQuery) {
+                BasicDBObject query = new BasicDBObject(mapQuery)
+                results = mongoCollection.find(query)
+            } else {
+                results = mongoCollection.find()
+            }
+
+            // TODO : write in a file? The export may be too big for the main memory.
+            // TODO : We need to add some watchdog to prevent out of memory exception.
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
+            for(res in results) {
+                outputStream.write(res.toString().bytes)
+                outputStream.write('\n'.bytes)
+            }
+
+            return outputStream
+        } else {
+            throw new MongoException("Cannot export data: database name or collection not specified or does not exist.")
+        }
+        return null
     }
 
     /**
