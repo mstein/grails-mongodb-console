@@ -296,5 +296,51 @@ ul.well {
             }
         }
     }
+    .table-sorter {
+      thead {
+        tr {
+          th {
+            padding: 0;
+            margin: 0;
+            a {
+              position: relative;
+              margin: 0;
+              display: block;
+              padding: 8px;
+              color: #222;
+              font-weight: normal;
+              span.caret {
+                margin-top: 8px;
+                margin-left: 5px;
+              }
+            }
+            span.no-sort {
+              display: block;
+              padding: 8px;
+              color: #888;
+            }
+            &.sorted {
+              a {
+                font-weight: bold;
+              }
+            }
+            &.asc {
+              a {
+              //background: url(asc.png) no-repeat;
+              }
+            }
+            &.desc {
+              a {
+                span.caret {
+                  border-top: 0;
+                  border-bottom: 4px solid #000000;
+                }
+              //background: url(asc.png) no-repeat;
+              }
+            }
+          }
+        }
+      }
+    }
 
 }

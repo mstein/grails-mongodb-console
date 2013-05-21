@@ -66,6 +66,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "DocumentListCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "GridFSCtrl.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "MonitoringCtrl.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/controllers", file: "ServerCtrl.js")}"></script>
 
     <g:layoutHead/>
 </head>

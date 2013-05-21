@@ -1,4 +1,4 @@
-function CollectionListCtrl($scope, $routeParams, mongoContextHolder, mongodb) {
+function CollectionListCtrl($scope, $routeParams, mongoContextHolder, mongodb, $location) {
     $scope.selectedCol = {};
     $scope.countColSelected = 0;
 

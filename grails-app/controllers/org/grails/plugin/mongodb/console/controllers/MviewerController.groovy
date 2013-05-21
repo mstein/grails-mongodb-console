@@ -41,9 +41,12 @@ class MviewerController {
         render template: '/document/list', model: [databases:mongo.mongo.getDatabaseNames()]
     }
 
+    def tplServer() {
+        render template: '/server/change'
+    }
+
     def tplMonitoring() {
         render template: '/monitoring/index'
-
     }
 
     def index() {
@@ -93,9 +96,28 @@ class MviewerController {
     }
 
     def dropDb() {
-        mviewerSession()
-        mongo.getDB(request.JSON.dbname).dropDatabase()
-        forward action: "listDb"
+        def dbname = request.JSON.dbname
+        if(!dbname) {
+            dbname = request.JSON.dbnames
+        }
+        def db = []
+        if(dbname) {
+            if(dbname instanceof Collection){
+                db = dbname.collect {
+                    mongo.getDB(it.toString())
+                }
+            } else {
+                db = [mongo.getDB(dbname.toString())]
+            }
+        }
+
+        try {
+            db*.dropDatabase()
+            render status: 200
+        } catch(e) {
+            log.error e.message, e
+            render status: 500
+        }
     }
 
     def createCollection() {

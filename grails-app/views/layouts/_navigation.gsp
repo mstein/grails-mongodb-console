@@ -25,7 +25,7 @@
                             </li>
                             <li><a href="#/monitoring/"><i class="icon-arrow-left"></i> More infos</a></li>
                             <li class="divider"></li>
-                            <li><a><i class="icon-retweet"></i> Change server</a></li>
+                            <li><a href="#/server/"><i class="icon-retweet"></i> Change server</a></li>
                             <li><a><i class="icon-list"></i> List replicas</a></li>
                         </ul>
                     </li>

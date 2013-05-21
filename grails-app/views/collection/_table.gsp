@@ -22,7 +22,7 @@
         <tr>
             <th width="10px">&nbsp;</th>
             <th>Name</th>
-            <th width="40px">&nbsp;</th>
+            <th width="50px">&nbsp;</th>
         </tr>
         </thead>
         <tbody>
@@ -34,7 +34,7 @@
             <td ng-click="changePath('/mongo/'+currentDB()+'/'+collection)">
                 <a href="#/mongo/{{currentDB()}}/{{collection}}">{{collection}}</a>
             </td>
-            <td width="10px" nowrap="nowrap">
+            <td width="30px" nowrap="nowrap">
                 <a ng-click="renameACol(collection)" ng-show="collection != 'system.indexes'"><i class="icon-edit"></i></a>
                 <a ng-click="dropCol(collection)" ng-show="collection != 'system.indexes'"><i class="icon-trash"></i></a>
             </td>

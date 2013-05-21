@@ -26,7 +26,11 @@
             <td width="10px">
                 <input type="checkbox" ng-model="selectedDB[db.name]" />
             </td>
-            <td ng-click="changePath('/mongo/'+db.name)"><a href="#/mongo/{{db.name}}">{{db.name}}</a></td>
+            <!--  ng-click="changePath('/mongo/'+db.name)" -->
+            <td ui-route="/mongo/">
+                <a ng-show="$uiRoute" href="#/mongo/{{db.name}}">{{db.name}}</a>
+                <a ng-show="!$uiRoute" href="#/gridfs/{{db.name}}">{{db.name}}</a>
+            </td>
             <td>&nbsp;</td>
             <td>{{db.sizeOnDisk | fileSize}}</td>
             <td width="20px">

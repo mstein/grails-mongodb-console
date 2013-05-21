@@ -54,6 +54,15 @@ MongoDBService.fn = MongoDBService.prototype = {
             alert('No database selected');
         }
     },
+    dropDatabases:function(databases) {
+        if(databases != null) {
+            var url = this.grails.createLink({controller:'mviewer', action:'dropDb'});
+            return this.$http.post(url, {dbnames:databases}).success(function(data) {
+            });
+        } else {
+            alert('No database selected');
+        }
+    },
     createDatabase:function(dbname) {
         var url = this.grails.createLink({controller:'mviewer', action:'createDb'});
         return this.$http.post(url, {dbname:dbname}).success(function() {

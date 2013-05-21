@@ -10,8 +10,6 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
     $scope.renColName = null;
     $scope.serverInfo = null;
 
-
-
     $scope.selectedDB = {};
     $scope.countDBSelected = 0;
 
@@ -80,9 +78,22 @@ function DBListCtrl($scope, $timeout, mongodb, $routeParams, $location, mongoCon
 
     $scope.dropDatabases = function() {
         if ($scope.countDBSelected > 0) {
-            bootbox.confirm("Drop " + $scope.countDBSelected + " database(s) ?", function(confirm){
+            bootbox.confirm("This action cannot be undone. Are you sure you want to drop the " + $scope.countDBSelected + " database(s) ?", function(confirm){
                 if (confirm) {
-                    alert("TODO");
+                    var allDbs = [];
+                    for(var db in $scope.selectedDB) {
+                        allDbs.push(db);
+                    }
+                    mongodb.dropDatabases(allDbs).success(function() {
+                        //$location.path('/mongo/' + mongoContextHolder.currentDB);
+                        //$scope.refresh();
+                        $scope.countDBSelected = 0;
+                        $scope.selectedDB = {};
+                        $scope.init();
+                        $().toastmessage('showSuccessToast', 'Databases \'' + allDbs + '\' dropped');
+                    }).error(function(){
+                        $().toastmessage('showErrorToast', 'Drop databases \'' + allDbs + '\' failed');
+                    });
                 }
             });
         }
