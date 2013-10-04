@@ -252,6 +252,7 @@ class MviewerController {
                 limit(mongoJson?.max?.toInteger() ?: 30).
                 skip(mongoJson?.offset?.toInteger() ?: 0).
                 sort(sortFields) as DBCursor
+
         def results = cursor.inject([]) { coll, BasicDBObject entry ->
             def args = [:]
             for(key in entry.keySet()) {
@@ -646,11 +647,13 @@ class MviewerController {
             }
             response.setHeader("Content-Disposition", "attachment;filename=export_${dbname}_${date}.zip")
             zippedOutput.writeTo(response.outputStream)
-        } else {
+        } else if(colnames.size() == 1) {
             String colname = colnames.first()
             response.setHeader("Content-Disposition", "attachment;filename=export_${dbname}_${colname}_${date}.json")
             ByteArrayOutputStream output = mongoViewerService.export(dbname, colname, params.query ?: null)
             response.outputStream << output
+        } else {
+            render status:500, text:[message:'Missing database name or collection name.']
         }
     }
 
@@ -688,7 +691,7 @@ class MviewerController {
                 res = [$numberLong:element.toString()]
                 break
             case Date:
-                res = [$date:element.format("yyyy-MM-dd'T'HH:mm:ss'Z'")]
+                res = [$date:element.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")]
                 break
             // DBRef are not resolve, we just show the collection name and the id of the entry
             // The client may ask for the specified entry afterward
