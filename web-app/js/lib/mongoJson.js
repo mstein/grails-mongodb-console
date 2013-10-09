@@ -72,7 +72,7 @@ function MongoJSON() {}
             text = text.replace(/(ISO)?Date\(\)/g, '{"$date":"'+date.toJSON()+'"}');
         }
         // Date & ISODate
-        if(/(ISO)?Date\(.+\)/.test(text)) {
+        if(/(ISO)?Date\(.*\)/.test(text)) {
             text = text.replace(/(ISO)?Date\("([0-9\-TZ\.:']+)"\)/g, '{"$date":"$2"}');
         }
         // Timestamp
@@ -104,7 +104,7 @@ function MongoJSON() {}
             text = text.replace(/NumberLong\("?([0-9]+)"?\)/g, '{"$numberLong":"$1"}');
         }
         // Regexp
-        if(/\[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
+        if(/(?::\s*)\/[^\r\n]*?\/[a-zA-Z]*/.test(text)) {
             text = text.replace(/\/([^\r\n]*?)\/([a-zA-Z]*)/g, function(match, pattern, options) {
                 return '{"$regex":"'+pattern.replace(/[^\\]"/g, '\\"')+'", "$options": "'+options+'"}'
             });
@@ -143,27 +143,35 @@ function MongoJSON() {}
         }) + '"' : '"' + string + '"';
     }
 
-    function enclose (value, original, useTengen) {
+    function enclose (value, original, tengenOptions) {
         // If the value has a tengenJSON method, call it to obtain a replacement value.
-        if (useTengen && original && typeof original === 'object' &&
+        if (tengenOptions.useTengen && original && typeof original === 'object' &&
             typeof original.tengenJSON === 'function') {
-            value = original.tengenJSON(value);
+            value = original.tengenJSON(value, tengenOptions.useTag);
         }
         return value;
     }
 
     function str(key, holder, options) {
         var tengen = false;
+        var tengenTagged = true;
         var escapeHtml = false;
         if(options != undefined) {
             if(options.tengen != undefined) {
                 tengen = options.tengen;
+            }
+            if(options.tengenTag != undefined) {
+                tengenTagged = options.tengenTag;
             }
             if(options.escapeHtml != undefined) {
                 escapeHtml = options.escapeHtml;
             }
         }
 
+        var tengenOptions = {
+            useTengen:tengen != null && tengen != undefined && tengen,
+            useTag:tengenTagged
+        };
 // Produce a string from holder[key].
 
         var i, // The loop counter.
@@ -174,7 +182,6 @@ function MongoJSON() {}
             partial,
             value = holder[key];
 
-        var useTengen = tengen != null && tengen != undefined && tengen;
 // If the value has a toJSON method, call it to obtain a replacement value.
         if (value && typeof value === 'object' &&
             typeof value.toJSON === 'function') {
@@ -192,8 +199,8 @@ function MongoJSON() {}
 
         switch (typeof value) {
             case 'function':
-                if(useTengen) {
-                    return enclose(value.call(), holder[key], useTengen);
+                if(tengenOptions.useTengen) {
+                    return enclose(value.call(), holder[key], tengenOptions);
                 } else {
                     return value.call();
                 }
@@ -201,13 +208,13 @@ function MongoJSON() {}
                 if(escapeHtml) {
                     value = escapeHtmlChars(value);
                 }
-                return enclose(quote(value), holder[key], useTengen);
+                return enclose(quote(value), holder[key], tengenOptions);
 
             case 'number':
 
 // JSON numbers must be finite. Encode non-finite numbers as null.
 
-                return isFinite(value) ? enclose(String(value), holder[key], useTengen) : 'null';
+                return isFinite(value) ? enclose(String(value), holder[key], tengenOptions) : 'null';
 
             case 'boolean':
             case 'null':
@@ -216,7 +223,7 @@ function MongoJSON() {}
 // typeof null does not produce 'null'. The case is included here in
 // the remote chance that this gets fixed someday.
 
-                return enclose(String(value), holder[key], useTengen);
+                return enclose(String(value), holder[key], tengenOptions);
 
 // If the type is 'object', we might be dealing with an object or an array or
 // null.
@@ -256,7 +263,7 @@ function MongoJSON() {}
                         ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
                         : '[' + partial.join(',') + ']';
                     gap = mind;
-                    return enclose(v, holder[key], useTengen);
+                    return enclose(v, holder[key], tengenOptions);
                 }
 
 // If the replacer is an array, use it to select the members to be stringified.
@@ -296,7 +303,7 @@ function MongoJSON() {}
                     : '{' + partial.join(',') + '}';
                 gap = mind;
 
-                return enclose(v, holder[key], useTengen);
+                return enclose(v, holder[key], tengenOptions);
         }
     }
 

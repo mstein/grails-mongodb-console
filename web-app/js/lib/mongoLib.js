@@ -11,8 +11,12 @@
 function MongoObjectId(val) {
     this.$oid = val;
 
-    MongoObjectId.prototype.tengenJSON = function(value) {
-        return '<span class="mongo-object-id">ObjectId("' + this.$oid + '")</span>';
+    MongoObjectId.prototype.tengenJSON = function(value, useTag) {
+        if(useTag) {
+            return '<span class="mongo-object-id">ObjectId("' + this.$oid + '")</span>';
+        } else {
+            return 'ObjectId("' + this.$oid + '")';
+        }
     };
 
     MongoObjectId.prototype.toStrictJSON = function() {
@@ -36,8 +40,12 @@ function MongoObjectId(val) {
 function MongoBinaryData(size) {
     this.size = size;
 
-    MongoBinaryData.prototype.tengenJSON = function(value) {
-        return "<span class=\"mongo-binary\">BinData(" + this.size + " Bytes)</span>";
+    MongoBinaryData.prototype.tengenJSON = function(value, useTag) {
+        if(useTag) {
+            return "<span class=\"mongo-binary\">BinData(" + this.size + " Bytes)</span>";
+        } else {
+            return "BinData(" + this.size + " Bytes)";
+        }
     };
 
     MongoBinaryData.prototype.toJSON = function() {
@@ -59,8 +67,12 @@ function MongoReference(colRef, idRef) {
         return this;
     };
 
-    MongoReference.prototype.tengenJSON = function(value) {
-        return '<a href="#ref" data-ref="'+this.$ref+'" data-id="'+this.$id+'" class="json-link">' + value + '</a>';
+    MongoReference.prototype.tengenJSON = function(value, useTag) {
+        if(useTag) {
+            return '<a href="#ref" data-ref="'+this.$ref+'" data-id="'+this.$id+'" class="json-link">' + value + '</a>';
+        } else {
+            return value;
+        }
     };
 }
 
@@ -78,8 +90,12 @@ function MongoNumberLong(stringLong) {
         return function() { return self.$numberLong };
     };
 
-    MongoNumberLong.prototype.tengenJSON = function(value) {
-        return '<span class="mongo-number-long">NumberLong("' + this.$numberLong + '")</span>';
+    MongoNumberLong.prototype.tengenJSON = function(value, useTag) {
+        if(useTag) {
+            return '<span class="mongo-number-long">NumberLong("' + this.$numberLong + '")</span>';
+        } else {
+            return 'NumberLong("' + this.$numberLong + '")';
+        }
     };
 
     MongoNumberLong.prototype.toStrictJSON = function() {
@@ -105,17 +121,25 @@ function MongoISODate(stringDate) {
         return {"$date":this.$date};
     };
 
-    MongoISODate.prototype.tengenJSON = function(value) {
-        return '<span class="mongo-iso-date">ISODate("' + this.$date + '")</span>';
+    MongoISODate.prototype.tengenJSON = function(value, useTag) {
+        if(useTag) {
+            return '<span class="mongo-iso-date">ISODate("' + this.$date + '")</span>';
+        } else {
+            return 'ISODate("' + this.$date + '")';
+        }
     };
 
     MongoISODate.prototype.toStrictJSON = function() {
         return {"$date":this.$date};
     };
+
+    MongoISODate.prototype.toString = function() {
+        return this.$date;
+    };
 }
 
 // only the double $$ keys are removed
-function commonJsonReplacer(key, value) {
+function mongoJsonReplacer(key, value) {
     var val = value;
     if (/^\$\$+/.test(key)) {
         val = undefined;

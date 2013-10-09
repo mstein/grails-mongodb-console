@@ -1,7 +1,10 @@
 // This json filter will not remove the $ref, $id, etc. keys from the server response
-    MongoDBConsoleModule.filter('commonJson', function () {
-        return function (input) {
-            return MongoJSON.stringify(input, commonJsonReplacer,'  ', {tengen:true, escapeHtml:true});
+    MongoDBConsoleModule.filter('mongoJson', function () {
+        return function (input, tengen, tengenTag, escapeHtml) {
+            tengen = tengen != undefined ? tengen : true;
+            tengenTag = tengenTag != undefined ? tengenTag : true;
+            escapeHtml = escapeHtml != undefined ? escapeHtml : true;
+            return MongoJSON.stringify(input, mongoJsonReplacer,'  ', {tengen:tengen, tengenTag:tengenTag, escapeHtml:escapeHtml});
         }
     })
     .filter('fileSize', function ($filter) {
