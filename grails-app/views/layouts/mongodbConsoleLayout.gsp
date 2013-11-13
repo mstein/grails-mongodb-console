@@ -58,6 +58,7 @@
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "mongoQueries.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "paginator.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "fileUpload.js")}"></script>
+    <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/directives", file: "checkboxes.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "mongodbService.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongodbGridFsService.js")}"></script>
     <script src="${resource(plugin: 'mongo-viewer', dir: "js/angular/services", file: "MongoContextHolder.js")}"></script>
